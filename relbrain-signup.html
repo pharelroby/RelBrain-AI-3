@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Créer mon compte</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
+.hero-bg{background:
+  radial-gradient(ellipse 55% 45% at 15% 5%, rgba(251,191,36,.10) 0%, transparent 55%),
+  radial-gradient(ellipse 50% 45% at 85% 15%, rgba(236,72,153,.10) 0%, transparent 55%),
+  radial-gradient(ellipse 40% 40% at 50% 85%, rgba(124,58,237,.08) 0%, transparent 60%),
+  #fdf4e8;}
+
+.progress-fill{transition:width .6s cubic-bezier(.4,0,.2,1);}
+.step-panel{display:none;}
+.step-panel.active{display:block;animation:stepIn .35s cubic-bezier(.4,0,.2,1);}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
+.step-panel.going-back.active{animation:stepBack .35s cubic-bezier(.4,0,.2,1);}
+@keyframes stepBack{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:translateX(0);}}
+
+.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:border-color .15s,box-shadow .15s;outline:none;appearance:none;-webkit-appearance:none;}
+.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.rb-input.error{border-color:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.10);}
+.rb-input.valid{border-color:#10b981;}
+.rb-input::placeholder{color:#a8a29e;}
+.rb-label{display:block;font-size:.75rem;font-weight:800;color:#57534e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+
+.rb-select-wrap{position:relative;}
+.rb-select-wrap::after{content:'';position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #78716c;pointer-events:none;}
+
+.level-btn{padding:.625rem 1rem;border:1.5px solid #e7d9c5;border-radius:.75rem;font-size:.8125rem;font-weight:700;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;text-align:center;}
+.level-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.level-btn.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;font-weight:800;}
+
+.lang-btn{display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;width:100%;}
+.lang-btn:hover{border-color:#c4b5fd;background:#faf5ff;color:#6d28d9;}
+.lang-btn.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;}
+.lang-btn .flag{font-size:1.25rem;}
+
+.goal-btn{display:flex;align-items:center;gap:.75rem;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;cursor:pointer;transition:all .15s;background:#fff;width:100%;text-align:left;}
+.goal-btn:hover{border-color:#c4b5fd;background:#faf5ff;}
+.goal-btn.selected{border-color:#7c3aed;background:#f5f3ff;}
+.goal-btn .goal-icon{width:2rem;height:2rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0;}
+.goal-btn .goal-check{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.goal-btn.selected .goal-check{background:#7c3aed;border-color:#7c3aed;}
+
+.strength-bar{height:3px;border-radius:9999px;transition:width .3s,background .3s;}
+.input-wrap{position:relative;}
+.input-wrap .input-icon{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#a8a29e;font-size:.8rem;pointer-events:none;}
+.input-wrap .rb-input.has-icon{padding-left:2.25rem;}
+.input-wrap .input-end{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);color:#a8a29e;cursor:pointer;font-size:.875rem;}
+.toggle-pw:hover{color:#7c3aed;}
+
+.phone-wrap{display:flex;gap:.5rem;}
+.phone-flag-btn{display:flex;align-items:center;gap:.375rem;padding:0 .75rem;border:1.5px solid #e7d9c5;border-radius:.875rem;background:#fff;cursor:pointer;font-size:.8125rem;font-weight:700;color:#57534e;white-space:nowrap;transition:border-color .15s;}
+.phone-flag-btn:hover{border-color:#c4b5fd;}
+
+.country-dropdown{position:absolute;top:100%;left:0;z-index:100;margin-top:.25rem;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 8px 30px rgba(0,0,0,.12);max-height:220px;overflow-y:auto;min-width:220px;}
+.country-dropdown.hidden{display:none;}
+.country-option{display:flex;align-items:center;gap:.625rem;padding:.625rem 1rem;font-size:.8125rem;cursor:pointer;transition:background .1s;}
+.country-option:hover{background:#faf5ff;}
+
+@keyframes successBounce{0%{transform:scale(0) rotate(-10deg);opacity:0;}60%{transform:scale(1.15) rotate(3deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+@keyframes confettiDrop{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(80px) rotate(720deg);opacity:0;}}
+.success-icon{animation:successBounce .55s cubic-bezier(.36,.07,.19,.97) forwards;}
+.confetti{position:absolute;width:8px;height:8px;border-radius:2px;animation:confettiDrop 1s ease-in forwards;}
+
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+
+.step-dot{transition:all .3s;}
+.step-dot.done{background:#10b981;}
+.step-dot.active{background:#7c3aed;width:1.75rem;border-radius:.5rem;}
+.step-dot.upcoming{background:#e7d9c5;}
+
+.field-error{font-size:.7rem;color:#f43f5e;margin-top:.25rem;font-weight:700;display:none;}
+.field-error.show{display:block;}
+
+.social-btn{display:flex;align-items:center;justify-content:center;gap:.625rem;width:100%;padding:.75rem 1rem;border-radius:.875rem;border:1.5px solid #e7d9c5;background:#fff;cursor:pointer;font-size:.875rem;font-weight:700;color:#57534e;transition:all .15s;}
+.social-btn:hover{border-color:#c4b5fd;background:#faf5ff;color:#6d28d9;}
+
+#rb-toast-host{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body class="hero-bg">
+
+<div id="rb-toast-host"></div>
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#fdf4e8]/85 backdrop-blur-sm border-b border-[#e7d9c5]">
+  <div class="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="bg-violet-600 text-white p-1.5 rounded-xl shadow-md shadow-violet-200"><i class="fa-solid fa-brain text-base"></i></div>
+      <span class="text-base font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
+    </a>
+    <a href="index.html" class="text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5 transition-colors">
+      <i class="fa-solid fa-arrow-left text-[10px]"></i> Retour à l'accueil
+    </a>
+  </div>
+</nav>
+
+<main class="pt-20 pb-16 px-4 min-h-screen flex flex-col items-center justify-start">
+
+  <!-- Barre progression -->
+  <div class="w-full max-w-lg mb-8">
+    <div class="flex items-center justify-between mb-3 px-1" id="steps-indicator"></div>
+    <p class="text-center text-xs text-slate-500 font-bold" id="step-subtitle">Étape 1 sur 4</p>
+  </div>
+
+  <!-- Carte -->
+  <div class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-[#e7d9c5] overflow-hidden">
+
+    <!-- ÉTAPE 1 -->
+    <div class="step-panel active" id="panel-0">
+      <div class="p-7 md:p-9">
+        <div class="mb-7">
+          <div class="w-12 h-12 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-brain text-violet-600 text-xl"></i>
+          </div>
+          <h1 class="text-2xl font-black text-slate-900 mb-1">Crée ton compte</h1>
+          <p class="text-sm text-slate-500 font-semibold">Gratuit pour toujours · Aucune carte requise</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <button class="social-btn" onclick="socialLogin('Google')">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Google
+          </button>
+          <button class="social-btn" onclick="socialLogin('Apple')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Apple
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3 mb-6">
+          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
+          <span class="text-xs text-slate-400 font-bold">ou avec ton email</span>
+          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
+        </div>
+
+        <div class="mb-4">
+          <label class="rb-label" for="email">Adresse email</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" id="email" class="rb-input has-icon" placeholder="toi@exemple.com" oninput="validateEmail()"/>
+          </div>
+          <p class="field-error" id="email-error">Adresse email invalide.</p>
+        </div>
+
+        <div class="mb-4">
+          <label class="rb-label" for="password">Mot de passe</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="password" class="rb-input has-icon" placeholder="Minimum 8 caractères" oninput="checkStrength()" style="padding-right:2.5rem"/>
+            <i class="fa-solid fa-eye input-end toggle-pw" id="pw-toggle" onclick="togglePw()"></i>
+          </div>
+          <div class="flex gap-1 mt-2">
+            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-1"></div>
+            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-2"></div>
+            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-3"></div>
+            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-4"></div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 font-semibold" id="strength-label"></p>
+        </div>
+
+        <div class="mb-6">
+          <label class="rb-label" for="password2">Confirmer le mot de passe</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="password2" class="rb-input has-icon" placeholder="Même mot de passe" oninput="validateConfirm()"/>
+          </div>
+          <p class="field-error" id="pw-error">Les mots de passe ne correspondent pas.</p>
+        </div>
+
+        <label class="flex items-start gap-3 cursor-pointer mb-6">
+          <input type="checkbox" id="cgu" class="mt-0.5 accent-violet-600 w-4 h-4 shrink-0"/>
+          <span class="text-xs text-slate-500 leading-relaxed font-semibold">J'accepte les <a href="relbrain-cgu.html" class="text-violet-600 font-black hover:underline">CGU</a> et la <a href="relbrain-confidentialite.html" class="text-violet-600 font-black hover:underline">Politique de confidentialité</a>.</span>
+        </label>
+
+        <button class="w-full gradient-bg text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-violet-200 flex items-center justify-center gap-2 text-sm" onclick="goStep(1)">
+          Créer mon compte <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+
+        <p class="text-center text-xs text-slate-500 mt-5 font-semibold">
+          Déjà un compte ? <a href="relbrain-login.html" class="text-violet-600 font-black hover:underline">Se connecter</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 -->
+    <div class="step-panel" id="panel-1">
+      <div class="p-7 md:p-9">
+        <div class="mb-7">
+          <div class="w-12 h-12 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-user text-violet-600 text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 mb-1">Parle-nous de toi</h2>
+          <p class="text-sm text-slate-500 font-semibold">Pour personnaliser ton expérience RelBrain</p>
+        </div>
+
+        <div class="flex items-center gap-4 mb-6 p-4 bg-[#fdf4e8] rounded-2xl border border-[#e7d9c5]">
+          <div class="w-16 h-16 rounded-2xl bg-violet-100 border-2 border-dashed border-violet-300 flex items-center justify-center overflow-hidden shrink-0" id="avatar-preview">
+            <i class="fa-solid fa-camera text-violet-400 text-xl" id="avatar-icon"></i>
+            <img id="avatar-img" class="hidden w-full h-full object-cover"/>
+          </div>
+          <div>
+            <p class="text-sm font-black text-slate-700 mb-0.5">Photo de profil</p>
+            <p class="text-xs text-slate-400 font-semibold mb-2">Optionnel · JPG, PNG, max 2 MB</p>
+            <label for="avatar-input" class="inline-flex items-center gap-1.5 text-xs font-black text-violet-600 cursor-pointer bg-violet-50 px-3 py-1.5 rounded-lg hover:bg-violet-100">
+              <i class="fa-solid fa-upload text-[10px]"></i> Choisir
+            </label>
+            <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="previewAvatar(this)"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="rb-label" for="prenom">Prénom <span class="text-rose-400">*</span></label>
+            <input type="text" id="prenom" class="rb-input" placeholder="Pharel" oninput="validateRequired('prenom','prenom-error')"/>
+            <p class="field-error" id="prenom-error">Champ requis.</p>
+          </div>
+          <div>
+            <label class="rb-label" for="nom">Nom <span class="text-rose-400">*</span></label>
+            <input type="text" id="nom" class="rb-input" placeholder="FOFE" oninput="validateRequired('nom','nom-error')"/>
+            <p class="field-error" id="nom-error">Champ requis.</p>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="rb-label">Téléphone <span class="text-slate-400 font-semibold normal-case">(optionnel)</span></label>
+          <div class="phone-wrap relative">
+            <button type="button" class="phone-flag-btn" id="phone-flag-btn" onclick="toggleCountryDrop()">
+              <span id="selected-flag">🇨🇲</span>
+              <span id="selected-code">+237</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+            </button>
+            <div class="country-dropdown hidden" id="country-drop">
+              <div class="country-option" onclick="selectCountry('🇨🇲','+237')"><span>🇨🇲</span><span class="flex-1">Cameroun</span><span class="text-slate-400 text-xs">+237</span></div>
+              <div class="country-option" onclick="selectCountry('🇫🇷','+33')"><span>🇫🇷</span><span class="flex-1">France</span><span class="text-slate-400 text-xs">+33</span></div>
+              <div class="country-option" onclick="selectCountry('🇸🇳','+221')"><span>🇸🇳</span><span class="flex-1">Sénégal</span><span class="text-slate-400 text-xs">+221</span></div>
+              <div class="country-option" onclick="selectCountry('🇨🇮','+225')"><span>🇨🇮</span><span class="flex-1">Côte d'Ivoire</span><span class="text-slate-400 text-xs">+225</span></div>
+              <div class="country-option" onclick="selectCountry('🇧🇪','+32')"><span>🇧🇪</span><span class="flex-1">Belgique</span><span class="text-slate-400 text-xs">+32</span></div>
+              <div class="country-option" onclick="selectCountry('🇨🇦','+1')"><span>🇨🇦</span><span class="flex-1">Canada</span><span class="text-slate-400 text-xs">+1</span></div>
+            </div>
+            <input type="tel" id="phone" class="rb-input flex-1" placeholder="6 00 00 00 00"/>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="rb-label" for="pays">Pays <span class="text-rose-400">*</span></label>
+          <div class="rb-select-wrap">
+            <select id="pays" class="rb-input">
+              <option value="">Sélectionner…</option>
+              <option>Cameroun</option><option>France</option><option>Sénégal</option>
+              <option>Côte d'Ivoire</option><option>Bénin</option><option>Togo</option>
+              <option>Gabon</option><option>Congo (RDC)</option><option>Mali</option>
+              <option>Burkina Faso</option><option>Maroc</option><option>Algérie</option>
+              <option>Tunisie</option><option>Belgique</option><option>Suisse</option>
+              <option>Canada</option><option>Autre</option>
+            </select>
+          </div>
+          <p class="field-error" id="pays-error">Veuillez sélectionner votre pays.</p>
+        </div>
+
+        <div class="mb-6">
+          <label class="rb-label" for="universite">Établissement <span class="text-slate-400 font-semibold normal-case">(optionnel)</span></label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-building-columns input-icon"></i>
+            <input type="text" id="universite" class="rb-input has-icon" placeholder="Ex : Université de Douala"/>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2" onclick="goStep(0)">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Retour
+          </button>
+          <button class="flex-1 gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 text-sm flex items-center justify-center gap-2" onclick="goStep(2)">
+            Continuer <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 3 -->
+    <div class="step-panel" id="panel-2">
+      <div class="p-7 md:p-9">
+        <div class="mb-7">
+          <div class="w-12 h-12 bg-amber-50 border border-amber-100 rounded-2xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-sliders text-amber-500 text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 mb-1">Tes préférences</h2>
+          <p class="text-sm text-slate-500 font-semibold">Aide l'IA à te préparer le bon contenu</p>
+        </div>
+
+        <div class="mb-5">
+          <label class="rb-label mb-3">Niveau scolaire <span class="text-rose-400">*</span></label>
+          <div class="grid grid-cols-2 gap-2" id="level-grid"></div>
+          <p class="field-error" id="level-error">Veuillez choisir un niveau.</p>
+        </div>
+
+        <div class="mb-5">
+          <label class="rb-label" for="filiere">Filière / Spécialité</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-diagram-project input-icon"></i>
+            <input type="text" id="filiere" class="rb-input has-icon" placeholder="Ex : Informatique, Droit…"/>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="rb-label mb-3">Langue <span class="text-rose-400">*</span></label>
+          <div class="grid grid-cols-2 gap-2">
+            <button class="lang-btn selected" id="lang-fr" onclick="selectLang('fr')">
+              <span class="flag">🇫🇷</span> Français
+              <i class="fa-solid fa-check text-violet-500 text-xs ml-auto" id="lang-fr-check"></i>
+            </button>
+            <button class="lang-btn" id="lang-en" onclick="selectLang('en')">
+              <span class="flag">🇬🇧</span> English
+              <i class="fa-solid fa-check text-violet-500 text-xs ml-auto hidden" id="lang-en-check"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="rb-label mb-3">Objectifs <span class="text-slate-400 font-semibold normal-case">(plusieurs choix)</span></label>
+          <div class="space-y-2" id="goals-list"></div>
+        </div>
+
+        <div class="flex gap-3">
+          <button class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2" onclick="goStep(1)">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Retour
+          </button>
+          <button class="flex-1 gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 text-sm flex items-center justify-center gap-2" onclick="goStep(3)">
+            Terminer <i class="fa-solid fa-check text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 4 -->
+    <div class="step-panel" id="panel-3">
+      <div class="p-7 md:p-9 text-center relative overflow-hidden">
+        <div id="confetti-container" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+
+        <div class="w-24 h-24 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 success-icon shadow-2xl shadow-violet-300 relative z-10">
+          <i class="fa-solid fa-check text-white text-4xl"></i>
+        </div>
+
+        <h2 class="text-3xl font-black text-slate-900 mb-2 relative z-10">Bienvenue, <span class="gradient-text" id="welcome-name">toi !</span> 🎉</h2>
+        <p class="text-sm text-slate-500 mb-8 max-w-xs mx-auto leading-relaxed font-semibold relative z-10">Un email de confirmation vient de t'être envoyé. Valide ton adresse pour activer toutes les fonctionnalités.</p>
+
+        <div class="bg-[#fdf4e8] border border-[#e7d9c5] rounded-2xl p-5 mb-7 text-left space-y-2.5 relative z-10">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope text-violet-500 text-xs"></i></div>
+            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Email</p><p class="text-sm font-black text-slate-700" id="recap-email">—</p></div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-graduation-cap text-violet-500 text-xs"></i></div>
+            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Niveau</p><p class="text-sm font-black text-slate-700" id="recap-level">—</p></div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-globe text-amber-500 text-xs"></i></div>
+            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Pays · Langue</p><p class="text-sm font-black text-slate-700" id="recap-country">—</p></div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl p-4 mb-7 flex items-center gap-3 text-left gradient-bg relative z-10">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-star text-amber-300"></i></div>
+          <div>
+            <p class="text-white font-black text-sm">+100 XP de bienvenue !</p>
+            <p class="text-violet-100 text-xs font-semibold">Tu démarres déjà avec un avantage 🚀</p>
+          </div>
+        </div>
+
+        <a href="relbrain-validation-email.html" class="block w-full gradient-bg text-white font-black py-4 rounded-xl shadow-xl shadow-violet-200 text-base flex items-center justify-center gap-2 mb-3 relative z-10">
+          <i class="fa-solid fa-envelope-circle-check"></i> Valider mon email
+        </a>
+        <a href="relbrain-accueil.html" class="block w-full border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm relative z-10">Accueil →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-4 mt-6">
+    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> SSL</span>
+    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-lock text-violet-500"></i> RGPD</span>
+    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-slate-400"></i> Aucune revente</span>
+  </div>
+</main>
+
+<script>
+let currentStep = 0;
+let selectedLevel = null;
+let selectedLang = 'fr';
+let selectedGoals = new Set();
+
+/* Steps indicator */
+const stepData = [
+  {icon:'fa-envelope', label:'Compte'},
+  {icon:'fa-user', label:'Profil'},
+  {icon:'fa-sliders', label:'Préférences'},
+  {icon:'fa-rocket', label:'Démarrer'},
+];
+
+function renderSteps(){
+  document.getElementById('steps-indicator').innerHTML = stepData.map((s,i) => `
+    <div class="flex flex-col items-center gap-1 flex-1">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-white border-2 border-[#e7d9c5] text-slate-400" id="step-icon-${i}">${i+1}</div>
+      <span class="text-[10px] font-bold text-slate-400 transition-colors duration-300" id="step-label-${i}">${s.label}</span>
+    </div>
+    ${i < stepData.length - 1 ? `<div class="h-0.5 flex-1 mx-1 rounded-full overflow-hidden bg-[#e7d9c5] mb-4"><div class="h-full gradient-bg rounded-full progress-fill" id="connector-${i}" style="width:0%"></div></div>` : ''}
+  `).join('');
+  updateProgress();
+}
+renderSteps();
+
+/* Level buttons */
+const levels = [
+  { id:'college', label:'📚 Collège' },
+  { id:'lycee',   label:'🏫 Lycée / BAC' },
+  { id:'bts',     label:'🎓 BTS / DUT' },
+  { id:'licence', label:'📖 Licence' },
+  { id:'master',  label:'🧑‍🎓 Master' },
+  { id:'prepa',   label:'⚡ Prépa / Concours' },
+];
+document.getElementById('level-grid').innerHTML = levels.map(l => `
+  <button class="level-btn" id="lvl-${l.id}" onclick="selectLevel('${l.id}')">${l.label}</button>
+`).join('');
+
+/* Goals */
+const goals = [
+  { id:'examen', icon:'fa-file-pen', color:'bg-rose-50 text-rose-500', label:'Préparer un examen', sub:'Partiel, BAC, concours...' },
+  { id:'revision', icon:'fa-rotate', color:'bg-violet-50 text-violet-500', label:'Réviser régulièrement', sub:'Maintenir mes acquis' },
+  { id:'lacunes', icon:'fa-magnifying-glass', color:'bg-amber-50 text-amber-500', label:'Combler mes lacunes', sub:'Corriger mes points faibles' },
+  { id:'rapidite', icon:'fa-bolt', color:'bg-pink-50 text-pink-500', label:'Apprendre plus vite', sub:'Mémoriser efficacement' },
+];
+document.getElementById('goals-list').innerHTML = goals.map(g => `
+  <button class="goal-btn" id="goal-${g.id}" onclick="toggleGoal('${g.id}')">
+    <div class="goal-icon ${g.color}"><i class="fa-solid ${g.icon}"></i></div>
+    <div class="flex-1 text-left">
+      <p class="text-sm font-black text-slate-800">${g.label}</p>
+      <p class="text-xs text-slate-400 font-semibold">${g.sub}</p>
+    </div>
+    <div class="goal-check" id="gc-${g.id}"><i class="fa-solid fa-check text-white text-[9px] hidden" id="gci-${g.id}"></i></div>
+  </button>
+`).join('');
+
+/* Navigation */
+function goStep(target){
+  if (target > currentStep && !validateStep(currentStep)) return;
+  const panels = document.querySelectorAll('.step-panel');
+  const goingBack = target < currentStep;
+  panels[currentStep].classList.remove('active','going-back');
+  const next = panels[target];
+  next.classList.toggle('going-back', goingBack);
+  setTimeout(()=>{ next.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); },10);
+  currentStep = target;
+  updateProgress();
+  if (target === 3) buildSuccessScreen();
+}
+
+function updateProgress(){
+  stepData.forEach((s,i) => {
+    const icon = document.getElementById(`step-icon-${i}`);
+    const label = document.getElementById(`step-label-${i}`);
+    const conn = document.getElementById(`connector-${i}`);
+    if (i < currentStep) {
+      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-emerald-500 text-white';
+      icon.innerHTML = '<i class="fa-solid fa-check text-sm"></i>';
+      label.className = 'text-[10px] font-black text-emerald-600';
+      if (conn) conn.style.width = '100%';
+    } else if (i === currentStep) {
+      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 gradient-bg text-white shadow-lg shadow-violet-200';
+      icon.innerHTML = `<i class="fa-solid ${s.icon}"></i>`;
+      label.className = 'text-[10px] font-black text-violet-600';
+    } else {
+      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-white border-2 border-[#e7d9c5] text-slate-400';
+      icon.innerHTML = `<span>${i+1}</span>`;
+      label.className = 'text-[10px] font-bold text-slate-400';
+      if (conn) conn.style.width = '0%';
+    }
+  });
+  document.getElementById('step-subtitle').textContent = `Étape ${currentStep + 1} sur 4`;
+}
+
+/* Validations */
+function validateStep(step){
+  if (step === 0) {
+    const email = document.getElementById('email').value.trim();
+    const pw = document.getElementById('password').value;
+    const pw2 = document.getElementById('password2').value;
+    const cgu = document.getElementById('cgu').checked;
+    let ok = true;
+    if (!isValidEmail(email)) { showError('email','email-error'); ok = false; }
+    if (pw.length < 8) { showError('password',''); toast('Mot de passe ≥ 8 caractères','error'); ok = false; }
+    else if (pw !== pw2) { showError('password2','pw-error'); ok = false; }
+    if (!cgu) { toast('Accepte les CGU','error'); ok = false; }
+    return ok;
+  }
+  if (step === 1) {
+    const prenom = document.getElementById('prenom').value.trim();
+    const nom = document.getElementById('nom').value.trim();
+    const pays = document.getElementById('pays').value;
+    let ok = true;
+    if (!prenom) { showError('prenom','prenom-error'); ok = false; }
+    if (!nom) { showError('nom','nom-error'); ok = false; }
+    if (!pays) { showError('pays','pays-error'); ok = false; }
+    return ok;
+  }
+  if (step === 2) {
+    if (!selectedLevel) { document.getElementById('level-error').classList.add('show'); toast('Choisis ton niveau','error'); return false; }
+    return true;
+  }
+  return true;
+}
+
+function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function validateEmail(){
+  const el = document.getElementById('email'); const err = document.getElementById('email-error');
+  if (el.value && !isValidEmail(el.value)) { el.classList.add('error'); el.classList.remove('valid'); err.classList.add('show'); }
+  else if (el.value) { el.classList.remove('error'); el.classList.add('valid'); err.classList.remove('show'); }
+}
+function validateConfirm(){
+  const pw = document.getElementById('password').value; const pw2 = document.getElementById('password2');
+  const err = document.getElementById('pw-error');
+  if (pw2.value && pw2.value !== pw) { pw2.classList.add('error'); err.classList.add('show'); }
+  else if (pw2.value) { pw2.classList.remove('error'); pw2.classList.add('valid'); err.classList.remove('show'); }
+}
+function validateRequired(id, errId){
+  const el = document.getElementById(id); const err = document.getElementById(errId);
+  if (!el.value.trim()) { el.classList.add('error'); err.classList.add('show'); }
+  else { el.classList.remove('error'); el.classList.add('valid'); err.classList.remove('show'); }
+}
+function showError(id, errId){
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('error'); el.focus(); }
+  if (errId) { const err = document.getElementById(errId); if (err) err.classList.add('show'); }
+}
+function checkStrength(){
+  const pw = document.getElementById('password').value;
+  const bars = [1,2,3,4].map(i=>document.getElementById('sb-'+i));
+  const label = document.getElementById('strength-label');
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^a-zA-Z0-9]/.test(pw)) score++;
+  const colors = ['bg-rose-500','bg-orange-400','bg-amber-400','bg-emerald-500'];
+  const texts = ['Très faible','Faible','Moyen','Fort 💪'];
+  const textColors = ['text-rose-500','text-orange-500','text-amber-600','text-emerald-600'];
+  bars.forEach((b,i) => { b.className = 'strength-bar flex-1 ' + (i < score && score > 0 ? colors[score-1] : 'bg-[#e7d9c5]'); });
+  if (pw) { label.textContent = texts[score-1] || ''; label.className = 'text-[11px] mt-1 font-bold ' + (textColors[score-1] || ''); }
+  else { label.textContent = ''; }
+}
+function togglePw(){
+  const inp = document.getElementById('password'); const ico = document.getElementById('pw-toggle');
+  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash input-end toggle-pw'; }
+  else { inp.type = 'password'; ico.className = 'fa-solid fa-eye input-end toggle-pw'; }
+}
+function previewAvatar(input){
+  if (!input.files?.[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('avatar-icon').classList.add('hidden');
+    const img = document.getElementById('avatar-img');
+    img.src = e.target.result;
+    img.classList.remove('hidden');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+function selectLevel(id){
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('lvl-'+id).classList.add('selected');
+  selectedLevel = id;
+  document.getElementById('level-error').classList.remove('show');
+}
+function selectLang(lang){
+  selectedLang = lang;
+  ['fr','en'].forEach(l => {
+    document.getElementById('lang-'+l).classList.toggle('selected', l === lang);
+    document.getElementById('lang-'+l+'-check').classList.toggle('hidden', l !== lang);
+  });
+}
+function toggleGoal(id){
+  const btn = document.getElementById('goal-'+id); const check = document.getElementById('gc-'+id);
+  const checkIcon = document.getElementById('gci-'+id);
+  if (selectedGoals.has(id)) { selectedGoals.delete(id); btn.classList.remove('selected'); checkIcon.classList.add('hidden'); }
+  else { selectedGoals.add(id); btn.classList.add('selected'); checkIcon.classList.remove('hidden'); }
+}
+function toggleCountryDrop(){ document.getElementById('country-drop').classList.toggle('hidden'); }
+function selectCountry(flag, code){
+  document.getElementById('selected-flag').textContent = flag;
+  document.getElementById('selected-code').textContent = code;
+  document.getElementById('country-drop').classList.add('hidden');
+}
+document.addEventListener('click', e => {
+  const btn = document.getElementById('phone-flag-btn'); const drop = document.getElementById('country-drop');
+  if (btn && drop && !btn.contains(e.target) && !drop.contains(e.target)) drop.classList.add('hidden');
+});
+function socialLogin(p){ toast('Connexion '+p+' — bientôt disponible !','info'); }
+
+function buildSuccessScreen(){
+  const prenom = document.getElementById('prenom').value || '';
+  const pays = document.getElementById('pays').value || '—';
+  const email = document.getElementById('email').value || '—';
+  const levelEl = selectedLevel ? document.getElementById('lvl-'+selectedLevel) : null;
+  const levelLabel = levelEl ? levelEl.textContent.trim() : '—';
+  const langLabel = selectedLang === 'fr' ? '🇫🇷 Français' : '🇬🇧 English';
+
+  document.getElementById('welcome-name').textContent = prenom || 'toi';
+  document.getElementById('recap-email').textContent = email;
+  document.getElementById('recap-level').textContent = levelLabel;
+  document.getElementById('recap-country').textContent = `${pays} · ${langLabel}`;
+  try { sessionStorage.setItem('rb_signup_email', email); } catch(e){}
+  spawnConfetti();
+}
+
+function spawnConfetti(){
+  const c = document.getElementById('confetti-container');
+  const colors = ['#7c3aed','#a855f7','#ec4899','#10b981','#f59e0b','#06b6d4'];
+  c.innerHTML = '';
+  for (let i = 0; i < 24; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.cssText = `left:${Math.random()*100}%;top:${-10-Math.random()*30}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*.8}s;animation-duration:${.8+Math.random()*.8}s;transform:rotate(${Math.random()*360}deg);width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;`;
+    c.appendChild(el);
+  }
+}
+
+function toast(msg, type){
+  const host = document.getElementById('rb-toast-host');
+  const colors = {info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};
+  const icons = {info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};
+  const el = document.createElement('div');
+  el.className = 'rb-toast ' + colors[type];
+  el.innerHTML = '<i class="fa-solid ' + icons[type] + '"></i><span>' + msg + '</span>';
+  host.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);
+}
+</script>
+</body>
+</html>

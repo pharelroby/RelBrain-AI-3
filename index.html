@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>
+(function(){try{
+  var u=new URLSearchParams(window.location.search).get('rb-theme');
+  var p=(u==='light'||u==='dark'||u==='system')?u:(localStorage.getItem('rb-theme')||'system');
+  if(u)try{localStorage.setItem('rb-theme',u);}catch(e){}
+  var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(d)document.documentElement.classList.add('dark');
+}catch(e){}})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Transforme tes cours en Quiz et Flashcards grâce à l'IA</title>
+<meta name="description" content="Importe tes PDF, résumés, liens YouTube ou notes de cours. RelBrain AI génère instantanément des paquets de révision interactifs."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-theme.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+
+/* ═══ PALETTE D'ORIGINE ═══ */
+:root{
+  --rb-cream:#fdf4e8;
+  --rb-cream-2:#fbecda;
+  --rb-ink:#0f172a;
+  --rb-muted:#78716c;
+  --rb-violet:#7c3aed;
+  --rb-pink:#ec4899;
+}
+
+body{background:var(--rb-cream);color:var(--rb-ink);overflow-x:hidden;}
+
+/* ═══ Animations ═══ */
+@keyframes scroll-right{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes scroll-left{from{transform:translateX(-50%);}to{transform:translateX(0);}}
+.animate-scroll-right{animation:scroll-right 40s linear infinite;}
+.animate-scroll-left{animation:scroll-left 44s linear infinite;}
+
+@keyframes float-y{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@keyframes float-y2{0%,100%{transform:translateY(0) rotate(var(--rot,0deg));}50%{transform:translateY(-20px) rotate(var(--rot,0deg));}}
+@keyframes sparkle-float{0%,100%{transform:rotate(-12deg) translateY(0) scale(1);}50%{transform:rotate(-12deg) translateY(-10px) scale(1.15);}}
+@keyframes sparkle-float2{0%,100%{transform:rotate(15deg) translateY(0) scale(1);}50%{transform:rotate(15deg) translateY(-8px) scale(1.2);}}
+.sparkle1{animation:sparkle-float 2.4s ease-in-out infinite;}
+.sparkle2{animation:sparkle-float2 2.8s ease-in-out .5s infinite;}
+@keyframes wiggle{0%,100%{transform:rotate(-4deg) scale(1);}50%{transform:rotate(4deg) scale(1.1);}}
+.gamepad-wiggle{animation:wiggle 1.8s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.5);}50%{box-shadow:0 0 0 8px rgba(124,58,237,0);}}
+.pulse-dot{animation:pulse-dot 2s ease-in-out infinite;}
+
+/* ═══ Mesh gradient chaleureux ═══ */
+.hero-mesh{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 5%, rgba(251,191,36,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 85% 15%, rgba(236,72,153,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 85%, rgba(124,58,237,.08) 0%, transparent 60%);
+  animation:meshMove 20s ease-in-out infinite alternate;
+}
+@keyframes meshMove{0%{transform:scale(1) translate(0,0);}100%{transform:scale(1.12) translate(-1.5%,-1.5%);}}
+
+/* ═══ Scroll reveal ═══ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.reveal-scale{opacity:0;transform:scale(.94);transition:opacity .7s ease,transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal-scale.in{opacity:1;transform:scale(1);}
+.delay-1{transition-delay:.1s;}.delay-2{transition-delay:.2s;}.delay-3{transition-delay:.3s;}.delay-4{transition-delay:.4s;}
+
+/* ═══ FAQ ═══ */
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.faq-item.open .faq-answer{max-height:400px;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-icon{transition:transform .3s ease;}
+
+/* ═══ Card lift ═══ */
+.card-lift{transition:transform .25s ease,box-shadow .25s ease;}
+.card-lift:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(124,58,237,.12);}
+
+/* ═══ Navbar scroll ═══ */
+.nav-scrolled{background:rgba(253,244,232,.88)!important;backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(15,23,42,.06);}
+
+/* ═══ Gradient texte signature ═══ */
+.gradient-text{
+  background:linear-gradient(135deg,#7c3aed 0%,#a855f7 40%,#ec4899 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ═══ Bouton principal signature ═══ */
+.btn-primary{
+  background:#7c3aed;color:white;font-weight:800;
+  padding:.9rem 1.75rem;border-radius:9999px;font-size:.9375rem;
+  display:inline-flex;align-items:center;gap:.625rem;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 24px rgba(124,58,237,.28);
+}
+.btn-primary:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 12px 28px rgba(124,58,237,.35);}
+.btn-primary:active{transform:translateY(0);}
+
+.btn-secondary{
+  background:white;color:#0f172a;font-weight:700;
+  padding:.9rem 1.75rem;border-radius:9999px;font-size:.9375rem;
+  border:1.5px solid rgba(15,23,42,.08);
+  display:inline-flex;align-items:center;gap:.625rem;
+  transition:all .2s;
+}
+.btn-secondary:hover{border-color:rgba(124,58,237,.4);background:#faf5ff;transform:translateY(-2px);}
+
+/* ═══ Badge pill (comme sur la photo) ═══ */
+.rb-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:white;border:1px solid rgba(15,23,42,.06);
+  padding:.5rem 1rem;border-radius:9999px;
+  font-size:.75rem;font-weight:600;color:#44403c;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+.rb-badge .dot{width:6px;height:6px;border-radius:50%;background:#7c3aed;}
+
+/* ═══ Timeline scan ═══ */
+.timeline-line{position:absolute;top:44px;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.25),transparent);overflow:hidden;}
+.timeline-line::after{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,#a855f7,transparent);animation:timeline-scan 3s ease-in-out infinite;}
+@keyframes timeline-scan{0%{left:-40%;}100%{left:100%;}}
+
+/* ═══ Trust logos ═══ */
+.trust-logo{filter:grayscale(1);opacity:.5;transition:all .3s;font-weight:800;color:#44403c;}
+.trust-logo:hover{filter:grayscale(0);opacity:1;color:#7c3aed;transform:scale(1.06);}
+
+/* ═══ Feature pill ═══ */
+.feature-pill{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));border:1px solid rgba(124,58,237,.14);}
+
+/* ═══ Carte crème ═══ */
+.rb-card{background:white;border:1px solid rgba(15,23,42,.06);border-radius:1.25rem;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+.rb-card-cream{background:#fdf4e8;border:1px solid rgba(15,23,42,.06);border-radius:1.25rem;}
+
+/* ═══ Streak ring ═══ */
+.streak-ring{width:56px;height:56px;border-radius:50%;background:conic-gradient(#f59e0b 72%, #fef3c7 0);display:flex;align-items:center;justify-content:center;position:relative;}
+.streak-ring::before{content:'';position:absolute;inset:5px;background:white;border-radius:50%;}
+.streak-ring span{position:relative;z-index:1;font-size:.8rem;font-weight:900;color:#0f172a;}
+
+/* ═══ Scrollbar ═══ */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+::-webkit-scrollbar-thumb:hover{background:#c7b299;}
+
+/* ═══ Review card ═══ */
+.review-card{background:white;border:1px solid rgba(15,23,42,.06);border-radius:1rem;padding:1.25rem;box-shadow:0 2px 10px rgba(15,23,42,.04);}
+
+/* ═══ Step number (How it works) ═══ */
+.step-num{
+  width:88px;height:88px;border-radius:1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.25rem;font-weight:900;color:white;
+  position:relative;z-index:10;margin:0 auto 1.25rem;
+  box-shadow:0 12px 28px rgba(124,58,237,.2);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
+    <!-- Logo d'origine -->
+    <a href="#" class="flex items-center gap-2.5">
+      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative">
+        <i class="fa-solid fa-brain text-base"></i>
+        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white pulse-dot"></span>
+      </div>
+      <span class="text-xl font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
+    </a>
+
+    <!-- Nav desktop -->
+    <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-700">
+      <a href="#features" class="hover:text-violet-600 transition-colors">Fonctionnalités</a>
+      <a href="#how" class="hover:text-violet-600 transition-colors">Comment ça marche</a>
+      <a href="#pricing" class="hover:text-violet-600 transition-colors">Tarifs</a>
+      <a href="relbrain-login.html" class="hover:text-violet-600 transition-colors">Connexion</a>
+      <a href="relbrain-signup.html" class="btn-primary text-sm">
+        Essai gratuit
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+
+    <button id="menu-btn" class="md:hidden p-2 rounded-xl border border-slate-200 bg-white" onclick="toggleMenu()">
+      <i class="fa-solid fa-bars text-slate-700"></i>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden bg-[var(--rb-cream)] border-t border-slate-100 px-4 py-4 space-y-1">
+    <a href="#features" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Fonctionnalités</a>
+    <a href="#how" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Comment ça marche</a>
+    <a href="#pricing" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Tarifs</a>
+    <a href="relbrain-login.html" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl">Connexion</a>
+    <a href="relbrain-signup.html" class="block text-center bg-violet-600 text-white py-3 rounded-xl text-sm font-bold mt-2">Essai gratuit</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
+<section class="relative pt-32 md:pt-40 pb-20 px-4 overflow-hidden">
+  <div class="hero-mesh"></div>
+
+  <!-- Déco flottante -->
+  <div class="hidden lg:block absolute left-8 xl:left-20 top-48 w-20 h-20 bg-amber-100 rounded-3xl rotate-12 opacity-70" style="animation:float-y2 4s ease-in-out infinite;--rot:12deg"></div>
+  <div class="hidden lg:block absolute right-10 xl:right-24 top-60 w-14 h-14 bg-pink-100 rounded-2xl -rotate-6 opacity-60" style="animation:float-y2 3.5s ease-in-out .5s infinite;--rot:-6deg"></div>
+  <div class="hidden lg:block absolute left-24 xl:left-48 bottom-32 w-10 h-10 bg-violet-200 rounded-xl rotate-45 opacity-50" style="animation:float-y2 4.5s ease-in-out 1s infinite;--rot:45deg"></div>
+  <div class="hidden lg:block absolute right-24 bottom-48 w-12 h-12 bg-violet-100 rounded-2xl rotate-12 opacity-50" style="animation:float-y2 5s ease-in-out 1.5s infinite;--rot:12deg"></div>
+
+  <div class="max-w-4xl mx-auto text-center relative z-10">
+
+    <!-- Badge d'origine -->
+    <div class="mb-7 flex justify-center">
+      <div class="rb-badge">
+        <span class="dot"></span>
+        La plateforme N°1 de préparation aux examens et concours
+      </div>
+    </div>
+
+    <!-- Titre d'origine -->
+    <div class="relative inline-block mb-6">
+      <svg class="absolute -top-8 -left-6 w-10 h-10 sparkle1 text-violet-400" viewBox="0 0 40 40" fill="none">
+        <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor" opacity=".6"/>
+      </svg>
+      <svg class="absolute -top-6 -right-4 w-8 h-8 sparkle2 text-pink-400" viewBox="0 0 40 40" fill="none">
+        <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor" opacity=".5"/>
+      </svg>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight">
+        Transforme tes cours en<br class="hidden sm:block"/>
+        <span class="gradient-text">Quiz et Flashcards</span> grâce à l'IA
+      </h1>
+    </div>
+
+    <!-- Sous-titre d'origine -->
+    <p class="text-base md:text-lg text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+      Importe tes PDF, résumés, liens YouTube ou notes de cours.<br class="hidden md:block"/>
+      RelBrain AI génère instantanément des paquets de révision interactifs.
+    </p>
+
+    <!-- CTA d'origine -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-5">
+      <a href="relbrain-signup.html" class="btn-primary text-base">
+        <i class="fa-solid fa-bolt gamepad-wiggle"></i>
+        Commencer gratuitement
+      </a>
+      <a href="#demo" class="btn-secondary text-base">
+        <i class="fa-solid fa-play text-violet-600 text-xs"></i>
+        Voir la démo interactive
+      </a>
+    </div>
+
+    <p class="text-xs text-slate-500">Sans carte bancaire · Plan gratuit disponible · Annulation à tout moment</p>
+
+    <!-- App mockup -->
+    <div id="demo" class="relative mt-16 max-w-3xl mx-auto reveal-scale">
+      <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden" style="box-shadow:0 30px 80px rgba(124,58,237,0.14), 0 0 0 1px rgba(124,58,237,0.06)">
+        <div class="bg-[#fdf4e8] border-b border-slate-100 px-4 py-3 flex items-center gap-2">
+          <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-rose-400"></div><div class="w-3 h-3 rounded-full bg-amber-400"></div><div class="w-3 h-3 rounded-full bg-emerald-400"></div></div>
+          <div class="flex-1 mx-4 bg-white border border-slate-200 rounded-full px-3 py-1 text-xs text-slate-400 text-center">app.relbrain.ai</div>
+          <i class="fa-solid fa-shield-halved text-emerald-500 text-xs"></i>
+        </div>
+        <div class="grid grid-cols-3 h-72">
+          <div class="bg-white border-r border-slate-100 p-3 col-span-1">
+            <div class="flex items-center gap-2 mb-4 p-2 bg-violet-50 rounded-xl">
+              <div class="w-6 h-6 bg-violet-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-brain text-white text-xs"></i></div>
+              <span class="text-xs font-black text-violet-700">RelBrain</span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 px-2 py-1.5 bg-violet-50 rounded-lg"><div class="w-3 h-3 bg-violet-500 rounded"></div><span class="text-[10px] font-bold text-violet-700">Dashboard</span></div>
+              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Mes Quiz</span></div>
+              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Flashcards</span></div>
+              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Importer</span></div>
+            </div>
+          </div>
+          <div class="col-span-2 p-4 bg-[#fdf4e8]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-slate-700">Quiz Algorithmique S5</span>
+              <span class="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-bold">Intermédiaire</span>
+            </div>
+            <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 mb-2">
+              <p class="text-[10px] font-bold text-slate-700 mb-2">Quelle est la complexité de QuickSort en moyenne ?</p>
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(n)</span></div>
+                <div class="flex items-center gap-2 p-1.5 bg-emerald-50 border border-emerald-300 rounded-lg"><div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div><span class="text-[9px] font-bold text-emerald-700">O(n log n) ✓</span></div>
+                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(n²)</span></div>
+                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(log n)</span></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 bg-slate-200 h-1.5 rounded-full overflow-hidden"><div class="bg-violet-500 h-full rounded-full" style="width:60%"></div></div>
+              <span class="text-[9px] text-slate-500 font-bold">6/10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges flottants -->
+      <div class="absolute -left-4 md:-left-12 top-8 bg-white rounded-2xl px-4 py-2.5 shadow-xl border border-slate-100 flex items-center gap-2.5" style="animation:float-y 3s ease-in-out infinite">
+        <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-bolt text-emerald-600 text-sm"></i></div>
+        <div><p class="text-[10px] text-slate-500 font-semibold">Quiz généré en</p><p class="text-xs font-black text-slate-900">28 secondes</p></div>
+      </div>
+      <div class="absolute -right-4 md:-right-12 bottom-10 bg-white rounded-2xl px-4 py-2.5 shadow-xl border border-slate-100 flex items-center gap-2.5" style="animation:float-y 3.4s ease-in-out .4s infinite">
+        <div class="w-8 h-8 bg-violet-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-star text-violet-600 text-sm"></i></div>
+        <div><p class="text-[10px] text-slate-500 font-semibold">Score obtenu</p><p class="text-xs font-black text-slate-900">+320 XP 🎉</p></div>
+      </div>
+      <div class="absolute -right-3 md:-right-10 top-6 bg-white rounded-2xl px-3 py-2 shadow-xl border border-slate-100" style="animation:float-y 3.2s ease-in-out .8s infinite">
+        <p class="text-[10px] font-bold text-slate-700">🔥 7 jours de suite !</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ TRUST LOGOS (nouveau) ═══════════════════════════════════ -->
+<section class="py-10 px-4 bg-white border-y border-slate-100">
+  <div class="max-w-5xl mx-auto">
+    <p class="text-center text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Utilisé par les étudiants de</p>
+    <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
+      <span class="trust-logo text-base">Université de Douala</span>
+      <span class="trust-logo text-base">Polytech Yaoundé</span>
+      <span class="trust-logo text-base">Lycée Leclerc</span>
+      <span class="trust-logo text-base">UCAC</span>
+      <span class="trust-logo text-base">ESSEC Douala</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ STATS (améliorées : compteurs animés) ═══════════════════════════════════ -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="reveal">
+      <p class="text-4xl md:text-5xl font-black text-slate-900 mb-1"><span data-count="500" data-suffix="K+">0</span></p>
+      <p class="text-sm text-slate-500 font-semibold">Étudiants actifs</p>
+    </div>
+    <div class="reveal delay-1">
+      <p class="text-4xl md:text-5xl font-black gradient-text mb-1"><span data-count="12" data-suffix="M+">0</span></p>
+      <p class="text-sm text-slate-500 font-semibold">Questions générées</p>
+    </div>
+    <div class="reveal delay-2">
+      <p class="text-4xl md:text-5xl font-black text-slate-900 mb-1"><span data-count="49" data-divide="10">0</span><span class="text-amber-400">★</span></p>
+      <p class="text-sm text-slate-500 font-semibold">Note moyenne</p>
+    </div>
+    <div class="reveal delay-3">
+      <p class="text-4xl md:text-5xl font-black gradient-text mb-1"><span data-count="3">0</span>×</p>
+      <p class="text-sm text-slate-500 font-semibold">Plus vite qu'avant</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ PROBLÈME → SOLUTION (nouveau) ═══════════════════════════════════ -->
+<section class="py-20 px-4 bg-[var(--rb-cream)]">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14 reveal">
+      <div class="rb-badge mb-5"><span class="dot"></span> Le problème</div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Étudier ne devrait pas<br/><span class="text-slate-400">être aussi frustrant</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+      <div class="reveal rb-card p-6 card-lift">
+        <div class="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-folder-open text-rose-500 text-xl"></i></div>
+        <h3 class="font-black text-slate-900 mb-2">Trop de documents</h3>
+        <p class="text-sm text-slate-500">Des dizaines de PDFs, notes, diapos… Impossible de tout organiser.</p>
+      </div>
+      <div class="reveal delay-1 rb-card p-6 card-lift">
+        <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-circle-question text-amber-500 text-xl"></i></div>
+        <h3 class="font-black text-slate-900 mb-2">Quoi réviser ?</h3>
+        <p class="text-sm text-slate-500">Difficile de savoir par où commencer et ce qui est vraiment important.</p>
+      </div>
+      <div class="reveal delay-2 rb-card p-6 card-lift">
+        <div class="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-brain text-violet-500 text-xl"></i></div>
+        <h3 class="font-black text-slate-900 mb-2">Oubli rapide</h3>
+        <p class="text-sm text-slate-500">Relire ne suffit pas. Après 48h, on a déjà tout oublié.</p>
+      </div>
+      <div class="reveal delay-3 rb-card p-6 card-lift">
+        <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-chart-simple text-slate-500 text-xl"></i></div>
+        <h3 class="font-black text-slate-900 mb-2">Aucun suivi</h3>
+        <p class="text-sm text-slate-500">Impossible de mesurer ses progrès ou de savoir où on en est.</p>
+      </div>
+    </div>
+
+    <div class="text-center reveal">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-violet-600 text-white font-black shadow-xl shadow-violet-200">
+        <i class="fa-solid fa-arrow-down"></i> RelBrain AI change tout
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ REVIEWS CARROUSEL ═══════════════════════════════════ -->
+<section class="py-14 px-0 bg-white overflow-hidden">
+  <h2 class="text-center text-3xl md:text-4xl font-black text-slate-900 mb-10 reveal">Ce que disent les étudiants <span class="text-slate-300">💬</span></h2>
+  <div class="relative overflow-hidden mb-4">
+    <div class="flex gap-4 w-fit animate-scroll-right" id="review-row-1"></div>
+  </div>
+  <div class="relative overflow-hidden">
+    <div class="flex gap-4 w-fit animate-scroll-left" id="review-row-2"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ HOW IT WORKS (amélioré : timeline scan) ═══════════════════════════════════ -->
+<section id="how" class="py-24 px-4 bg-[var(--rb-cream)] relative overflow-hidden">
+  <div class="max-w-4xl mx-auto relative">
+    <div class="text-center mb-16 reveal">
+      <div class="rb-badge mb-5"><span class="dot"></span> Comment ça marche</div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Simple comme<br/><span class="gradient-text">1 — 2 — 3</span></h2>
+      <p class="text-slate-600 max-w-xl mx-auto">De ton document au savoir maîtrisé en moins de 30 secondes.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 relative">
+      <div class="timeline-line hidden md:block"></div>
+
+      <div class="text-center relative reveal-scale">
+        <div class="step-num bg-violet-600">1</div>
+        <h3 class="text-lg font-black text-slate-900 mb-2">Importe</h3>
+        <p class="text-sm text-slate-500">Glisse-dépose ton cours (PDF, DOCX, image...) ou colle du texte directement.</p>
+      </div>
+      <div class="text-center relative reveal-scale delay-1">
+        <div class="step-num" style="background:#a855f7">2</div>
+        <h3 class="text-lg font-black text-slate-900 mb-2">L'IA génère</h3>
+        <p class="text-sm text-slate-500">En 30 secondes, quiz, flashcards et résumé sont prêts. Niveau adapté à ton choix.</p>
+      </div>
+      <div class="text-center relative reveal-scale delay-2">
+        <div class="step-num bg-emerald-600">3</div>
+        <h3 class="text-lg font-black text-slate-900 mb-2">Apprends & monte</h3>
+        <p class="text-sm text-slate-500">Révise, gagne des XP, monte dans le classement. L'IA affine en continu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FEATURES (UI d'origine conservée) ═══════════════════════════════════ -->
+<section id="features" class="py-24 px-4 bg-white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <div class="rb-badge mb-5"><span class="dot"></span> Fonctionnalités</div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Tout ce dont tu as besoin<br/><span class="gradient-text">pour apprendre plus vite</span></h2>
+      <p class="text-lg text-slate-600 max-w-xl mx-auto">Du document aux résultats d'examen. RelBrain gère tout.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+
+      <!-- Feature 1 large -->
+      <div class="lg:col-span-2 reveal rb-card p-7 card-lift relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-violet-50 to-transparent rounded-bl-3xl"></div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-bolt text-violet-600 text-xl"></i></div>
+          <h3 class="text-xl font-black text-slate-900 mb-2">Upload → Quiz en 30 secondes</h3>
+          <p class="text-sm text-slate-500 leading-relaxed mb-5">Importe un PDF, DOCX, PPTX ou une image. L'IA extrait le contenu, identifie les concepts clés et génère un quiz complet, des flashcards et un résumé. Automatiquement.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">PDF</span>
+            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">DOCX</span>
+            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">PPTX</span>
+            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">TXT</span>
+            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">Images OCR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal delay-1 rounded-3xl p-7 card-lift text-white" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">
+        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-brain text-white text-xl"></i></div>
+        <h3 class="text-xl font-black mb-2">IA Adaptative</h3>
+        <p class="text-sm opacity-95 leading-relaxed">L'IA mémorise tes résultats et génère automatiquement plus de questions sur tes points faibles.</p>
+      </div>
+
+      <div class="reveal rb-card p-7 card-lift">
+        <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-layer-group text-amber-600 text-xl"></i></div>
+        <h3 class="text-xl font-black text-slate-900 mb-2">Flashcards interactives</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">Cartes retournables avec révision espacée. Basées sur l'algorithme SM-2.</p>
+      </div>
+
+      <div class="reveal delay-1 rb-card p-7 card-lift">
+        <div class="w-12 h-12 bg-rose-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-trophy text-rose-500 text-xl"></i></div>
+        <h3 class="text-xl font-black text-slate-900 mb-2">Gamification complète</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">XP, niveaux, badges, séries quotidiennes, classement mondial.</p>
+      </div>
+
+      <div class="reveal delay-2 rb-card p-7 card-lift">
+        <div class="w-12 h-12 bg-sky-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-file-pen text-sky-600 text-xl"></i></div>
+        <h3 class="text-xl font-black text-slate-900 mb-2">Mode Examen blanc</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">Chronomètre, sans aide, sans indication. Conditions d'examen réelles.</p>
+      </div>
+
+      <div class="reveal delay-3 rb-card p-7 card-lift">
+        <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-chart-line text-emerald-600 text-xl"></i></div>
+        <h3 class="text-xl font-black text-slate-900 mb-2">Tableau de bord précis</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">Score global, progression, matières faibles. Graphiques interactifs.</p>
+      </div>
+
+      <!-- Résumés IA -->
+      <div class="lg:col-span-3 reveal rounded-3xl p-8 card-lift relative overflow-hidden" style="background:#1e1b4b">
+        <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(124,58,237,.3),rgba(236,72,153,.2))"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div class="flex-1">
+            <div class="w-12 h-12 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-wand-magic-sparkles text-violet-300 text-xl"></i></div>
+            <h3 class="text-xl font-black text-white mb-2">Résumés IA ultra-précis</h3>
+            <p class="text-sm text-slate-300 leading-relaxed max-w-lg">Résumé court, détaillé, points clés, concepts avec définitions. Généré en quelques secondes.</p>
+          </div>
+          <div class="md:w-64 bg-white/5 border border-white/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-violet-300 uppercase tracking-widest mb-3">Résumé court · IA</p>
+            <p class="text-sm text-slate-200 leading-relaxed">"La pile (Stack) suit le principe LIFO. La file suit FIFO. QuickSort a une complexité moyenne de O(n log n)..."</p>
+            <div class="flex items-center gap-2 mt-3">
+              <div class="h-1.5 flex-1 bg-violet-500/30 rounded-full overflow-hidden"><div class="h-full bg-violet-400 rounded-full" style="width:85%"></div></div>
+              <span class="text-[10px] text-slate-400">85% pertinence</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAMIFICATION (nouveau) ═══════════════════════════════════ -->
+<section class="py-24 px-4 bg-white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14 reveal">
+      <div class="rb-badge mb-5"><span class="dot"></span> Gamification</div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Apprendre devient<br/><span class="gradient-text">addictif</span></h2>
+      <p class="text-slate-600 max-w-xl mx-auto">Un système complet de récompenses inspiré des jeux vidéo.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="reveal rb-card p-7 card-lift">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl">🔥</div>
+          <div><p class="text-2xl font-black text-slate-900">12 jours</p><p class="text-xs text-slate-500 font-semibold">Série en cours</p></div>
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">Maintiens ta série quotidienne et débloque des bonus multipliés.</p>
+      </div>
+      <div class="reveal delay-1 rb-card p-7 card-lift">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-2xl">⚡</div>
+          <div><p class="text-2xl font-black text-slate-900">2 340 XP</p><p class="text-xs text-slate-500 font-semibold">Niveau 7</p></div>
+        </div>
+        <div class="h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
+          <div class="h-full rounded-full" style="background:linear-gradient(90deg,#7c3aed,#ec4899);width:68%"></div>
+        </div>
+        <p class="text-xs text-slate-500 font-semibold">660 XP avant le niveau 8</p>
+      </div>
+      <div class="reveal delay-2 rb-card p-7 card-lift">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center text-2xl">🏆</div>
+          <div><p class="text-2xl font-black text-slate-900">23 badges</p><p class="text-xs text-slate-500 font-semibold">Débloqués</p></div>
+        </div>
+        <div class="flex gap-1.5">
+          <div class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center text-sm">🥇</div>
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-sm">🎯</div>
+          <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center text-sm">💎</div>
+          <div class="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center text-sm">🔥</div>
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-[10px] font-bold">+19</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ MATIÈRES ═══════════════════════════════════ -->
+<section class="py-20 px-4 bg-[var(--rb-cream)]">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3 reveal">Même sans document, commence maintenant</h2>
+    <p class="text-slate-600 mb-10 reveal font-semibold">Banque de +100 000 questions par matière. Prêtes à l'emploi.</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="subjects-grid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ PRICING ═══════════════════════════════════ -->
+<section id="pricing" class="py-24 px-4 bg-white">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14 reveal">
+      <div class="rb-badge mb-5"><span class="dot"></span> Tarifs</div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Simple et transparent</h2>
+      <p class="text-slate-600 text-lg mb-6">Commence gratuitement. Évolue quand tu es prêt.</p>
+      <div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-4 py-2 rounded-full">
+        <i class="fa-solid fa-gift"></i> -30% la première année avec le code <span class="bg-emerald-500 text-white px-2 py-0.5 rounded">BRAIN30</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 items-start">
+      <!-- Free -->
+      <div class="reveal rb-card border-2 border-slate-200 p-7 card-lift">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Gratuit</p>
+        <div class="mb-5">
+          <span class="text-5xl font-black text-slate-900">0€</span>
+          <span class="text-slate-500 text-sm font-semibold">/mois</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-6 font-semibold">Parfait pour découvrir RelBrain et commencer à réviser.</p>
+        <ul class="space-y-2.5 mb-7 text-sm">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">5 documents / mois</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Quiz jusqu'à 10 questions</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Flashcards basiques</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Résumé court</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-slate-300 w-4"></i><span class="text-slate-400">Mode examen</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-slate-300 w-4"></i><span class="text-slate-400">IA adaptative</span></li>
+        </ul>
+        <a href="relbrain-signup.html" class="block text-center border-2 border-slate-200 hover:border-violet-400 hover:bg-violet-50 text-slate-700 font-bold py-3 rounded-xl transition-all">Commencer</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="reveal delay-1 rounded-3xl p-7 card-lift relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899)">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-black px-4 py-1 rounded-full shadow-lg">⭐ POPULAIRE</div>
+        <p class="text-xs font-black uppercase tracking-widest text-violet-200 mb-3 mt-2">Pro</p>
+        <div class="mb-5">
+          <span class="text-5xl font-black text-white">9€</span>
+          <span class="text-violet-200 text-sm font-semibold">/mois</span>
+        </div>
+        <p class="text-sm text-violet-100 mb-6 font-semibold">Pour les étudiants sérieux qui veulent tout maîtriser.</p>
+        <ul class="space-y-2.5 mb-7 text-sm">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Documents illimités</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Quiz jusqu'à 30 questions</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Flashcards + révision espacée</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Résumés détaillés</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Mode examen blanc</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">IA adaptative</span></li>
+        </ul>
+        <a href="relbrain-signup.html" class="block text-center bg-white hover:bg-amber-50 text-violet-700 font-black py-3 rounded-xl transition-all shadow-lg">Essai gratuit 7 jours</a>
+      </div>
+
+      <!-- Équipe -->
+      <div class="reveal delay-2 rb-card border-2 border-slate-200 p-7 card-lift">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Équipe / Lycée</p>
+        <div class="mb-5">
+          <span class="text-5xl font-black text-slate-900">19€</span>
+          <span class="text-slate-500 text-sm font-semibold">/mois</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-6 font-semibold">Pour les profs, tuteurs et groupes d'étudiants.</p>
+        <ul class="space-y-2.5 mb-7 text-sm">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Tout du plan Pro</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Jusqu'à 10 membres</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Quiz partagés en classe</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Tableau de bord prof</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Classement de groupe</span></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Support prioritaire</span></li>
+        </ul>
+        <a href="relbrain-contact.html" class="block text-center border-2 border-slate-200 hover:border-violet-400 hover:bg-violet-50 text-slate-700 font-bold py-3 rounded-xl transition-all">Contacter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FAQ ═══════════════════════════════════ -->
+<section class="py-20 px-4 bg-[var(--rb-cream)]">
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">Questions fréquentes</h2>
+      <p class="text-slate-600 font-semibold">Tout ce que tu dois savoir sur RelBrain AI.</p>
+    </div>
+    <div class="space-y-3" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ CTA FINAL ═══════════════════════════════════ -->
+<section class="py-24 px-4 bg-white">
+  <div class="max-w-2xl mx-auto text-center reveal">
+    <div class="rounded-3xl p-10 md:p-14 shadow-2xl relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);box-shadow:0 30px 80px rgba(124,58,237,.35)">
+      <div class="absolute inset-0" style="background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,255,255,.18),transparent)"></div>
+      <div class="relative z-10">
+        <svg class="mx-auto mb-6 w-12 h-12 sparkle1 text-amber-300" viewBox="0 0 40 40" fill="none">
+          <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor"/>
+        </svg>
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-3">Prêt à apprendre<br/>autrement ?</h2>
+        <p class="text-violet-100 mb-8 text-base font-semibold">Rejoins 500 000 étudiants. Commence gratuitement.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="signup.html" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-amber-50 text-violet-700 font-black px-8 py-4 rounded-full text-base transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+            <i class="fa-solid fa-rocket"></i> Commencer gratuitement
+          </a>
+          <a href="signup.html" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-7 py-4 rounded-full text-base transition-all">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Uploader un document
+          </a>
+        </div>
+        <p class="text-violet-200 text-xs mt-5 font-semibold">Plan Pro · Essai 7 jours gratuit · Annulation en 1 clic</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════════ -->
+<footer class="bg-slate-900 text-white pt-16 pb-8 px-4">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="bg-violet-600 text-white p-1.5 rounded-xl"><i class="fa-solid fa-brain text-lg"></i></div>
+          <span class="text-lg font-black">RelBrain.ai</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed mb-4">Transforme tes documents en apprentissage intelligent.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-twitter text-xs"></i></a>
+          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-instagram text-xs"></i></a>
+          <a href="relbrain-discord.html" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-discord text-xs"></i></a>
+          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-tiktok text-xs"></i></a>
+        </div>
+      </div>
+      <div>
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Produit</p>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><a href="#features" class="hover:text-white transition-colors">Fonctionnalités</a></li>
+          <li><a href="#pricing" class="hover:text-white transition-colors">Tarifs</a></li>
+          <li><a href="relbrain-integrations.html" class="hover:text-white transition-colors">API</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Ressources</p>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><a href="relbrain-blog.html" class="hover:text-white transition-colors">Blog</a></li>
+          <li><a href="relbrain-support.html" class="hover:text-white transition-colors">Centre d'aide</a></li>
+          <li><a href="relbrain-discord.html" class="hover:text-white transition-colors">Discord</a></li>
+          <li><a href="relbrain-contact.html" class="hover:text-white transition-colors">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Légal</p>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><a href="relbrain-mentions-legales.html" class="hover:text-white transition-colors">Mentions légales</a></li>
+          <li><a href="relbrain-cgu.html" class="hover:text-white transition-colors">CGU</a></li>
+          <li><a href="relbrain-confidentialite.html" class="hover:text-white transition-colors">Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p class="text-xs text-slate-500">© 2026 RelBrain AI. Tous droits réservés.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Données chiffrées</span>
+        <span class="text-xs text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-lock text-violet-400"></i> RGPD conforme</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── Navbar scroll ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('nav-scrolled', window.scrollY > 20);
+});
+
+/* ── Mobile menu ── */
+function toggleMenu(){document.getElementById('mobile-menu').classList.toggle('hidden');}
+
+/* ── Reviews carrousel ── */
+(function renderReviews(){
+  const rows = [
+    {target:'review-row-1', gradient:'from-violet-400 to-violet-600', data:[
+      {name:'Mohamed K.',text:"J'ai eu 19/20 en algorithmique grâce à RelBrain. Incroyable !",days:'2j'},
+      {name:'Chelsea M.',text:"Je prépare le BAC et RelBrain m'a sauvé la vie.",days:'5j'},
+      {name:'Pharel F.',text:"Upload le PDF le soir, quiz le matin. Révolution totale.",days:'1j'},
+      {name:'Sophie T.',text:"Vraiment addictif ! Les flashcards retournables sont géniales.",days:'8j'},
+      {name:'Jean-Pierre',text:"Note A+ en biologie grâce à RelBrain !",days:'12j'},
+      {name:'Amira D.',text:"Les résumés générés sont meilleurs que mes notes.",days:'3j'},
+      {name:'Marie R.',text:"Le mode IA adaptatif cible exactement mes lacunes.",days:'6j'},
+      {name:'Nadia L.',text:"J'ai rattrapé 2 semaines de cours en une soirée.",days:'9j'},
+    ]},
+    {target:'review-row-2', gradient:'from-pink-400 to-violet-500', data:[
+      {name:'Sara H.',text:"Le système de révision espacée est addictif !",days:'4j'},
+      {name:'Samuel P.',text:"J'utilise RelBrain pour mes partiels de médecine. Irremplaçable.",days:'7j'},
+      {name:'Ines F.',text:"L'IA comprend même mes notes manuscrites en photo.",days:'2j'},
+      {name:'Paul C.',text:"Le mode examen blanc m'a permis de gérer mon stress.",days:'15j'},
+      {name:'Fatima Z.',text:"Gratuit, puissant, intuitif. Je recommande à tous.",days:'1j'},
+      {name:'Pierre L.',text:"Testé par mes 3 enfants, ils adorent tous !",days:'11j'},
+      {name:'Jessica B.',text:"Je pensais que rien ne battrait Quizlet. Battu !",days:'5j'},
+      {name:'Ibrahim M.',text:"10/10 — le classement me motive énormément.",days:'3j'},
+    ]},
+  ];
+  rows.forEach(({target, gradient, data}) => {
+    const el = document.getElementById(target);
+    const build = (r) => `
+      <div class="flex-shrink-0 w-72 review-card">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-sm font-black shrink-0">${r.name.charAt(0)}</div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-slate-500">${r.name}</span>
+              <span class="text-[10px] text-slate-400">${r.days}</span>
+            </div>
+            <div class="text-amber-400 text-xs mb-2">★★★★★</div>
+            <p class="text-slate-900 text-sm leading-relaxed font-bold">${r.text}</p>
+          </div>
+        </div>
+      </div>`;
+    el.innerHTML = [...data, ...data].map(build).join('');
+  });
+})();
+
+/* ── Matières ── */
+(function renderSubjects(){
+  const subjects = [
+    {name:'Mathématiques', icon:'fa-square-root-variable', color:'blue'},
+    {name:'Physique', icon:'fa-atom', color:'violet'},
+    {name:'Chimie', icon:'fa-flask', color:'emerald'},
+    {name:'SVT / Bio', icon:'fa-dna', color:'rose'},
+    {name:'Informatique', icon:'fa-code', color:'indigo'},
+    {name:'Histoire', icon:'fa-landmark', color:'amber'},
+    {name:'Géographie', icon:'fa-globe', color:'teal'},
+    {name:'Économie', icon:'fa-chart-line', color:'orange'},
+    {name:'Droit', icon:'fa-scale-balanced', color:'slate'},
+    {name:'Médecine', icon:'fa-stethoscope', color:'pink'},
+  ];
+  document.getElementById('subjects-grid').innerHTML = subjects.map(s => `
+    <div class="flex flex-col items-center gap-2 p-4 bg-white border border-${s.color}-200 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all card-lift">
+      <i class="fa-solid ${s.icon} text-xl text-${s.color}-500"></i>
+      <span class="text-xs font-black text-${s.color}-700">${s.name}</span>
+    </div>
+  `).join('');
+})();
+
+/* ── FAQ ── */
+(function renderFaq(){
+  const faqs = [
+    {q:"Comment fonctionne la génération de quiz ?", a:"Tu importes un document. Notre IA en extrait le texte, identifie les concepts clés et génère automatiquement des questions adaptées au niveau choisi. Tout est prêt en moins de 30 secondes."},
+    {q:"Mes documents sont-ils confidentiels ?", a:"Absolument. Tes fichiers sont chiffrés et ne sont jamais partagés. Ils sont utilisés uniquement pour générer ton contenu pédagogique, puis supprimés de nos serveurs."},
+    {q:"Quelle différence avec Quizlet ou Kahoot ?", a:"RelBrain génère automatiquement du contenu depuis TES documents, adapté à ton niveau. Quizlet nécessite de créer toi-même tes cartes. Kahoot est conçu pour la classe. RelBrain combine les deux avec l'IA."},
+    {q:"Le plan gratuit est-il vraiment gratuit ?", a:"Oui, sans carte bancaire requise. 5 documents par mois, quiz de 10 questions, flashcards de base. Tu peux passer à Pro à tout moment."},
+    {q:"Puis-je utiliser RelBrain sur mobile ?", a:"RelBrain est entièrement responsive et fonctionne sur tous les appareils. Une application mobile dédiée arrive bientôt."},
+    {q:"Comment fonctionne la révision espacée ?", a:"Notre algorithme est inspiré du système SM-2 (comme Anki). Il calcule le meilleur moment pour te re-proposer chaque flashcard selon ta performance passée."},
+  ];
+  document.getElementById('faq-list').innerHTML = faqs.map((f,i) => `
+    <div class="faq-item rb-card overflow-hidden cursor-pointer hover:border-violet-300 transition-all" onclick="toggleFaq(${i})">
+      <div class="flex items-center justify-between px-6 py-4">
+        <p class="text-sm font-bold text-slate-900 pr-4">${f.q}</p>
+        <i class="fa-solid fa-plus text-slate-400 faq-icon text-sm shrink-0"></i>
+      </div>
+      <div class="faq-answer">
+        <p class="px-6 pb-5 text-sm text-slate-500 leading-relaxed">${f.a}</p>
+      </div>
+    </div>
+  `).join('');
+})();
+
+function toggleFaq(idx){
+  const items = document.querySelectorAll('.faq-item');
+  const wasOpen = items[idx].classList.contains('open');
+  items.forEach(i => i.classList.remove('open'));
+  if (!wasOpen) items[idx].classList.add('open');
+}
+
+/* ── Smooth scroll ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      document.getElementById('mobile-menu')?.classList.add('hidden');
+    }
+  });
+});
+
+/* ── Pause carrousels hover ── */
+document.querySelectorAll('.animate-scroll-right, .animate-scroll-left').forEach(el => {
+  el.parentElement.addEventListener('mouseenter', () => el.style.animationPlayState='paused');
+  el.parentElement.addEventListener('mouseleave', () => el.style.animationPlayState='running');
+});
+
+/* ── Scroll reveal ── */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }});
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal, .reveal-scale').forEach(el => revealObserver.observe(el));
+
+/* ── Counter animation ── */
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseFloat(el.dataset.count);
+      const divide = parseFloat(el.dataset.divide || 1);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = target * eased;
+        el.textContent = (divide > 1 ? (val/divide).toFixed(1) : Math.round(val)) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      counterObserver.unobserve(el);
+    }
+  });
+}, {threshold: 0.4});
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>

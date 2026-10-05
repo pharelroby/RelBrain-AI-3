@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Flashcards</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-theme.css"/>
+<script src="relbrain-theme.js" defer></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
+.sidebar{width:260px;min-width:260px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-260px);}
+@media(max-width:900px){.sidebar{transform:translateX(-260px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:260px;flex:1;min-width:0;transition:margin .3s;}
+.nav-item{display:flex;align-items:center;gap:.875rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:#faf5ff;color:#7c3aed;}
+.nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.nav-item.active .nav-icon{color:#7c3aed;}
+.nav-item .nav-icon{width:1.25rem;text-align:center;flex-shrink:0;font-size:.9rem;color:#78716c;}
+.avatar-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.8125rem;cursor:pointer;transition:all .2s;width:100%;}
+.note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.8125rem;box-shadow:0 8px 20px rgba(124,58,237,.28);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-2px);}
+.app-header{height:64px;background:rgba(253,244,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.header-btn:hover{background:#f5f3ff;color:#7c3aed;}
+.avatar-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(124,58,237,.25);}
+.avatar-btn::after{content:'';position:absolute;bottom:-3px;right:-3px;width:11px;height:11px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+.avatar-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 20px 50px rgba(15,23,42,.14);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s;z-index:100;overflow:hidden;}
+.avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
+.avatar-menu-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;font-size:.8125rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
+.avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
+.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.rb-input::placeholder{color:#a8a29e;font-weight:500;}
+.rb-textarea{width:100%;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.6;font-family:inherit;}
+.rb-textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.prog-bar{height:8px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:9999px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.fc-tab{padding:.5rem 1.125rem;font-size:.8125rem;font-weight:800;border-radius:.75rem;cursor:pointer;transition:all .15s;color:#78716c;display:flex;align-items:center;gap:.4rem;background:transparent;border:0;}
+.fc-tab.active{background:#f5f3ff;color:#6d28d9;}
+.fc-tab:hover:not(.active){background:#faf5ff;color:#7c3aed;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.flip-scene{perspective:1600px;}
+.flip-card{position:relative;width:100%;height:340px;transition:transform .55s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;cursor:pointer;}
+.flip-card.flipped{transform:rotateY(180deg);}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+.flip-front{background:#fff;border:1.5px solid #e7d9c5;box-shadow:0 12px 40px rgba(124,58,237,.1);}
+.flip-back{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;transform:rotateY(180deg);box-shadow:0 12px 40px rgba(124,58,237,.28);}
+.rate-btn{flex:1;border-radius:1rem;padding:.875rem .5rem;text-align:center;cursor:pointer;transition:all .15s;border:1.5px solid;}
+.rate-btn:hover{transform:translateY(-2px);}
+.rate-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.deck-pill{padding:.5rem 1rem;border-radius:.75rem;font-size:.8125rem;font-weight:700;border:1.5px solid #e7d9c5;background:#fff;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.deck-pill.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;}
+.deck-pill:hover:not(.selected){border-color:#c4b5fd;}
+.mini-card{background:#fff;border:1.5px solid #e7d9c5;border-radius:1rem;padding:1rem;transition:all .15s;cursor:pointer;}
+.mini-card:hover{border-color:#c4b5fd;transform:translateY(-2px);box-shadow:0 10px 24px rgba(124,58,237,.1);}
+.hard-row{display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;border-radius:1rem;border:1px solid #f0e6d8;transition:background .12s;}
+.hard-row:hover{background:#faf5ff;}
+.heat-dot{width:20px;height:20px;border-radius:5px;background:#f0e6d8;}
+.heat-dot.l1{background:#ddd6fe;}.heat-dot.l2{background:#c4b5fd;}.heat-dot.l3{background:#a78bfa;}.heat-dot.l4{background:#7c3aed;}
+.heat-dot.today{box-shadow:0 0 0 2px #7c3aed, 0 0 0 4px #fdf4e8;}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal-box{background:#fff;border-radius:1.5rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:440px;padding:1.75rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+@keyframes modalUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+</style>
+</head>
+<body>
+
+<div id="rb-toast-host"></div>
+
+<!-- MODAL NOTE -->
+<div id="note-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white"></i></div>
+      <div><p class="font-black text-slate-900">Prendre une note</p><p class="text-xs text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="text" id="note-title" class="rb-input mb-3" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="5" class="rb-textarea mb-4" placeholder="Écris ta note ici..."></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="saveNote()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOUVELLE CARTE -->
+<div id="card-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center"><i class="fa-solid fa-plus text-amber-600"></i></div>
+      <div><p class="font-black text-slate-900">Nouvelle flashcard</p><p class="text-xs text-slate-500 font-semibold">Ajoute ta propre carte</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeCardModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Question (recto)</label>
+    <textarea id="card-front-input" rows="3" class="rb-textarea mb-3" placeholder="Ex : Quelle est la complexité de QuickSort ?"></textarea>
+    <label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Réponse (verso)</label>
+    <textarea id="card-back-input" rows="3" class="rb-textarea mb-4" placeholder="Ex : O(n log n) en moyenne"></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm" onclick="closeCardModal()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="addCard()">Créer la carte</button>
+    </div>
+  </div>
+</div>
+
+<div class="flex">
+<aside class="sidebar" id="sidebar">
+  <div class="p-5 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2.5 mb-5">
+      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative"><i class="fa-solid fa-brain text-base"></i><span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white"></span></div>
+      <div><p class="text-base font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p><p class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p></div>
+    </a>
+    <a href="relbrain-profil.html" class="avatar-card mb-6">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-sm shrink-0">K</div>
+      <div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-800 truncate">Pharel FOFE</p><p class="text-[10px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p></div>
+      <div class="text-right shrink-0"><p class="text-[10px] text-amber-500 font-black">🔥 12</p><p class="text-[9px] text-slate-400">jours</p></div>
+    </a>
+    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-4">
+      <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
+      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
+      <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
+      <a href="relbrain-flashcards.html" class="nav-item active"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
+      <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+    </nav>
+    <a href="relbrain-parametres.html" class="nav-item mb-4"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+    <div class="mt-auto space-y-2 pt-4 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square"></i> Prendre une note</button>
+      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up"></i> Upgrader</button>
+    </div>
+  </div>
+</aside>
+
+<div class="main-content flex flex-col min-h-screen" id="main-content">
+  <header class="app-header">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars text-base"></i></button>
+    <div class="flex items-center gap-1.5 text-sm">
+      <span class="text-slate-500 font-bold">RelBrain</span>
+      <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+      <span class="font-black text-slate-800">Flashcards</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon text-base"></i></button>
+      <button class="header-btn relative" onclick="toast('3 notifications','info')"><i class="fa-solid fa-bell text-base"></i><span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span></button>
+      <div class="relative" id="avatar-wrap">
+        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-menu" id="avatar-menu">
+          <div class="px-4 py-3 border-b border-[#e7d9c5]"><p class="text-sm font-black text-slate-800">Pharel FOFE</p><p class="text-[11px] text-slate-400 font-semibold">pharel@relbrain.ai</p></div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user w-4 text-violet-500"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear w-4 text-violet-500"></i> Paramètres</a>
+          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-5 md:p-6 max-w-6xl mx-auto w-full space-y-5">
+
+    <!-- TITRE + ACTIONS -->
+    <div class="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black text-slate-900">Flashcards</h1>
+        <p class="text-sm text-slate-500 mt-1 font-semibold">Répétition espacée SM-2 · <span class="text-emerald-600 font-bold">Rétention 91%</span></p>
+      </div>
+      <div class="flex gap-2">
+        <button class="border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-black px-4 py-2.5 rounded-xl text-sm flex items-center gap-2" onclick="openCardModal()">
+          <i class="fa-solid fa-plus"></i> Ajouter une carte
+        </button>
+        <button class="gradient-bg text-white font-black px-5 py-2.5 rounded-xl text-sm shadow-md shadow-violet-200 hover:-translate-y-0.5 transition-all flex items-center gap-2" onclick="toast('Créer un nouveau deck','info')">
+          <i class="fa-solid fa-layer-group"></i> Nouveau deck
+        </button>
+      </div>
+    </div>
+
+    <!-- OBJECTIF DU JOUR -->
+    <div class="rb-card p-5" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center text-white text-xl">🎯</div>
+          <div>
+            <p class="font-black text-slate-900">Objectif du jour</p>
+            <p class="text-xs text-slate-500 font-semibold">20 cartes à réviser aujourd'hui</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-2xl font-black gradient-text">65%</p>
+          <p class="text-[10px] text-slate-500 font-bold">13 / 20 cartes</p>
+        </div>
+      </div>
+      <div class="prog-bar mb-4"><div class="prog-fill gradient-bg" style="width:65%"></div></div>
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-black text-slate-500">Cette semaine</p>
+        <div class="flex gap-1">
+          <div class="heat-dot l4"></div><div class="heat-dot l3"></div><div class="heat-dot l4"></div>
+          <div class="heat-dot l2"></div><div class="heat-dot l4"></div><div class="heat-dot l3"></div>
+          <div class="heat-dot today"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rb-card p-4 flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-clock text-rose-500"></i></div><div><p class="text-2xl font-black text-slate-900" id="stat-due">7</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">À réviser</p></div></div>
+      <div class="rb-card p-4 flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-emerald-500"></i></div><div><p class="text-2xl font-black text-slate-900">156</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Maîtrisées</p></div></div>
+      <div class="rb-card p-4 flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-star text-amber-500"></i></div><div><p class="text-2xl font-black text-slate-900" id="stat-fav">3</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Favoris</p></div></div>
+      <div class="rb-card p-4 flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-fire text-violet-500"></i></div><div><p class="text-2xl font-black text-slate-900">18</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</p></div></div>
+    </div>
+
+    <!-- SÉLECTEUR DECK -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1" id="deck-pills"></div>
+
+    <!-- TABS -->
+    <div class="rb-card p-1.5 inline-flex gap-1 flex-wrap">
+      <button class="fc-tab active" onclick="switchTab('revise',this)"><i class="fa-solid fa-rotate text-xs"></i> Réviser</button>
+      <button class="fc-tab" onclick="switchTab('fav',this)"><i class="fa-solid fa-star text-xs"></i> Favoris</button>
+      <button class="fc-tab" onclick="switchTab('hard',this)"><i class="fa-solid fa-triangle-exclamation text-xs"></i> Difficiles</button>
+      <button class="fc-tab" onclick="switchTab('hist',this)"><i class="fa-solid fa-clock-rotate-left text-xs"></i> Historique</button>
+    </div>
+
+    <!-- ═══ TAB RÉVISER ═══ -->
+    <div class="tab-pane active" id="pane-revise">
+      <div class="max-w-2xl mx-auto">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black text-slate-500" id="fc-progress-label">Carte 1 / 18</span>
+          <button class="text-xs font-black text-slate-400 hover:text-amber-500 transition-colors flex items-center gap-1.5" id="fav-toggle" onclick="toggleFav()">
+            <i class="fa-regular fa-star" id="fav-icon"></i> <span id="fav-label">Ajouter aux favoris</span>
+          </button>
+        </div>
+        <div class="prog-bar mb-6"><div class="prog-fill gradient-bg" id="fc-progress-bar" style="width:5.5%"></div></div>
+
+        <div class="flip-scene">
+          <div class="flip-card" id="flip-card" onclick="flipCard()">
+            <div class="flip-face flip-front">
+              <span class="text-[11px] font-black px-3 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 mb-4 uppercase tracking-wider" id="fc-cat">Chargement…</span>
+              <p class="text-xl md:text-2xl font-black text-slate-900 leading-snug px-4" id="fc-front">…</p>
+              <p class="text-xs text-slate-400 mt-6 flex items-center gap-1.5 font-bold"><i class="fa-solid fa-arrows-rotate"></i> Clique pour retourner</p>
+            </div>
+            <div class="flip-face flip-back">
+              <span class="text-[11px] font-black px-3 py-1 rounded-full bg-white/20 mb-4 uppercase tracking-wider">Réponse</span>
+              <p class="text-lg md:text-xl font-bold leading-snug px-4" id="fc-back">…</p>
+              <p class="text-xs text-violet-100 mt-6 flex items-center gap-1.5 font-bold"><i class="fa-solid fa-arrows-rotate"></i> Clique pour revenir</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-7">
+          <p class="text-center text-xs text-slate-400 font-black mb-3 uppercase tracking-wider" id="rating-hint">Retourne la carte pour évaluer</p>
+          <div class="grid grid-cols-4 gap-2.5" id="rate-buttons">
+            <button class="rate-btn" style="border-color:#fecdd3;background:#fff1f2;" onclick="rateCard('again')" disabled>
+              <p class="text-sm font-black" style="color:#e11d48">Encore</p>
+              <p class="text-[10px] font-bold" style="color:#e11d48;opacity:.7">1 min</p>
+            </button>
+            <button class="rate-btn" style="border-color:#fed7aa;background:#fff7ed;" onclick="rateCard('hard')" disabled>
+              <p class="text-sm font-black" style="color:#ea580c">Difficile</p>
+              <p class="text-[10px] font-bold" style="color:#ea580c;opacity:.7">10 min</p>
+            </button>
+            <button class="rate-btn" style="border-color:#bbf7d0;background:#ecfdf5;" onclick="rateCard('good')" disabled>
+              <p class="text-sm font-black" style="color:#059669">Bien</p>
+              <p class="text-[10px] font-bold" style="color:#059669;opacity:.7">1 jour</p>
+            </button>
+            <button class="rate-btn" style="border-color:#bfdbfe;background:#eff6ff;" onclick="rateCard('easy')" disabled>
+              <p class="text-sm font-black" style="color:#2563eb">Facile</p>
+              <p class="text-[10px] font-bold" style="color:#2563eb;opacity:.7">4 jours</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB FAVORIS ═══ -->
+    <div class="tab-pane" id="pane-fav">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" id="fav-grid"></div>
+      <p class="hidden text-center text-sm text-slate-400 py-10 font-semibold" id="fav-empty">Aucune carte favorite. Clique sur ⭐ pendant la révision pour en ajouter.</p>
+    </div>
+
+    <!-- ═══ TAB DIFFICILES ═══ -->
+    <div class="tab-pane" id="pane-hard">
+      <div class="rb-card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-black text-slate-900">Cartes à renforcer</h2>
+          <span class="text-[11px] font-black text-rose-600 bg-rose-50 border border-rose-100 px-2.5 py-1 rounded-full" id="hard-count">0 cartes</span>
+        </div>
+        <div class="space-y-2" id="hard-list"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB HISTORIQUE ═══ -->
+    <div class="tab-pane" id="pane-hist">
+      <div class="rb-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-[#fdf4e8] text-[11px] font-black text-slate-500 uppercase tracking-wider">
+              <tr>
+                <th class="text-left px-5 py-3">Session</th>
+                <th class="text-center px-4 py-3">Paquet</th>
+                <th class="text-center px-4 py-3">Cartes</th>
+                <th class="text-center px-4 py-3">Rétention</th>
+                <th class="text-center px-4 py-3">Durée</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#f0e6d8]" id="hist-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="border-t border-[#e7d9c5] py-5">
+      <p class="text-xs text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
+    </footer>
+  </div>
+</div>
+</div>
+
+<script>
+/* ═══ DATA ═══ */
+const allCards = [
+  {cat:'Structures de données', front:'Que signifie LIFO ?', back:'Last In, First Out — le dernier élément entré est le premier sorti (principe de la pile).'},
+  {cat:'Structures de données', front:'Que signifie FIFO ?', back:'First In, First Out — le premier élément entré est le premier sorti (principe de la file).'},
+  {cat:'Complexité', front:'Complexité de la recherche dichotomique ?', back:"O(log n) — l'espace de recherche est divisé par deux à chaque itération."},
+  {cat:'Algorithmique', front:'Quel algorithme utilise "diviser pour régner" et fusionne des sous-listes triées ?', back:'Le tri fusion (Merge Sort).'},
+  {cat:'Réseaux', front:'Que garantit le protocole TCP ?', back:'La fiabilité de la transmission via accusés de réception et retransmission.'},
+  {cat:'Bases de données', front:'Que signifie ACID ?', back:'Atomicité, Cohérence, Isolation, Durabilité — garanties de fiabilité des transactions.'},
+  {cat:'Programmation', front:"Qu'est-ce qu'une fonction récursive ?", back:"Une fonction qui s'appelle elle-même jusqu'à une condition d'arrêt."},
+  {cat:'Structures de données', front:"Complexité d'un ajout en tête de liste chaînée ?", back:'O(1) — direct, sans parcours.'},
+  {cat:'Algorithmique', front:'Complexité moyenne de QuickSort ?', back:'O(n log n), grâce au partitionnement récursif.'},
+  {cat:'Réseaux', front:'Port standard HTTPS ?', back:'443.'},
+];
+
+const decks = ['Algorithmique S5','Mathématiques','Chimie Organique','Réseaux','Tous les decks'];
+document.getElementById('deck-pills').innerHTML = decks.map((d,i) => `<button class="deck-pill ${i===0?'selected':''}" onclick="selectDeck(this,'${d}')">${d}</button>`).join('');
+
+let deck = allCards.slice();
+let cIdx = 0;
+let flipped = false;
+let revealed = false;
+let favorites = new Set([1,4,8]);
+let hardCards = new Set([2,5,7,9]);
+
+/* ═══ RENDER ═══ */
+function renderCard(){
+  const c = deck[cIdx];
+  document.getElementById('fc-cat').textContent = c.cat;
+  document.getElementById('fc-front').textContent = c.front;
+  document.getElementById('fc-back').textContent = c.back;
+  document.getElementById('fc-progress-label').textContent = `Carte ${cIdx+1} / ${deck.length}`;
+  document.getElementById('fc-progress-bar').style.width = ((cIdx+1)/deck.length*100)+'%';
+  updateFavUI();
+  const card = document.getElementById('flip-card');
+  card.classList.remove('flipped');
+  flipped = false;
+  revealed = false;
+  setRatingState(false);
+  document.getElementById('rating-hint').textContent = 'Retourne la carte pour évaluer';
+}
+
+function setRatingState(enabled){
+  document.querySelectorAll('#rate-buttons .rate-btn').forEach(b => b.disabled = !enabled);
+}
+
+function flipCard(){
+  flipped = !flipped;
+  document.getElementById('flip-card').classList.toggle('flipped', flipped);
+  if (flipped && !revealed) {
+    revealed = true;
+    setRatingState(true);
+    document.getElementById('rating-hint').textContent = 'À quel point connaissais-tu cette carte ?';
+  }
+}
+
+function rateCard(level){
+  const labels = {again:'Encore — revoir dans 1 min', hard:'Difficile — revoir dans 10 min', good:'Bien — revoir dans 1 jour', easy:'Facile — revoir dans 4 jours'};
+  const types = {again:'error', hard:'info', good:'success', easy:'success'};
+  toast(labels[level], types[level]);
+  if (level === 'again' || level === 'hard') hardCards.add(cIdx);
+  setTimeout(() => {
+    cIdx = (cIdx + 1) % deck.length;
+    renderCard();
+  }, 400);
+}
+
+function toggleFav(){
+  if (favorites.has(cIdx)) favorites.delete(cIdx); else favorites.add(cIdx);
+  updateFavUI(); renderFavGrid();
+  toast(favorites.has(cIdx) ? 'Ajoutée aux favoris ⭐' : 'Retirée des favoris', 'info');
+}
+
+function updateFavUI(){
+  const isFav = favorites.has(cIdx);
+  document.getElementById('fav-icon').className = isFav ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star';
+  document.getElementById('fav-label').textContent = isFav ? 'Dans les favoris' : 'Ajouter aux favoris';
+  document.getElementById('stat-fav').textContent = favorites.size;
+}
+
+function selectDeck(el, name){
+  document.querySelectorAll('.deck-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  toast(`Paquet "${name}" chargé`, 'info');
+  cIdx = 0;
+  renderCard();
+}
+
+/* ═══ TABS ═══ */
+function switchTab(name, btn){
+  document.querySelectorAll('.fc-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('active');
+}
+
+/* ═══ FAVORIS ═══ */
+function renderFavGrid(){
+  const grid = document.getElementById('fav-grid');
+  const empty = document.getElementById('fav-empty');
+  const arr = [...favorites];
+  if (arr.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  grid.innerHTML = arr.map(i => {
+    const c = allCards[i];
+    return `
+      <div class="mini-card" onclick="jumpTo(${i})">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-violet-50 text-violet-700">${c.cat}</span>
+          <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+        </div>
+        <p class="text-sm font-black text-slate-800 leading-snug">${c.front}</p>
+      </div>`;
+  }).join('');
+}
+
+function jumpTo(i){
+  const deckIdx = deck.findIndex(c => c.front === allCards[i].front);
+  cIdx = deckIdx >= 0 ? deckIdx : 0;
+  document.querySelectorAll('.fc-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.fc-tab')[0].classList.add('active');
+  document.getElementById('pane-revise').classList.add('active');
+  renderCard();
+}
+
+/* ═══ HARD CARDS ═══ */
+function renderHardList(){
+  const list = document.getElementById('hard-list');
+  const arr = [...hardCards];
+  document.getElementById('hard-count').textContent = arr.length + ' cartes';
+  list.innerHTML = arr.map(i => {
+    const c = allCards[i];
+    const rate = 35 + Math.floor(Math.random()*40);
+    return `
+      <div class="hard-row">
+        <div class="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-rose-500 text-xs"></i></div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-black text-slate-800 truncate">${c.front}</p>
+          <p class="text-[11px] text-slate-400 font-semibold">${c.cat} · ratée ${rate}% du temps</p>
+        </div>
+        <button class="text-xs font-black text-violet-600 hover:underline shrink-0" onclick="jumpTo(${i})">Réviser →</button>
+      </div>`;
+  }).join('');
+}
+
+/* ═══ HISTORIQUE ═══ */
+function renderHistory(){
+  const history = [
+    {date:"Aujourd'hui, 08:12", deck:'Algorithmique S5', count:14, retention:93, time:'6 min'},
+    {date:'Hier, 21:40', deck:'Mathématiques', count:22, retention:81, time:'11 min'},
+    {date:'Hier, 09:05', deck:'Algorithmique S5', count:18, retention:88, time:'8 min'},
+    {date:'Il y a 2 jours', deck:'Chimie Organique', count:10, retention:70, time:'5 min'},
+    {date:'Il y a 3 jours', deck:'Réseaux', count:16, retention:95, time:'7 min'},
+  ];
+  document.getElementById('hist-body').innerHTML = history.map(h => `
+    <tr class="hover:bg-[#faf5ff] transition-colors">
+      <td class="px-5 py-3.5 font-bold text-slate-800 text-sm">${h.date}</td>
+      <td class="px-4 py-3.5 text-center text-slate-600 text-xs font-semibold">${h.deck}</td>
+      <td class="px-4 py-3.5 text-center text-slate-600 text-xs font-bold">${h.count}</td>
+      <td class="px-4 py-3.5 text-center">
+        <span class="text-[10px] font-black px-2 py-1 rounded-full border ${h.retention>=85?'text-emerald-700 bg-emerald-50 border-emerald-100':h.retention>=70?'text-amber-700 bg-amber-50 border-amber-100':'text-rose-700 bg-rose-50 border-rose-100'}">${h.retention}%</span>
+      </td>
+      <td class="px-4 py-3.5 text-center text-slate-500 text-xs font-bold">${h.time}</td>
+    </tr>`).join('');
+}
+
+/* ═══ MODALS ═══ */
+function openNote(){document.getElementById('note-modal').classList.add('open');}
+function closeNote(){document.getElementById('note-modal').classList.remove('open');}
+function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
+function openCardModal(){document.getElementById('card-modal').classList.add('open');}
+function closeCardModal(){document.getElementById('card-modal').classList.remove('open');document.getElementById('card-front-input').value='';document.getElementById('card-back-input').value='';}
+function addCard(){
+  const f=document.getElementById('card-front-input').value.trim();
+  const b=document.getElementById('card-back-input').value.trim();
+  if(!f||!b){toast('Remplis les deux faces','error');return;}
+  allCards.push({cat:'Personnalisé', front:f, back:b});
+  deck = allCards.slice();
+  closeCardModal();
+  toast('Carte ajoutée ! ✨','success');
+  renderCard();
+}
+
+/* ═══ UI ═══ */
+function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'260px';}else{sb.classList.toggle('open');}}
+function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
+document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el.remove(),300);},3000);}
+
+/* INIT */
+renderCard();
+renderFavGrid();
+renderHardList();
+renderHistory();
+</script>
+</body>
+</html>

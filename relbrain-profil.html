@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Mon profil</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-theme.css"/>
+<script src="relbrain-theme.js" defer></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
+.sidebar{width:260px;min-width:260px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-260px);}
+@media(max-width:900px){.sidebar{transform:translateX(-260px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:260px;flex:1;min-width:0;transition:margin .3s;}
+.nav-item{display:flex;align-items:center;gap:.875rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:#faf5ff;color:#7c3aed;}
+.nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.nav-item.active .nav-icon{color:#7c3aed;}
+.nav-item .nav-icon{width:1.25rem;text-align:center;flex-shrink:0;font-size:.9rem;color:#78716c;}
+.avatar-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.8125rem;cursor:pointer;transition:all .2s;width:100%;}
+.note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.8125rem;box-shadow:0 8px 20px rgba(124,58,237,.28);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-2px);}
+.app-header{height:64px;background:rgba(253,244,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.header-btn:hover{background:#f5f3ff;color:#7c3aed;}
+.avatar-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(124,58,237,.25);}
+.avatar-btn::after{content:'';position:absolute;bottom:-3px;right:-3px;width:11px;height:11px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+.avatar-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 20px 50px rgba(15,23,42,.14);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s;z-index:100;overflow:hidden;}
+.avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
+.avatar-menu-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;font-size:.8125rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
+.avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
+.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.rb-input::placeholder{color:#a8a29e;font-weight:500;}
+.rb-label{display:block;font-size:.75rem;font-weight:800;color:#57534e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.input-wrap{position:relative;}
+.input-wrap .input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#a8a29e;font-size:.8rem;pointer-events:none;}
+.input-wrap .rb-input.has-icon{padding-left:2.4rem;}
+.level-btn{padding:.625rem 1rem;border:1.5px solid #e7d9c5;border-radius:.75rem;font-size:.8125rem;font-weight:700;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;text-align:center;}
+.level-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.level-btn.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.goal-btn{display:flex;align-items:center;gap:.75rem;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;cursor:pointer;transition:all .15s;background:#fff;width:100%;text-align:left;}
+.goal-btn:hover{border-color:#c4b5fd;background:#faf5ff;}
+.goal-btn.selected{border-color:#7c3aed;background:#f5f3ff;}
+.goal-btn .goal-icon{width:2rem;height:2rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0;}
+.goal-btn .goal-check{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.goal-btn.selected .goal-check{background:#7c3aed;border-color:#7c3aed;}
+.ach-badge{display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1rem;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;text-align:center;transition:all .2s;cursor:pointer;position:relative;}
+.ach-badge:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(124,58,237,.08);}
+.ach-badge.locked{opacity:.4;filter:grayscale(1);}
+.ach-badge.locked::after{content:'🔒';position:absolute;top:.5rem;right:.5rem;font-size:.75rem;}
+.ach-badge.unlocked::after{content:'';position:absolute;top:.5rem;right:.5rem;width:8px;height:8px;background:#10b981;border-radius:50%;}
+.sticky-panel{position:sticky;top:76px;}
+.rank-badge{width:44px;height:44px;border-radius:.875rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:900;color:#fff;}
+#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal-box{background:#fff;border-radius:1.5rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:420px;padding:1.75rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);}
+@keyframes modalUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.rb-textarea{width:100%;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.6;font-family:inherit;}
+.rb-textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.prog-bar{height:8px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:9999px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+</style>
+</head>
+<body>
+
+<div id="rb-toast-host"></div>
+
+<div id="note-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white"></i></div>
+      <div><p class="font-black text-slate-900">Prendre une note</p><p class="text-xs text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="text" id="note-title" class="rb-input mb-3" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="5" class="rb-textarea mb-4" placeholder="Écris ta note ici..."></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="saveNote()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="flex">
+<aside class="sidebar" id="sidebar">
+  <div class="p-5 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2.5 mb-5">
+      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative"><i class="fa-solid fa-brain text-base"></i><span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white"></span></div>
+      <div><p class="text-base font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p><p class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p></div>
+    </a>
+    <a href="relbrain-profil.html" class="avatar-card mb-6" style="border-color:#c4b5fd;background:#faf5ff;">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-sm shrink-0">K</div>
+      <div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-800 truncate">Pharel FOFE</p><p class="text-[10px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p></div>
+      <div class="text-right shrink-0"><p class="text-[10px] text-amber-500 font-black">🔥 12</p><p class="text-[9px] text-slate-400">jours</p></div>
+    </a>
+    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-4">
+      <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
+      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
+      <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
+      <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
+      <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+    </nav>
+    <a href="relbrain-parametres.html" class="nav-item mb-4"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+    <div class="mt-auto space-y-2 pt-4 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square"></i> Prendre une note</button>
+      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up"></i> Upgrader</button>
+    </div>
+  </div>
+</aside>
+
+<div class="main-content flex flex-col min-h-screen" id="main-content">
+  <header class="app-header">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars text-base"></i></button>
+    <div class="flex items-center gap-1.5 text-sm">
+      <span class="text-slate-500 font-bold">RelBrain</span>
+      <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+      <span class="font-black text-slate-800">Mon profil</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon text-base"></i></button>
+      <button class="header-btn relative" onclick="toast('3 notifications','info')"><i class="fa-solid fa-bell text-base"></i><span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span></button>
+      <div class="relative" id="avatar-wrap">
+        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-menu" id="avatar-menu">
+          <div class="px-4 py-3 border-b border-[#e7d9c5]"><p class="text-sm font-black text-slate-800">Pharel FOFE</p><p class="text-[11px] text-slate-400 font-semibold">pharel@relbrain.ai</p></div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user w-4 text-violet-500"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear w-4 text-violet-500"></i> Paramètres</a>
+          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-5 md:p-6 max-w-6xl mx-auto w-full space-y-5">
+
+    <!-- ═══ BANNIÈRE ═══ -->
+    <div class="rb-card p-6 md:p-8 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-[.08]" style="background:linear-gradient(135deg,#7c3aed,#ec4899)"></div>
+      <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div class="w-24 h-24 md:w-28 md:h-28 rounded-3xl bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-4xl shadow-xl shadow-violet-300 shrink-0 relative overflow-hidden" id="avatar-preview">
+          <span id="avatar-letter">K</span>
+          <img id="avatar-img" class="hidden absolute inset-0 w-full h-full object-cover"/>
+          <span class="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-xl border-4 border-white flex items-center justify-center"><i class="fa-solid fa-check text-white text-xs"></i></span>
+        </div>
+        <div class="flex-1 text-center sm:text-left">
+          <h1 class="text-2xl md:text-3xl font-black text-slate-900 mb-1" id="prev-name">Pharel FOFE</h1>
+          <p class="text-sm text-slate-500 font-semibold mb-3">pharel@relbrain.ai · Douala, Cameroun</p>
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span class="text-xs font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full"><i class="fa-solid fa-star mr-1"></i> Niveau 7 · Scholar</span>
+            <span class="text-xs font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-full">🔥 12 jours</span>
+            <span class="text-xs font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">🎓 Licence Informatique</span>
+            <span class="text-xs font-black text-pink-700 bg-pink-100 px-3 py-1 rounded-full">🏅 Gold League</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="avatar-input" class="gradient-bg text-white font-black px-5 py-2.5 rounded-xl text-sm shadow-md shadow-violet-200 cursor-pointer text-center"><i class="fa-solid fa-camera mr-1.5"></i> Changer photo</label>
+          <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="previewAvatar(this)"/>
+          <button class="border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold px-5 py-2.5 rounded-xl text-sm" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk mr-1.5"></i> Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 4 STATS ═══ -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="rb-card p-5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-bolt text-violet-500"></i></div><div><p class="text-2xl font-black text-slate-900">2 340</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">XP Total</p></div></div></div>
+      <div class="rb-card p-5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center"><i class="fa-solid fa-circle-check text-emerald-500"></i></div><div><p class="text-2xl font-black text-slate-900">47</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Quiz réussis</p></div></div></div>
+      <div class="rb-card p-5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center"><i class="fa-solid fa-fire text-amber-500"></i></div><div><p class="text-2xl font-black text-slate-900">12</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Série</p></div></div></div>
+      <div class="rb-card p-5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-pink-50 flex items-center justify-center"><i class="fa-solid fa-clock text-pink-500"></i></div><div><p class="text-2xl font-black text-slate-900">28h</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Temps d'étude</p></div></div></div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-5">
+      <!-- COLONNE PRINCIPALE -->
+      <div class="lg:col-span-2 space-y-5">
+
+        <!-- Informations personnelles -->
+        <div class="rb-card p-5">
+          <h2 class="font-black text-slate-900 text-base mb-4 flex items-center gap-2"><i class="fa-solid fa-id-card text-violet-500"></i> Informations personnelles</h2>
+          <div class="grid sm:grid-cols-2 gap-4 mb-4">
+            <div><label class="rb-label">Prénom</label><input type="text" id="prenom" class="rb-input" value="Pharel" oninput="syncPreview()"/></div>
+            <div><label class="rb-label">Nom</label><input type="text" id="nom" class="rb-input" value="Fofe" oninput="syncPreview()"/></div>
+          </div>
+          <div class="mb-4">
+            <label class="rb-label">Email</label>
+            <div class="input-wrap"><i class="fa-solid fa-envelope input-icon"></i><input type="email" class="rb-input has-icon" value="pharel.fofe@exemple.com"/></div>
+            <p class="text-[11px] text-emerald-600 font-semibold mt-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Adresse vérifiée</p>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div><label class="rb-label">Téléphone</label><div class="input-wrap"><i class="fa-solid fa-phone input-icon"></i><input type="tel" class="rb-input has-icon" placeholder="+237 6 XX XX XX XX"/></div></div>
+            <div><label class="rb-label">Pays</label><input type="text" class="rb-input" value="Cameroun"/></div>
+          </div>
+        </div>
+
+        <!-- Parcours académique -->
+        <div class="rb-card p-5">
+          <h2 class="font-black text-slate-900 text-base mb-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-amber-500"></i> Parcours académique</h2>
+          <p class="text-xs text-slate-400 mb-4 font-semibold">L'IA calibre les quiz selon ces infos.</p>
+          <label class="rb-label mb-2">Niveau scolaire</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4" id="level-grid"></div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div><label class="rb-label">Établissement</label><div class="input-wrap"><i class="fa-solid fa-building-columns input-icon"></i><input type="text" id="universite" class="rb-input has-icon" value="Université de Douala"/></div></div>
+            <div><label class="rb-label">Classe / Filière</label><div class="input-wrap"><i class="fa-solid fa-layer-group input-icon"></i><input type="text" id="classe" class="rb-input has-icon" value="L3 Informatique" oninput="syncPreview()"/></div></div>
+          </div>
+        </div>
+
+        <!-- Objectifs -->
+        <div class="rb-card p-5">
+          <h2 class="font-black text-slate-900 text-base mb-1 flex items-center gap-2"><i class="fa-solid fa-bullseye text-rose-500"></i> Objectifs d'apprentissage</h2>
+          <p class="text-xs text-slate-400 mb-4 font-semibold">Sélectionne tous ceux qui s'appliquent.</p>
+          <div class="space-y-2" id="goals-list"></div>
+        </div>
+
+        <!-- Badges -->
+        <div class="rb-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="font-black text-slate-900 text-base flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> Badges</h2>
+              <p class="text-xs text-slate-400 font-semibold mt-0.5">10 débloqués sur 24</p>
+            </div>
+            <button class="text-xs font-black text-violet-600 hover:underline" onclick="toast('Tous les badges bientôt disponibles','info')">Voir tous →</button>
+          </div>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-3" id="badges-grid"></div>
+        </div>
+
+      </div>
+
+      <!-- COLONNE STICKY -->
+      <div class="lg:col-span-1 space-y-5">
+        <div class="sticky-panel space-y-4">
+
+          <!-- Carte niveau -->
+          <div class="rb-card p-5" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);border:0;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">⚡</div>
+              <span class="text-[10px] font-black text-white bg-white/20 px-2.5 py-1 rounded-full">NIVEAU 7</span>
+            </div>
+            <p class="text-white font-black text-xl mb-1">Scholar</p>
+            <p class="text-violet-100 text-xs font-semibold mb-3">660 XP avant le niveau 8</p>
+            <div class="h-2 bg-white/20 rounded-full overflow-hidden mb-3"><div class="h-full bg-white rounded-full" style="width:68%"></div></div>
+            <p class="text-violet-100 text-[11px] font-bold">Niveau 8 débloque : Expert + nouveaux badges</p>
+          </div>
+
+          <!-- Résumé d'activité -->
+          <div class="rb-card p-5">
+            <p class="font-black text-slate-900 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-simple text-violet-500"></i> Cette semaine</p>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-600">Quiz réalisés</span><span class="text-sm font-black text-slate-900">8</span></div>
+              <div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-600">Flashcards</span><span class="text-sm font-black text-slate-900">124</span></div>
+              <div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-600">Temps d'étude</span><span class="text-sm font-black text-slate-900">6h20</span></div>
+              <div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-600">XP gagnés</span><span class="text-sm font-black text-violet-600">+1 240</span></div>
+              <div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-600">Rang hebdo</span><span class="text-sm font-black text-amber-600">#3</span></div>
+            </div>
+          </div>
+
+          <!-- Membre depuis -->
+          <div class="rb-card p-5">
+            <p class="text-xs text-slate-400 mb-1 font-bold uppercase tracking-wider">Membre depuis</p>
+            <p class="text-sm font-black text-slate-800 mb-4">14 mars 2025</p>
+            <p class="text-xs text-slate-400 mb-1 font-bold uppercase tracking-wider">Total jours actifs</p>
+            <p class="text-sm font-black text-slate-800">198 jours</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer class="border-t border-[#e7d9c5] py-5">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-semibold">
+        <p>© 2026 RelBrain AI. Tous droits réservés.</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+          <a href="#" class="hover:text-violet-600">Mentions légales</a>
+          <a href="#" class="hover:text-violet-600">CGU</a>
+          <a href="#" class="hover:text-violet-600">Confidentialité</a>
+          <a href="relbrain-contact.html" class="hover:text-violet-600">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+</div>
+
+<script>
+const levels = [
+  {id:'college', label:'📚 Collège'},
+  {id:'lycee', label:'🏫 Lycée / BAC'},
+  {id:'bts', label:'🎓 BTS / DUT'},
+  {id:'licence', label:'📖 Licence'},
+  {id:'master', label:'🧑‍🎓 Master'},
+  {id:'doctorat', label:'🔬 Doctorat'},
+  {id:'prepa', label:'⚡ Prépa / Concours'},
+  {id:'pro', label:'💼 Pro'},
+];
+document.getElementById('level-grid').innerHTML = levels.map(l => `<button class="level-btn ${l.id==='licence'?'selected':''}" onclick="selectLevel('${l.id}')">${l.label}</button>`).join('');
+
+const goals = [
+  {id:'examen', icon:'fa-file-pen', color:'bg-rose-50 text-rose-500', label:'Préparer un examen', sub:'Partiel, BAC, concours...', on:true},
+  {id:'revision', icon:'fa-rotate', color:'bg-violet-50 text-violet-500', label:'Réviser régulièrement', sub:'Maintenir mes acquis', on:true},
+  {id:'lacunes', icon:'fa-magnifying-glass', color:'bg-amber-50 text-amber-500', label:'Combler mes lacunes', sub:'Corriger mes points faibles', on:false},
+  {id:'rapidite', icon:'fa-bolt', color:'bg-pink-50 text-pink-500', label:'Apprendre plus vite', sub:'Mémoriser efficacement', on:false},
+];
+document.getElementById('goals-list').innerHTML = goals.map(g => `
+  <button class="goal-btn ${g.on?'selected':''}" id="goal-${g.id}" onclick="toggleGoal('${g.id}')">
+    <div class="goal-icon ${g.color}"><i class="fa-solid ${g.icon}"></i></div>
+    <div class="flex-1 text-left"><p class="text-sm font-black text-slate-800">${g.label}</p><p class="text-xs text-slate-400 font-semibold">${g.sub}</p></div>
+    <div class="goal-check" id="gc-${g.id}"><i class="fa-solid fa-check text-white text-[9px] ${g.on?'':'hidden'}" id="gci-${g.id}"></i></div>
+  </button>`).join('');
+
+const badges = [
+  {icon:'🥇', name:'Premier Quiz', unlocked:true},
+  {icon:'🔥', name:'Série 7j', unlocked:true},
+  {icon:'⚡', name:'500 XP', unlocked:true},
+  {icon:'💎', name:'Expert Quiz', unlocked:true},
+  {icon:'🎯', name:'100 Questions', unlocked:true},
+  {icon:'🏆', name:'Top 10%', unlocked:true},
+  {icon:'📚', name:'Bibliophile', unlocked:true},
+  {icon:'🌟', name:'1 000 XP', unlocked:true},
+  {icon:'🚀', name:'Rapide', unlocked:true},
+  {icon:'🧠', name:'Maître IA', unlocked:true},
+  {icon:'🎴', name:'Maître Flashcards', unlocked:false},
+  {icon:'👑', name:'Série 30j', unlocked:false},
+];
+document.getElementById('badges-grid').innerHTML = badges.map(b => `
+  <div class="ach-badge ${b.unlocked?'unlocked':'locked'}">
+    <div class="text-3xl">${b.icon}</div>
+    <p class="text-[10px] font-black text-slate-700 leading-tight">${b.name}</p>
+  </div>`).join('');
+
+let selectedLevel = 'licence';
+let selectedGoals = new Set(['examen','revision']);
+
+function selectLevel(id){selectedLevel=id;document.querySelectorAll('#level-grid .level-btn').forEach((b,i)=>b.classList.toggle('selected', levels[i].id===id));syncPreview();}
+function toggleGoal(id){const btn=document.getElementById('goal-'+id),icon=document.getElementById('gci-'+id);if(selectedGoals.has(id)){selectedGoals.delete(id);btn.classList.remove('selected');icon.classList.add('hidden');}else{selectedGoals.add(id);btn.classList.add('selected');icon.classList.remove('hidden');}}
+
+function previewAvatar(input){
+  if(!input.files?.[0])return;
+  const r=new FileReader();
+  r.onload=e=>{document.getElementById('avatar-letter').classList.add('hidden');document.getElementById('avatar-img').src=e.target.result;document.getElementById('avatar-img').classList.remove('hidden');};
+  r.readAsDataURL(input.files[0]);
+}
+
+function syncPreview(){
+  const p=document.getElementById('prenom').value.trim()||'Pharel';
+  const n=document.getElementById('nom').value.trim()||'Fofe';
+  document.getElementById('prev-name').textContent=p+' '+n;
+}
+function saveProfile(){syncPreview();toast('Profil enregistré ✓','success');}
+
+function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'260px';}else{sb.classList.toggle('open');}}
+function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
+document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
+function openNote(){document.getElementById('note-modal').classList.add('open');}
+function closeNote(){document.getElementById('note-modal').classList.remove('open');}
+function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
+document.getElementById('note-modal').addEventListener('click',e=>{if(e.target.id==='note-modal')closeNote();});
+function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);}
+</script>
+</body>
+</html>

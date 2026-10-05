@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Quiz en cours</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+
+.answer-option{display:flex;align-items:center;gap:.875rem;padding:1rem 1.25rem;border:2px solid #e7d9c5;border-radius:1rem;background:#fff;cursor:pointer;transition:all .2s;text-align:left;width:100%;font-weight:600;color:#44403c;font-size:.9375rem;}
+.answer-option:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateX(4px);}
+.answer-option.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.answer-option.correct{border-color:#10b981;background:#ecfdf5;color:#047857;}
+.answer-option.wrong{border-color:#f43f5e;background:#fff1f2;color:#be123c;}
+.answer-option .opt-letter{width:2rem;height:2rem;border-radius:.5rem;background:#f5f3ff;color:#7c3aed;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0;transition:all .2s;}
+.answer-option.selected .opt-letter{background:#7c3aed;color:#fff;}
+.answer-option.correct .opt-letter{background:#10b981;color:#fff;}
+.answer-option.wrong .opt-letter{background:#f43f5e;color:#fff;}
+
+.progress-fill{transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+.result-screen{display:none;}
+.result-screen.active{display:block;animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.quiz-screen{display:block;}
+.quiz-screen.hidden{display:none;}
+
+#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;}
+</style>
+</head>
+<body>
+
+<div id="rb-toast-host"></div>
+
+<!-- Header quiz -->
+<header class="bg-white border-b border-[#e7d9c5] sticky top-0 z-30">
+  <div class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="relbrain-quiz-setup.html" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-violet-50 transition-colors">
+      <i class="fa-solid fa-xmark text-slate-500"></i>
+    </a>
+    <div class="flex-1">
+      <p class="text-xs font-black text-slate-400 uppercase tracking-wider">Quiz Algorithmique S5</p>
+      <div class="flex items-center gap-2 mt-1">
+        <div class="flex-1 bg-[#f0e6d8] h-2 rounded-full overflow-hidden">
+          <div class="gradient-bg h-full progress-fill" id="progress-bar" style="width:10%"></div>
+        </div>
+        <span class="text-xs font-black text-slate-700" id="progress-text">1/10</span>
+      </div>
+    </div>
+    <div class="hidden sm:flex items-center gap-2">
+      <div class="flex items-center gap-1.5 bg-violet-50 border border-violet-100 px-3 py-1.5 rounded-full">
+        <i class="fa-solid fa-clock text-violet-500 text-xs"></i>
+        <span class="text-xs font-black text-violet-700" id="timer">02:34</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 py-6" id="quiz-container">
+  <div class="quiz-screen" id="quiz-screen">
+    <div class="rb-card p-6 md:p-8 mb-5">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="text-[10px] font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full" id="q-badge">QCM · Moyen</span>
+        <span class="text-[10px] font-black text-slate-400" id="q-points">2 points</span>
+      </div>
+      <h2 class="text-xl md:text-2xl font-black text-slate-900 mb-6 leading-snug" id="question-text">Quelle est la complexité temporelle moyenne de l'algorithme QuickSort ?</h2>
+
+      <div class="space-y-3" id="answers-container"></div>
+
+      <!-- Feedback -->
+      <div id="feedback-box" class="hidden mt-5 p-4 rounded-xl border-2"></div>
+    </div>
+
+    <div class="flex items-center justify-between gap-3">
+      <button class="flex items-center gap-2 text-sm font-black text-slate-500 hover:text-violet-600 transition-colors px-4 py-2.5 disabled:opacity-30" id="prev-btn" onclick="prevQuestion()" disabled>
+        <i class="fa-solid fa-arrow-left text-xs"></i> Précédent
+      </button>
+      <button class="gradient-bg text-white font-black px-8 py-3.5 rounded-xl shadow-lg shadow-violet-200 text-sm flex items-center gap-2 hover:-translate-y-0.5 transition-all" id="next-btn" onclick="nextQuestion()">
+        <span id="next-label">Valider</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Résultat -->
+  <div class="result-screen" id="result-screen">
+    <div class="rb-card p-8 text-center">
+      <div class="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl" id="result-icon-wrap">
+        <i class="fa-solid fa-trophy text-white text-4xl" id="result-icon"></i>
+      </div>
+      <h2 class="text-3xl font-black text-slate-900 mb-2" id="result-title">Excellent ! 🎉</h2>
+      <p class="text-sm text-slate-500 mb-6 font-semibold" id="result-subtitle">Tu as tout déchiré !</p>
+
+      <div class="grid grid-cols-3 gap-3 mb-8">
+        <div class="bg-[#fdf4e8] rounded-2xl p-4 border border-[#e7d9c5]">
+          <p class="text-3xl font-black gradient-text" id="score-display">0</p>
+          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Score</p>
+        </div>
+        <div class="bg-[#fdf4e8] rounded-2xl p-4 border border-[#e7d9c5]">
+          <p class="text-3xl font-black text-emerald-500" id="correct-display">0</p>
+          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Bonnes</p>
+        </div>
+        <div class="bg-[#fdf4e8] rounded-2xl p-4 border border-[#e7d9c5]">
+          <p class="text-3xl font-black text-rose-500" id="wrong-display">0</p>
+          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Erreurs</p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl p-4 mb-8 flex items-center justify-center gap-3 gradient-bg">
+        <i class="fa-solid fa-star text-amber-300 text-lg"></i>
+        <p class="text-white font-black text-sm">+180 XP gagnés !</p>
+        <i class="fa-solid fa-fire text-orange-300 text-lg"></i>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="relbrain-quiz-setup.html" class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3 rounded-xl text-sm">Nouveau quiz</a>
+        <a href="Dashboard.html" class="flex-1 gradient-bg text-white font-black py-3 rounded-xl text-sm shadow-lg shadow-violet-200 text-center">Retour au Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Détail -->
+    <div class="rb-card p-6 mt-5">
+      <p class="font-black text-slate-900 mb-4">Détail des réponses</p>
+      <div class="space-y-3" id="review-list"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const questions = [
+  {
+    q: "Quelle est la complexité temporelle moyenne de l'algorithme QuickSort ?",
+    options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+    correct: 1,
+    points: 2,
+    explanation: "En moyenne, QuickSort a une complexité de O(n log n). Le pire cas (O(n²)) survient quand le pivot est toujours le plus petit ou plus grand élément."
+  },
+  {
+    q: "En JavaScript, quelle méthode crée un nouveau tableau en filtrant les éléments ?",
+    options: ["map()", "filter()", "reduce()", "forEach()"],
+    correct: 1,
+    points: 2,
+    explanation: "filter() retourne un nouveau tableau contenant uniquement les éléments pour lesquels la fonction retourne true."
+  },
+  {
+    q: "Qu'est-ce qu'une liste chaînée ?",
+    options: ["Un tableau contigu en mémoire", "Une structure où chaque élément pointe vers le suivant", "Un arbre binaire", "Une file FIFO"],
+    correct: 1,
+    points: 2,
+    explanation: "Une liste chaînée est composée de nœuds, où chaque nœud contient une donnée et un pointeur vers le nœud suivant."
+  },
+  {
+    q: "Quel principe suit une Stack (pile) ?",
+    options: ["FIFO", "LIFO", "Random", "Priorité"],
+    correct: 1,
+    points: 2,
+    explanation: "Une pile suit le principe LIFO (Last In, First Out) : le dernier élément ajouté est le premier retiré."
+  },
+  {
+    q: "Quel algorithme est utilisé pour trouver le plus court chemin dans un graphe pondéré ?",
+    options: ["BFS", "DFS", "Dijkstra", "Backtracking"],
+    correct: 2,
+    points: 2,
+    explanation: "L'algorithme de Dijkstra trouve le plus court chemin d'un sommet source vers tous les autres sommets dans un graphe pondéré à poids positifs."
+  },
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+let validated = new Array(questions.length).fill(false);
+let timeLeft = 600;
+
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('q-badge').textContent = 'QCM · Moyen';
+  document.getElementById('q-points').textContent = q.points + ' points';
+  document.getElementById('progress-text').textContent = (current+1) + '/' + questions.length;
+  document.getElementById('progress-bar').style.width = ((current+1) / questions.length * 100) + '%';
+
+  const letters = ['A','B','C','D','E'];
+  document.getElementById('answers-container').innerHTML = q.options.map((opt,i) => `
+    <button class="answer-option ${answers[current] === i ? 'selected' : ''}" onclick="selectAnswer(${i})" ${validated[current]?'disabled':''}>
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+
+  // Feedback si validé
+  const fb = document.getElementById('feedback-box');
+  if (validated[current]) {
+    const isCorrect = answers[current] === q.correct;
+    fb.className = `mt-5 p-4 rounded-xl border-2 ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`;
+    fb.innerHTML = `
+      <p class="text-sm font-black ${isCorrect ? 'text-emerald-700' : 'text-rose-700'} mb-1">
+        <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'} mr-1.5"></i>
+        ${isCorrect ? 'Correct !' : 'Pas tout à fait…'}
+      </p>
+      <p class="text-xs text-slate-600 leading-relaxed font-semibold">${q.explanation}</p>
+    `;
+    fb.classList.remove('hidden');
+    // Marquer la bonne/mauvaise réponse
+    document.querySelectorAll('.answer-option').forEach((el, i) => {
+      el.disabled = true;
+      if (i === q.correct) el.classList.add('correct');
+      else if (i === answers[current] && !isCorrect) el.classList.add('wrong');
+    });
+  } else {
+    fb.classList.add('hidden');
+  }
+
+  // Prev button
+  document.getElementById('prev-btn').disabled = current === 0;
+  document.getElementById('next-label').textContent = validated[current] ? (current === questions.length - 1 ? 'Voir résultats' : 'Suivant') : 'Valider';
+}
+
+function selectAnswer(i){
+  if (validated[current]) return;
+  answers[current] = i;
+  document.querySelectorAll('.answer-option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+}
+
+function nextQuestion(){
+  if (!validated[current]) {
+    if (answers[current] === null) { toast('Choisis une réponse','error'); return; }
+    validated[current] = true;
+    renderQuestion();
+  } else {
+    if (current === questions.length - 1) { showResults(); return; }
+    current++;
+    renderQuestion();
+  }
+}
+
+function prevQuestion(){ if (current > 0) { current--; renderQuestion(); } }
+
+function showResults(){
+  let correct = 0;
+  answers.forEach((a,i) => { if (a === questions[i].correct) correct++; });
+  const total = questions.length;
+  const pct = Math.round(correct / total * 100);
+
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.add('active');
+
+  document.getElementById('score-display').textContent = correct + '/' + total;
+  document.getElementById('correct-display').textContent = correct;
+  document.getElementById('wrong-display').textContent = total - correct;
+
+  const titles = pct >= 80 ? "Excellent ! 🎉" : pct >= 60 ? "Bien joué ! 👍" : pct >= 40 ? "Peut mieux faire 📚" : "Continue tes efforts 💪";
+  const subtitles = pct >= 80 ? "Tu maîtrises ce sujet à fond !" : pct >= 60 ? "Bonnes bases, encore un peu de révision." : pct >= 40 ? "Révise encore un peu ces notions." : "Retourne voir ton cours, tu vas y arriver !";
+  document.getElementById('result-title').textContent = titles;
+  document.getElementById('result-subtitle').textContent = subtitles;
+
+  const iconWrap = document.getElementById('result-icon-wrap');
+  iconWrap.style.background = pct >= 60 ? 'linear-gradient(135deg,#10b981,#14b8a6)' : 'linear-gradient(135deg,#f59e0b,#f97316)';
+  document.getElementById('result-icon').className = `fa-solid ${pct >= 60 ? 'fa-trophy' : 'fa-book'} text-white text-4xl`;
+
+  // Review list
+  document.getElementById('review-list').innerHTML = questions.map((q,i) => {
+    const ok = answers[i] === q.correct;
+    return `
+      <div class="flex items-start gap-3 p-3 rounded-xl ${ok ? 'bg-emerald-50' : 'bg-rose-50'}">
+        <div class="w-7 h-7 rounded-lg ${ok ? 'bg-emerald-500' : 'bg-rose-500'} flex items-center justify-center shrink-0">
+          <i class="fa-solid ${ok ? 'fa-check' : 'fa-xmark'} text-white text-xs"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-sm font-bold text-slate-800 mb-0.5">${i+1}. ${q.q}</p>
+          ${!ok ? `<p class="text-xs text-slate-600 font-semibold">Bonne réponse : <span class="text-emerald-700">${q.options[q.correct]}</span></p>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Timer
+setInterval(() => {
+  timeLeft--;
+  const m = Math.floor(timeLeft / 60).toString().padStart(2,'0');
+  const s = (timeLeft % 60).toString().padStart(2,'0');
+  document.getElementById('timer').textContent = m + ':' + s;
+}, 1000);
+
+renderQuestion();
+
+function toast(msg, type){
+  const host = document.getElementById('rb-toast-host');
+  const colors = {info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};
+  const icons = {info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};
+  const el = document.createElement('div');
+  el.className = 'rb-toast ' + colors[type];
+  el.innerHTML = '<i class="fa-solid ' + icons[type] + '"></i><span>' + msg + '</span>';
+  host.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);
+}
+</script>
+</body>
+</html>

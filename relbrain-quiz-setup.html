@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Générateur de Quiz IA</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-theme.css"/>
+<script src="relbrain-theme.js" defer></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
+
+/* ══════════════ SIDEBAR ══════════════ */
+.sidebar{width:260px;min-width:260px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-260px);}
+@media(max-width:900px){.sidebar{transform:translateX(-260px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:260px;flex:1;min-width:0;transition:margin .3s;}
+.nav-item{display:flex;align-items:center;gap:.875rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:#faf5ff;color:#7c3aed;}
+.nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.nav-item.active .nav-icon{color:#7c3aed;}
+.nav-item .nav-icon{width:1.25rem;text-align:center;flex-shrink:0;font-size:.9rem;color:#78716c;}
+.avatar-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.8125rem;cursor:pointer;transition:all .2s;width:100%;}
+.note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.8125rem;box-shadow:0 8px 20px rgba(124,58,237,.28);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(124,58,237,.36);}
+
+/* ══════════════ HEADER ══════════════ */
+.app-header{height:64px;background:rgba(253,244,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.header-btn:hover{background:#f5f3ff;color:#7c3aed;}
+.avatar-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(124,58,237,.25);}
+.avatar-btn::after{content:'';position:absolute;bottom:-3px;right:-3px;width:11px;height:11px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+.avatar-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 20px 50px rgba(15,23,42,.14);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s;z-index:100;overflow:hidden;}
+.avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
+.avatar-menu-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;font-size:.8125rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
+.avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
+
+/* ══════════════ CARDS & UTILS ══════════════ */
+.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.rb-input::placeholder{color:#a8a29e;font-weight:500;}
+.rb-textarea{width:100%;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.6;font-family:inherit;}
+.rb-textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.prog-bar{height:8px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:9999px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+
+/* ══════════════ SOURCE CARDS ══════════════ */
+.source-card{display:flex;align-items:center;gap:.875rem;padding:1rem;border:1.5px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .15s;background:#fff;}
+.source-card:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateY(-2px);}
+.source-card.selected{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,.08);}
+.source-card .src-icon{width:2.5rem;height:2.5rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;}
+
+/* ══════════════ DOC CARDS ══════════════ */
+.doc-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;border:1.5px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .15s;background:#fff;position:relative;overflow:hidden;}
+.doc-card:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateX(4px);}
+.doc-card.selected{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,.08);}
+.doc-card.selected::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#7c3aed,#ec4899);}
+.doc-card .doc-check{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.doc-card.selected .doc-check{background:#7c3aed;border-color:#7c3aed;}
+
+/* ══════════════ COUNT BUTTONS ══════════════ */
+.count-btn{border:1.5px solid #e7d9c5;border-radius:1rem;background:#fff;cursor:pointer;transition:all .15s;text-align:center;padding:1rem .5rem;position:relative;}
+.count-btn:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateY(-2px);}
+.count-btn.selected{border-color:#7c3aed;background:linear-gradient(135deg,#f5f3ff,#fdf4e8);box-shadow:0 4px 12px rgba(124,58,237,.15);}
+.count-btn .cb-num{font-size:1.5rem;font-weight:900;color:#0f172a;line-height:1;display:block;}
+.count-btn.selected .cb-num{color:#6d28d9;}
+.count-btn .cb-sub{font-size:.6875rem;color:#a8a29e;font-weight:700;margin-top:.25rem;display:block;}
+.count-btn.selected .cb-sub{color:#7c3aed;}
+
+/* ══════════════ TYPE CARDS ══════════════ */
+.type-card{display:flex;align-items:center;gap:.75rem;border:1.5px solid #e7d9c5;border-radius:1rem;background:#fff;cursor:pointer;transition:all .15s;padding:.875rem 1rem;text-align:left;}
+.type-card:hover{border-color:#c4b5fd;background:#faf5ff;}
+.type-card.selected{border-color:#7c3aed;background:#f5f3ff;}
+.type-card .tc-icon{width:2.25rem;height:2.25rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.type-card .tc-radio{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.type-card.selected .tc-radio{border-color:#7c3aed;}
+.type-card.selected .tc-radio::after{content:'';width:.575rem;height:.575rem;border-radius:50%;background:#7c3aed;}
+
+/* ══════════════ DIFFICULTY ══════════════ */
+.diff-btn{border:1.5px solid #e7d9c5;border-radius:1rem;background:#fff;cursor:pointer;transition:all .15s;padding:1rem .75rem;text-align:center;position:relative;overflow:hidden;}
+.diff-btn:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateY(-2px);}
+.diff-btn.selected{border-color:var(--diff-color);background:var(--diff-bg);box-shadow:0 4px 12px var(--diff-ring);}
+.diff-bars{display:flex;gap:3px;justify-content:center;margin-bottom:.625rem;height:18px;}
+.diff-bars span{width:6px;border-radius:3px;background:#e7d9c5;transition:all .2s;align-self:flex-end;}
+.diff-bars span:nth-child(1){height:6px;}
+.diff-bars span:nth-child(2){height:10px;}
+.diff-bars span:nth-child(3){height:14px;}
+.diff-bars span:nth-child(4){height:18px;}
+.diff-btn.selected .diff-bars span.on{background:var(--diff-color);}
+.diff-btn .diff-label{font-size:.8125rem;font-weight:800;color:#0f172a;}
+.diff-btn.selected .diff-label{color:var(--diff-color);}
+
+/* ══════════════ STUDY MODE ══════════════ */
+.mode-card{display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1rem .75rem;border:1.5px solid #e7d9c5;border-radius:1rem;cursor:pointer;background:#fff;transition:all .15s;text-align:center;}
+.mode-card:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateY(-2px);}
+.mode-card.selected{border-color:#7c3aed;background:linear-gradient(135deg,#f5f3ff,#fdf4e8);box-shadow:0 4px 12px rgba(124,58,237,.15);}
+.mode-card .mode-icon{width:2.5rem;height:2.5rem;border-radius:.875rem;display:flex;align-items:center;justify-content:center;font-size:1.05rem;}
+
+/* ══════════════ CHAPTERS ══════════════ */
+.chapter-chip{padding:.5rem .875rem;border:1.5px solid #e7d9c5;border-radius:9999px;font-size:.75rem;font-weight:800;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.375rem;}
+.chapter-chip:hover{border-color:#c4b5fd;color:#7c3aed;}
+.chapter-chip.selected{background:#7c3aed;color:#fff;border-color:#7c3aed;box-shadow:0 4px 12px rgba(124,58,237,.25);}
+.chapter-chip.selected::before{content:'✓ ';}
+
+/* ══════════════ OPTIONS TOGGLE ══════════════ */
+.opt-row{display:flex;align-items:center;gap:.875rem;padding:.875rem;border-radius:.875rem;transition:all .15s;cursor:pointer;}
+.opt-row:hover{background:#faf5ff;}
+.opt-switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;}
+.opt-switch input{opacity:0;width:0;height:0;}
+.opt-slider{position:absolute;cursor:pointer;inset:0;background:#e7d9c5;border-radius:9999px;transition:.2s;}
+.opt-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.opt-switch input:checked + .opt-slider{background:linear-gradient(135deg,#7c3aed,#ec4899);}
+.opt-switch input:checked + .opt-slider::before{transform:translateX(18px);}
+
+/* ══════════════ STICKY SUMMARY ══════════════ */
+.summary-sticky{position:sticky;top:80px;}
+
+/* ══════════════ AVATAR PREVIEW ══════════════ */
+.summary-hero{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);border-radius:1.25rem;padding:1.5rem;position:relative;overflow:hidden;}
+.summary-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 10%, rgba(255,255,255,.18), transparent 55%);pointer-events:none;}
+.summary-hero::after{content:'';position:absolute;top:-30%;right:-20%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%);pointer-events:none;}
+
+/* ══════════════ LOADING OVERLAY ══════════════ */
+.gen-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.gen-overlay.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.gen-ring{width:96px;height:96px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gen-spin{animation:spin 1.1s linear infinite;transform-origin:center;}
+@keyframes floatIcon{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.gen-float{animation:floatIcon 2s ease-in-out infinite;}
+
+/* ══════════════ MODAL ══════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+.modal-box{background:#fff;border-radius:1.5rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:440px;padding:1.75rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+@keyframes modalUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══════════════ TOAST ══════════════ */
+#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;transition:opacity .25s,transform .25s;}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+
+/* ══════════════ SPARKLES ══════════════ */
+.sparkle{position:absolute;pointer-events:none;}
+@keyframes sp{0%,100%{opacity:.4;transform:scale(1) rotate(0deg);}50%{opacity:.9;transform:scale(1.15) rotate(20deg);}}
+.sparkle{animation:sp 3s ease-in-out infinite;}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+</style>
+</head>
+<body>
+
+<div id="rb-toast-host"></div>
+
+<!-- ══════════════ MODAL NOTE ══════════════ -->
+<div id="note-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white"></i></div>
+      <div><p class="font-black text-slate-900">Prendre une note</p><p class="text-xs text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="text" id="note-title" class="rb-input mb-3" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="5" class="rb-textarea mb-4" placeholder="Écris ta note ici..."></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="saveNote()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ OVERLAY GÉNÉRATION ══════════════ -->
+<div class="gen-overlay" id="gen-overlay">
+  <div class="bg-white rounded-3xl border border-[#e7d9c5] p-8 text-center max-w-sm w-full" style="box-shadow:0 24px 60px rgba(124,58,237,.25)">
+    <div class="relative mx-auto mb-5 w-fit">
+      <svg class="gen-ring" viewBox="0 0 96 96">
+        <circle cx="48" cy="48" r="42" fill="none" stroke="#f5f3ff" stroke-width="8"/>
+        <circle class="gen-spin" cx="48" cy="48" r="42" fill="none" stroke="url(#gradRing)" stroke-width="8" stroke-linecap="round" stroke-dasharray="180 264"/>
+        <defs>
+          <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <i class="fa-solid fa-wand-magic-sparkles text-violet-500 text-2xl gen-float"></i>
+      </div>
+    </div>
+    <p class="font-black text-slate-900 text-lg mb-1" id="gen-label">Analyse du document…</p>
+    <p class="text-xs text-slate-500 font-semibold mb-5" id="gen-sub">L'IA prépare vos questions</p>
+    <div class="prog-bar mb-2"><div class="prog-fill gradient-bg" id="gen-bar" style="width:8%"></div></div>
+    <p class="text-[11px] text-slate-400 font-bold" id="gen-pct">8%</p>
+    <div class="mt-5 pt-5 border-t border-[#f0e6d8] text-left space-y-2" id="gen-steps"></div>
+  </div>
+</div>
+
+<div class="flex">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="p-5 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2.5 mb-5">
+      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative">
+        <i class="fa-solid fa-brain text-base"></i>
+        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white"></span>
+      </div>
+      <div>
+        <p class="text-base font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
+      </div>
+    </a>
+
+    <a href="relbrain-profil.html" class="avatar-card mb-6">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-sm shrink-0">K</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-black text-slate-800 truncate">Pharel FOFE</p>
+        <p class="text-[10px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+      </div>
+      <div class="text-right shrink-0">
+        <p class="text-[10px] text-amber-500 font-black">🔥 12</p>
+        <p class="text-[9px] text-slate-400">jours</p>
+      </div>
+    </a>
+
+    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-4">
+      <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
+      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
+      <a href="relbrain-quiz-setup.html" class="nav-item active"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
+      <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
+      <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+    </nav>
+
+    <a href="relbrain-parametres.html" class="nav-item mb-4"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+
+    <div class="mt-auto space-y-2 pt-4 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square"></i> Prendre une note</button>
+      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up"></i> Upgrader</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main-content flex flex-col min-h-screen" id="main-content">
+
+  <header class="app-header">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars text-base"></i></button>
+    <div class="flex items-center gap-1.5 text-sm">
+      <span class="text-slate-500 font-bold">RelBrain</span>
+      <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+      <span class="font-black text-slate-800">Générateur de Quiz IA</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon text-base"></i></button>
+      <button class="header-btn relative" onclick="toast('3 notifications','info')"><i class="fa-solid fa-bell text-base"></i><span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span></button>
+      <div class="relative" id="avatar-wrap">
+        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-menu" id="avatar-menu">
+          <div class="px-4 py-3 border-b border-[#e7d9c5]"><p class="text-sm font-black text-slate-800">Pharel FOFE</p><p class="text-[11px] text-slate-400 font-semibold">pharel@relbrain.ai</p></div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user w-4 text-violet-500"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear w-4 text-violet-500"></i> Paramètres</a>
+          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-5 md:p-6 max-w-6xl mx-auto w-full">
+
+    <!-- BANNIÈRE TITRE -->
+    <div class="rb-card p-6 mb-6 relative overflow-hidden" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));">
+      <svg class="sparkle" style="top:20px;right:40px;width:32px;height:32px;" viewBox="0 0 40 40" fill="none"><path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="#a855f7" opacity=".5"/></svg>
+      <svg class="sparkle" style="bottom:20px;right:120px;width:20px;height:20px;animation-delay:1s" viewBox="0 0 40 40" fill="none"><path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="#ec4899" opacity=".4"/></svg>
+
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center gap-4 justify-between">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white border border-violet-200 text-violet-700 text-[11px] font-black px-3 py-1.5 rounded-full mb-3 shadow-sm">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> GÉNÉRATEUR IA
+          </div>
+          <h1 class="text-2xl md:text-3xl font-black text-slate-900">Crée ton quiz sur-mesure</h1>
+          <p class="text-sm text-slate-500 mt-1 font-semibold">Choisis un document, règle les paramètres, l'IA génère tout en 30 secondes.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 bg-white border border-[#e7d9c5] px-4 py-2.5 rounded-xl">
+            <i class="fa-solid fa-bolt text-amber-500"></i>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none">Génération</p>
+              <p class="text-sm font-black text-slate-800 mt-0.5">~30 sec</p>
+            </div>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 bg-white border border-[#e7d9c5] px-4 py-2.5 rounded-xl">
+            <i class="fa-solid fa-star text-violet-500"></i>
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none">XP max</p>
+              <p class="text-sm font-black text-slate-800 mt-0.5" id="banner-xp">200</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      <!-- ══════════════ COLONNE PARAMÈTRES ══════════════ -->
+      <div class="lg:col-span-2 space-y-5">
+
+        <!-- ÉTAPE 1 : SOURCE -->
+        <div class="rb-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg gradient-bg text-white text-xs font-black flex items-center justify-center">1</span>
+              <div>
+                <h2 class="font-black text-slate-900 text-base">Source du contenu</h2>
+                <p class="text-xs text-slate-500 font-semibold mt-0.5">D'où vient le contenu du quiz ?</p>
+              </div>
+            </div>
+            <a href="relbrain-documents.html" class="text-xs font-black text-violet-600 hover:underline whitespace-nowrap"><i class="fa-solid fa-plus mr-1"></i>Importer</a>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3 mb-4" id="sources-grid"></div>
+
+          <!-- Zone dynamique -->
+          <div id="source-dynamic"></div>
+        </div>
+
+        <!-- ÉTAPE 2 : NOMBRE -->
+        <div class="rb-card p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-7 h-7 rounded-lg gradient-bg text-white text-xs font-black flex items-center justify-center">2</span>
+            <div>
+              <h2 class="font-black text-slate-900 text-base">Nombre de questions</h2>
+              <p class="text-xs text-slate-500 font-semibold mt-0.5">Plus il y a de questions, plus la révision est complète</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="count-grid"></div>
+        </div>
+
+        <!-- ÉTAPE 3 : TYPE -->
+        <div class="rb-card p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-7 h-7 rounded-lg gradient-bg text-white text-xs font-black flex items-center justify-center">3</span>
+            <div>
+              <h2 class="font-black text-slate-900 text-base">Type de questions</h2>
+              <p class="text-xs text-slate-500 font-semibold mt-0.5">Le format des questions générées par l'IA</p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-2.5" id="type-grid"></div>
+        </div>
+
+        <!-- ÉTAPE 4 : DIFFICULTÉ -->
+        <div class="rb-card p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-7 h-7 rounded-lg gradient-bg text-white text-xs font-black flex items-center justify-center">4</span>
+            <div>
+              <h2 class="font-black text-slate-900 text-base">Difficulté</h2>
+              <p class="text-xs text-slate-500 font-semibold mt-0.5">L'IA adapte le niveau de langage et la complexité</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="diff-grid"></div>
+        </div>
+
+        <!-- ÉTAPE 5 : MODE D'ÉTUDE -->
+        <div class="rb-card p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-7 h-7 rounded-lg gradient-bg text-white text-xs font-black flex items-center justify-center">5</span>
+            <div>
+              <h2 class="font-black text-slate-900 text-base">Mode d'étude</h2>
+              <p class="text-xs text-slate-500 font-semibold mt-0.5">Comment veux-tu passer ce quiz ?</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5" id="mode-grid"></div>
+        </div>
+
+        <!-- ÉTAPE 6 : CHAPITRES (optionnel) -->
+        <div class="rb-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-[#f0e6d8] text-slate-600 text-xs font-black flex items-center justify-center">6</span>
+              <div>
+                <h2 class="font-black text-slate-900 text-base">Chapitres à inclure</h2>
+                <p class="text-xs text-slate-500 font-semibold mt-0.5">Optionnel — clique pour filtrer</p>
+              </div>
+            </div>
+            <button class="text-xs font-black text-violet-600 hover:underline" onclick="toggleAllChapters()" id="chapter-toggle-all">Tout cocher</button>
+          </div>
+          <div class="flex flex-wrap gap-2" id="chapters-list"></div>
+        </div>
+
+        <!-- ÉTAPE 7 : OPTIONS AVANCÉES -->
+        <div class="rb-card p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-7 h-7 rounded-lg bg-[#f0e6d8] text-slate-600 text-xs font-black flex items-center justify-center">
+              <i class="fa-solid fa-cog text-[10px]"></i>
+            </span>
+            <div>
+              <h2 class="font-black text-slate-900 text-base">Options avancées</h2>
+              <p class="text-xs text-slate-500 font-semibold mt-0.5">Personnalise l'expérience du quiz</p>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="opt-row">
+              <div class="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-stopwatch text-rose-500 text-sm"></i></div>
+              <div class="flex-1">
+                <p class="text-sm font-black text-slate-800">Chronomètre</p>
+                <p class="text-xs text-slate-500 font-semibold">Limite de temps par question</p>
+              </div>
+              <label class="opt-switch"><input type="checkbox" id="opt-timer" checked onchange="updateSummary()"><span class="opt-slider"></span></label>
+            </label>
+            <label class="opt-row">
+              <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i></div>
+              <div class="flex-1">
+                <p class="text-sm font-black text-slate-800">Explications IA</p>
+                <p class="text-xs text-slate-500 font-semibold">Détail après chaque réponse</p>
+              </div>
+              <label class="opt-switch"><input type="checkbox" id="opt-explain" checked onchange="updateSummary()"><span class="opt-slider"></span></label>
+            </label>
+            <label class="opt-row">
+              <div class="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-brain text-violet-500 text-sm"></i></div>
+              <div class="flex-1">
+                <p class="text-sm font-black text-slate-800">IA adaptative</p>
+                <p class="text-xs text-slate-500 font-semibold">Ajuste la difficulté en direct</p>
+              </div>
+              <label class="opt-switch"><input type="checkbox" id="opt-adapt" onchange="updateSummary()"><span class="opt-slider"></span></label>
+            </label>
+            <label class="opt-row">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-shuffle text-emerald-500 text-sm"></i></div>
+              <div class="flex-1">
+                <p class="text-sm font-black text-slate-800">Ordre aléatoire</p>
+                <p class="text-xs text-slate-500 font-semibold">Mélange les questions à chaque tentative</p>
+              </div>
+              <label class="opt-switch"><input type="checkbox" id="opt-shuffle" checked onchange="updateSummary()"><span class="opt-slider"></span></label>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══════════════ COLONNE RÉCAP ══════════════ -->
+      <div class="lg:col-span-1">
+        <div class="summary-sticky space-y-4">
+
+          <!-- Carte récap gradient -->
+          <div class="summary-hero text-white">
+            <div class="relative z-10">
+              <div class="flex items-center gap-2 mb-3">
+                <i class="fa-solid fa-clipboard-check text-yellow-300"></i>
+                <span class="text-[11px] font-black uppercase tracking-wider text-yellow-200">Aperçu du quiz</span>
+              </div>
+              <p class="text-2xl font-black mb-1" id="hero-title">Quiz Personnalisé</p>
+              <p class="text-violet-100 text-xs font-bold mb-5" id="hero-sub">Algorithmique_S5.pdf · Niveau moyen</p>
+
+              <div class="grid grid-cols-3 gap-2">
+                <div class="bg-white/15 backdrop-blur rounded-xl p-2.5 text-center">
+                  <p class="text-lg font-black leading-none" id="hero-count">20</p>
+                  <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-1">Questions</p>
+                </div>
+                <div class="bg-white/15 backdrop-blur rounded-xl p-2.5 text-center">
+                  <p class="text-lg font-black leading-none" id="hero-time">10</p>
+                  <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-1">Minutes</p>
+                </div>
+                <div class="bg-white/15 backdrop-blur rounded-xl p-2.5 text-center">
+                  <p class="text-lg font-black leading-none" id="hero-xp">200</p>
+                  <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-1">XP max</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Détail des paramètres -->
+          <div class="rb-card p-5">
+            <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4">Récapitulatif</p>
+
+            <div class="space-y-3 text-sm mb-5">
+              <div class="flex items-center justify-between py-2 border-b border-[#f0e6d8]">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-file-lines text-violet-500 w-4"></i> Document</span>
+                <span class="font-black text-slate-800 truncate max-w-[140px]" id="sum-doc">Algorithmique_S5.pdf</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-[#f0e6d8]">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-hashtag text-violet-500 w-4"></i> Questions</span>
+                <span class="font-black text-slate-800" id="sum-count">20</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-[#f0e6d8]">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-shapes text-violet-500 w-4"></i> Type</span>
+                <span class="font-black text-slate-800" id="sum-type">QCM</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-[#f0e6d8]">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-gauge-high text-violet-500 w-4"></i> Difficulté</span>
+                <span class="font-black" id="sum-diff" style="color:#f59e0b">Moyen</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-[#f0e6d8]">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-bullseye text-violet-500 w-4"></i> Mode</span>
+                <span class="font-black text-slate-800" id="sum-mode">Classique</span>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-slate-500 font-semibold flex items-center gap-2"><i class="fa-solid fa-clock text-violet-500 w-4"></i> Durée</span>
+                <span class="font-black text-slate-800" id="sum-time">~10 min</span>
+              </div>
+            </div>
+
+            <!-- Tags options -->
+            <div class="flex flex-wrap gap-1.5 mb-5" id="sum-tags"></div>
+
+            <button class="w-full gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 hover:shadow-violet-300 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm" onclick="generateQuiz()">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Générer le quiz</span>
+            </button>
+            <p class="text-center text-[11px] text-slate-400 mt-3 font-bold"><i class="fa-solid fa-bolt mr-1 text-amber-500"></i> Généré en moins de 30 secondes</p>
+          </div>
+
+          <!-- Astuce IA -->
+          <div class="rb-card p-5" style="background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(236,72,153,.05));">
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-lightbulb text-yellow-300 text-sm"></i>
+              </div>
+              <div>
+                <p class="text-slate-900 font-black text-sm mb-1">Astuce IA</p>
+                <p class="text-slate-600 text-xs leading-relaxed font-semibold" id="tip-text">Le mode <strong>Mixte</strong> combine plusieurs types de questions pour un entraînement proche des conditions d'examen.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer class="border-t border-[#e7d9c5] py-5 mt-5">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-semibold">
+        <p>© 2026 RelBrain AI. Tous droits réservés.</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+          <a href="relbrain-mentions-legales.html" class="hover:text-violet-600">Mentions légales</a>
+          <a href="relbrain-cgu.html" class="hover:text-violet-600">CGU</a>
+          <a href="relbrain-confidentialite.html" class="hover:text-violet-600">Confidentialité</a>
+          <a href="relbrain-contact.html" class="hover:text-violet-600">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+</div>
+
+<script>
+/* ══════════════ DATA ══════════════ */
+const sources = [
+  {id:'recent', icon:'fa-clock-rotate-left', color:'bg-violet-50 text-violet-500', label:'Mes cours récents', sub:'12 documents analysés'},
+  {id:'upload', icon:'fa-cloud-arrow-up',    color:'bg-fuchsia-50 text-fuchsia-500', label:'Uploader un document', sub:'PDF, DOCX, image'},
+  {id:'paste',  icon:'fa-paste',              color:'bg-amber-50 text-amber-500', label:'Coller du texte', sub:'Notes directes'},
+  {id:'subject',icon:'fa-book',               color:'bg-emerald-50 text-emerald-500', label:'Depuis une matière', sub:'+100k questions'}
+];
+
+const docs = [
+  {name:'Algorithmique_S5.pdf', sub:'PDF · 3.2 MB · 42 pages', icon:'fa-file-pdf', color:'bg-rose-50 text-rose-500'},
+  {name:'Cours_Chimie_Org.docx', sub:'DOCX · 1.1 MB · 28 pages', icon:'fa-file-word', color:'bg-blue-50 text-blue-500'},
+  {name:'Notes_Physique.txt', sub:'TXT · 45 KB', icon:'fa-file-lines', color:'bg-slate-100 text-slate-500'},
+  {name:'TD_Maths_S4.pdf', sub:'PDF · 1.7 MB · 35 pages', icon:'fa-file-pdf', color:'bg-rose-50 text-rose-500'},
+];
+
+const counts = [
+  {n:10, sub:'~5 min', tag:'Rapide'},
+  {n:20, sub:'~10 min', tag:'Standard'},
+  {n:30, sub:'~15 min', tag:'Complet'},
+  {n:50, sub:'~25 min', tag:'Intensif'}
+];
+
+const types = [
+  {id:'qcm',    label:'QCM',           sub:'4 choix, 1 bonne réponse', icon:'fa-list-check',    color:'bg-violet-50 text-violet-500'},
+  {id:'vf',     label:'Vrai / Faux',   sub:'Réponse binaire rapide',   icon:'fa-toggle-on',     color:'bg-emerald-50 text-emerald-500'},
+  {id:'court',  label:'Réponse courte',sub:'Un mot ou une phrase',     icon:'fa-pen',           color:'bg-pink-50 text-pink-500'},
+  {id:'calcul', label:'Calcul',        sub:'Exercices chiffrés',       icon:'fa-calculator',    color:'bg-rose-50 text-rose-500'},
+  {id:'texte',  label:'Texte libre',   sub:'Réponse rédigée',          icon:'fa-align-left',    color:'bg-amber-50 text-amber-500'},
+  {id:'mixte',  label:'Mixte',         sub:'Combinaison de tous',      icon:'fa-shuffle',       color:'bg-slate-100 text-slate-500'}
+];
+
+const diffs = [
+  {id:'facile',   label:'Facile',    bars:1, color:'#10b981', bg:'#ecfdf5', ring:'rgba(16,185,129,.15)',  xp:6,  desc:'Bases et définitions'},
+  {id:'moyen',    label:'Moyen',     bars:2, color:'#f59e0b', bg:'#fffbeb', ring:'rgba(245,158,11,.15)',  xp:10, desc:'Compréhension'},
+  {id:'difficile',label:'Difficile', bars:3, color:'#f97316', bg:'#fff7ed', ring:'rgba(249,115,22,.15)',  xp:14, desc:'Application'},
+  {id:'expert',   label:'Expert',    bars:4, color:'#f43f5e', bg:'#fff1f2', ring:'rgba(244,63,94,.15)',   xp:20, desc:'Analyse et synthèse'}
+];
+
+const modes = [
+  {id:'classique', label:'Classique', sub:'Sans pression',      icon:'fa-play',      color:'bg-violet-50 text-violet-500'},
+  {id:'examen',    label:'Examen',    sub:'Conditions réelles', icon:'fa-stopwatch', color:'bg-rose-50 text-rose-500'},
+  {id:'rapide',    label:'Rapide',    sub:'15 sec / question',  icon:'fa-bolt',      color:'bg-amber-50 text-amber-500'}
+];
+
+const chapters = ['Introduction', 'Bases', 'Structures', 'Algorithmes', 'Complexité', 'Exercices', 'Applications'];
+
+/* ══════════════ STATE ══════════════ */
+const state = {
+  source: 'recent',
+  doc: 0,
+  count: 20,
+  type: 'qcm',
+  typeLabel: 'QCM',
+  diff: 'moyen',
+  mode: 'classique',
+  modeLabel: 'Classique',
+  chapters: new Set(['Introduction','Bases','Structures']),
+  options: {timer:true, explain:true, adapt:false, shuffle:true}
+};
+
+/* ══════════════ RENDER SOURCES ══════════════ */
+function renderSources(){
+  document.getElementById('sources-grid').innerHTML = sources.map(s => `
+    <div class="source-card ${s.id===state.source?'selected':''}" onclick="selectSource('${s.id}')">
+      <div class="src-icon ${s.color}"><i class="fa-solid ${s.icon}"></i></div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-black text-slate-800">${s.label}</p>
+        <p class="text-xs text-slate-400 font-semibold">${s.sub}</p>
+      </div>
+      <i class="fa-solid fa-circle-check text-violet-500 ${s.id===state.source?'':'hidden'}"></i>
+    </div>
+  `).join('');
+  renderSourceDynamic();
+}
+
+function selectSource(id){
+  state.source = id;
+  renderSources();
+}
+
+function renderSourceDynamic(){
+  const box = document.getElementById('source-dynamic');
+  if (state.source === 'recent') {
+    box.innerHTML = `
+      <div class="pt-3 border-t border-[#f0e6d8]">
+        <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-3">Choisis un cours</p>
+        <div class="grid gap-2" id="docs-list"></div>
+      </div>`;
+    document.getElementById('docs-list').innerHTML = docs.map((d,i) => `
+      <div class="doc-card ${i===state.doc?'selected':''}" onclick="selectDoc(${i})">
+        <div class="w-9 h-9 rounded-lg ${d.color} flex items-center justify-center shrink-0"><i class="fa-solid ${d.icon} text-xs"></i></div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-black text-slate-800 truncate">${d.name}</p>
+          <p class="text-[10px] text-slate-400 font-semibold">${d.sub}</p>
+        </div>
+        <div class="doc-check">${i===state.doc?'<i class="fa-solid fa-check text-white text-[9px]"></i>':''}</div>
+      </div>
+    `).join('');
+  } else if (state.source === 'upload') {
+    box.innerHTML = `
+      <div class="pt-3 border-t border-[#f0e6d8]">
+        <div class="border-2 border-dashed border-[#e7d9c5] rounded-2xl p-6 text-center cursor-pointer hover:border-violet-400 hover:bg-[#faf5ff] transition-all" onclick="toast('Sélectionne un fichier','info')">
+          <div class="w-14 h-14 rounded-2xl bg-violet-50 flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-cloud-arrow-up text-violet-500 text-xl"></i></div>
+          <p class="font-black text-slate-800 mb-1">Glisse ton fichier ici</p>
+          <p class="text-xs text-slate-500 font-semibold">PDF, DOCX, PPTX, TXT, images · Max 20 MB</p>
+        </div>
+      </div>`;
+  } else if (state.source === 'paste') {
+    box.innerHTML = `
+      <div class="pt-3 border-t border-[#f0e6d8]">
+        <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-2">Colle ton texte</p>
+        <textarea class="rb-textarea" rows="6" placeholder="Colle le contenu de ton cours ici..."></textarea>
+        <p class="text-[11px] text-slate-400 font-bold mt-2"><i class="fa-solid fa-circle-info mr-1 text-violet-500"></i> Minimum 100 caractères pour une bonne analyse.</p>
+      </div>`;
+  } else if (state.source === 'subject') {
+    box.innerHTML = `
+      <div class="pt-3 border-t border-[#f0e6d8]">
+        <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-2">Choisis une matière</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          ${['Mathématiques','Physique','Chimie','Informatique','Biologie','Histoire','Géographie','Philosophie','Économie'].map(s => `
+            <div class="doc-card"><div class="doc-check"></div><p class="text-sm font-black text-slate-800">${s}</p></div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+}
+
+/* ══════════════ RENDER COUNT ══════════════ */
+function renderCounts(){
+  document.getElementById('count-grid').innerHTML = counts.map(c => `
+    <button class="count-btn ${c.n===state.count?'selected':''}" onclick="selectCount(${c.n})">
+      <span class="cb-num">${c.n}</span>
+      <span class="cb-sub">${c.sub}</span>
+    </button>
+  `).join('');
+}
+function selectCount(n){ state.count = n; renderCounts(); updateSummary(); }
+
+/* ══════════════ RENDER TYPES ══════════════ */
+function renderTypes(){
+  document.getElementById('type-grid').innerHTML = types.map(t => `
+    <div class="type-card ${t.id===state.type?'selected':''}" onclick="selectType('${t.id}')">
+      <div class="tc-icon ${t.color}"><i class="fa-solid ${t.icon}"></i></div>
+      <div class="flex-1">
+        <p class="text-sm font-black text-slate-800">${t.label}</p>
+        <p class="text-[10px] text-slate-400 font-semibold">${t.sub}</p>
+      </div>
+      <div class="tc-radio"></div>
+    </div>
+  `).join('');
+}
+function selectType(id){ state.type = id; state.typeLabel = types.find(t=>t.id===id).label; renderTypes(); updateSummary(); }
+
+/* ══════════════ RENDER DIFFS ══════════════ */
+function renderDiffs(){
+  document.getElementById('diff-grid').innerHTML = diffs.map(d => {
+    let bars = '';
+    for(let i=0;i<4;i++) bars += `<span class="${i<d.bars?'on':''}"></span>`;
+    return `
+      <button class="diff-btn ${d.id===state.diff?'selected':''}" style="--diff-color:${d.color};--diff-bg:${d.bg};--diff-ring:${d.ring}" onclick="selectDiff('${d.id}')">
+        <div class="diff-bars">${bars}</div>
+        <p class="diff-label">${d.label}</p>
+        <p class="text-[10px] font-bold mt-1" style="color:#a8a29e">${d.desc}</p>
+      </button>`;
+  }).join('');
+}
+function selectDiff(id){ state.diff = id; renderDiffs(); updateSummary(); }
+
+/* ══════════════ RENDER MODES ══════════════ */
+function renderModes(){
+  document.getElementById('mode-grid').innerHTML = modes.map(m => `
+    <div class="mode-card ${m.id===state.mode?'selected':''}" onclick="selectMode('${m.id}')">
+      <div class="mode-icon ${m.color}"><i class="fa-solid ${m.icon}"></i></div>
+      <p class="text-xs font-black text-slate-800">${m.label}</p>
+      <p class="text-[10px] text-slate-400 font-semibold">${m.sub}</p>
+    </div>
+  `).join('');
+}
+function selectMode(id){ state.mode = id; state.modeLabel = modes.find(m=>m.id===id).label; renderModes(); updateSummary(); }
+
+/* ══════════════ RENDER CHAPTERS ══════════════ */
+function renderChapters(){
+  document.getElementById('chapters-list').innerHTML = chapters.map(c => `
+    <button class="chapter-chip ${state.chapters.has(c)?'selected':''}" onclick="toggleChapter('${c}')">${c}</button>
+  `).join('');
+}
+function toggleChapter(c){
+  if (state.chapters.has(c)) state.chapters.delete(c);
+  else state.chapters.add(c);
+  renderChapters();
+  updateSummary();
+}
+function toggleAllChapters(){
+  if (state.chapters.size === chapters.length) {
+    state.chapters.clear();
+  } else {
+    state.chapters = new Set(chapters);
+  }
+  document.getElementById('chapter-toggle-all').textContent = state.chapters.size === chapters.length ? 'Tout décocher' : 'Tout cocher';
+  renderChapters();
+  updateSummary();
+}
+
+/* ══════════════ DOC SELECT ══════════════ */
+function selectDoc(i){ state.doc = i; renderSourceDynamic(); updateSummary(); }
+
+/* ══════════════ SUMMARY ══════════════ */
+function updateSummary(){
+  const docName = docs[state.doc]?.name || 'Document';
+  const d = diffs.find(x => x.id === state.diff);
+
+  document.getElementById('sum-doc').textContent = docName;
+  document.getElementById('sum-count').textContent = state.count;
+  document.getElementById('sum-type').textContent = state.typeLabel;
+  document.getElementById('sum-mode').textContent = state.modeLabel;
+  const sumDiff = document.getElementById('sum-diff');
+  sumDiff.textContent = d.label;
+  sumDiff.style.color = d.color;
+
+  // Durée
+  const baseMin = state.count * 0.5;
+  const modeMult = state.mode === 'rapide' ? 0.6 : state.mode === 'examen' ? 1.2 : 1;
+  const duration = Math.max(3, Math.round(baseMin * modeMult));
+  document.getElementById('sum-time').textContent = '~' + duration + ' min';
+
+  // XP
+  const xpMax = state.count * d.xp;
+  document.getElementById('hero-xp').textContent = xpMax;
+  document.getElementById('banner-xp').textContent = xpMax;
+
+  // Hero
+  document.getElementById('hero-title').textContent = 'Quiz ' + d.label;
+  document.getElementById('hero-sub').textContent = docName.replace(/\.\w+$/, '') + ' · ' + state.typeLabel;
+  document.getElementById('hero-count').textContent = state.count;
+  document.getElementById('hero-time').textContent = duration;
+
+  // Options toggles
+  state.options.timer = document.getElementById('opt-timer').checked;
+  state.options.explain = document.getElementById('opt-explain').checked;
+  state.options.adapt = document.getElementById('opt-adapt').checked;
+  state.options.shuffle = document.getElementById('opt-shuffle').checked;
+
+  // Tags
+  const tags = [];
+  if (state.options.timer) tags.push({label:'⏱ Chronomètre', bg:'bg-rose-50 text-rose-700 border-rose-200'});
+  if (state.options.explain) tags.push({label:'💡 Explications', bg:'bg-amber-50 text-amber-700 border-amber-200'});
+  if (state.options.adapt) tags.push({label:'🧠 IA adaptative', bg:'bg-violet-50 text-violet-700 border-violet-200'});
+  if (state.options.shuffle) tags.push({label:'🎲 Aléatoire', bg:'bg-emerald-50 text-emerald-700 border-emerald-200'});
+  if (state.chapters.size > 0 && state.chapters.size < chapters.length) tags.push({label:`📚 ${state.chapters.size} chapitres`, bg:'bg-blue-50 text-blue-700 border-blue-200'});
+
+  document.getElementById('sum-tags').innerHTML = tags.map(t => `
+    <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${t.bg}">${t.label}</span>
+  `).join('');
+
+  // Tip adapté
+  const tips = {
+    qcm: 'Les QCM sont parfaits pour un entraînement rapide et régulier.',
+    vf: 'Le mode Vrai/Faux aide à identifier rapidement tes zones floues.',
+    court: 'Les réponses courtes renforcent la mémorisation active.',
+    calcul: 'Les exercices chiffrés préparent aux épreuves techniques.',
+    texte: 'Les réponses rédigées simulent les conditions d\'examen réelles.',
+    mixte: 'Le mode <strong>Mixte</strong> combine plusieurs types de questions pour un entraînement complet.'
+  };
+  document.getElementById('tip-text').innerHTML = tips[state.type] || tips.mixte;
+}
+
+/* ══════════════ GÉNÉRATION ══════════════ */
+function generateQuiz(){
+  const overlay = document.getElementById('gen-overlay');
+  const bar = document.getElementById('gen-bar');
+  const label = document.getElementById('gen-label');
+  const sub = document.getElementById('gen-sub');
+  const pctEl = document.getElementById('gen-pct');
+  const stepsEl = document.getElementById('gen-steps');
+  const docName = docs[state.doc]?.name || 'Document';
+
+  overlay.classList.add('open');
+  stepsEl.innerHTML = '';
+
+  const steps = [
+    {pct:15, label:'Lecture du document…', sub:docName, step:'📄 Extraction du texte'},
+    {pct:32, label:'Analyse sémantique…', sub:'Identification des concepts clés', step:'🧠 Analyse IA en cours'},
+    {pct:52, label:'Extraction des notions…', sub:state.chapters.size + ' chapitres ciblés', step:'📚 Concepts identifiés'},
+    {pct:72, label:'Génération des questions…', sub:state.count + ' questions · ' + state.typeLabel, step:'✍️ Rédaction par l\'IA'},
+    {pct:88, label:'Calibrage de la difficulté…', sub:'Niveau : ' + diffs.find(x=>x.id===state.diff).label, step:'⚖️ Ajustement du niveau'},
+    {pct:100, label:'Quiz prêt ! 🎉', sub:'Redirection...', step:'✅ Terminé'}
+  ];
+
+  let i = 0;
+  const run = () => {
+    if (i >= steps.length) {
+      setTimeout(() => { window.location.href = 'relbrain-quiz-interface.html'; }, 600);
+      return;
+    }
+    const s = steps[i++];
+    bar.style.width = s.pct + '%';
+    pctEl.textContent = s.pct + '%';
+    label.textContent = s.label;
+    sub.textContent = s.sub;
+
+    // Ajout de l'étape cochée
+    stepsEl.innerHTML = steps.slice(0, i).map((st, idx) => `
+      <div class="flex items-center gap-2 text-xs font-semibold ${idx===i-1?'text-violet-700':'text-slate-500'}">
+        <div class="w-5 h-5 rounded-full ${idx===i-1?'bg-violet-100':'bg-emerald-100'} flex items-center justify-center shrink-0">
+          ${idx===i-1 ? '<i class="fa-solid fa-spinner fa-spin text-violet-500 text-[9px]"></i>' : '<i class="fa-solid fa-check text-emerald-600 text-[9px]"></i>'}
+        </div>
+        <span>${st.step}</span>
+      </div>
+    `).join('');
+
+    setTimeout(run, 600 + Math.random()*350);
+  };
+  run();
+}
+
+/* ══════════════ UI ══════════════ */
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar'), mc = document.getElementById('main-content');
+  if (window.innerWidth > 900) {
+    sb.classList.toggle('collapsed');
+    mc.style.marginLeft = sb.classList.contains('collapsed') ? '0' : '260px';
+  } else {
+    sb.classList.toggle('open');
+  }
+}
+function toggleAvatarMenu(){ document.getElementById('avatar-menu').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  const w = document.getElementById('avatar-wrap'), b = w?.querySelector('.avatar-btn');
+  if (w && b && !w.contains(e.target) && !b.contains(e.target)) document.getElementById('avatar-menu').classList.remove('open');
+});
+
+function openNote(){ document.getElementById('note-modal').classList.add('open'); }
+function closeNote(){ document.getElementById('note-modal').classList.remove('open'); }
+function saveNote(){ closeNote(); toast('Note enregistrée ! ✨','success'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+function toast(msg, type='info'){
+  const h = document.getElementById('rb-toast-host');
+  const c = {info:'bg-violet-600 text-white', success:'bg-emerald-500 text-white', error:'bg-rose-500 text-white'};
+  const ic = {info:'fa-circle-info', success:'fa-circle-check', error:'fa-circle-xmark'};
+  const el = document.createElement('div');
+  el.className = 'rb-toast ' + c[type];
+  el.innerHTML = `<i class="fa-solid ${ic[type]}"></i><span>${msg}</span>`;
+  h.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(20px)'; setTimeout(()=>el.remove(),300); },3000);
+}
+
+/* ══════════════ INIT ══════════════ */
+renderSources();
+renderCounts();
+renderTypes();
+renderDiffs();
+renderModes();
+renderChapters();
+updateSummary();
+</script>
+</body>
+</html>
