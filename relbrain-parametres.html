@@ -6,7 +6,7 @@
 </script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.AI – Paramètres</title>
+<title>RelBrain.ai – Paramètres</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
@@ -14,40 +14,54 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
-body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
-.sidebar{width:260px;min-width:260px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
-.sidebar.collapsed{transform:translateX(-260px);}
-@media(max-width:900px){.sidebar{transform:translateX(-260px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
-.main-content{margin-left:260px;flex:1;min-width:0;transition:margin .3s;}
-.nav-item{display:flex;align-items:center;gap:.875rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-size:.8125rem;}
+
+/* ══════════════ SIDEBAR COMPACTE ══════════════ */
+.sidebar{width:240px;min-width:240px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-240px);}
+@media(max-width:900px){.sidebar{transform:translateX(-240px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:240px;flex:1;min-width:0;transition:margin .28s;}
+
+.nav-item{display:flex;align-items:center;gap:.625rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.8125rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
 .nav-item:hover{background:#faf5ff;color:#7c3aed;}
 .nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
 .nav-item.active .nav-icon{color:#7c3aed;}
-.nav-item .nav-icon{width:1.25rem;text-align:center;flex-shrink:0;font-size:.9rem;color:#78716c;}
-.avatar-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.nav-item .nav-icon{width:1rem;text-align:center;flex-shrink:0;font-size:.85rem;color:#78716c;}
+
+.avatar-card{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:.75rem;cursor:pointer;transition:all .2s;text-decoration:none;}
 .avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
-.note-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.8125rem;cursor:pointer;transition:all .2s;width:100%;}
+
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.75rem;cursor:pointer;transition:all .2s;width:100%;}
 .note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
-.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.8125rem;box-shadow:0 8px 20px rgba(124,58,237,.28);cursor:pointer;transition:all .2s;border:0;width:100%;}
-.upgrade-btn:hover{transform:translateY(-2px);}
-.app-header{height:64px;background:rgba(253,244,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:30;}
-.header-btn{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.75rem;box-shadow:0 4px 12px rgba(124,58,237,.22);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-1px);}
+
+/* ══════════════ HEADER ══════════════ */
+.app-header{height:56px;background:rgba(253,244,232,.9);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1rem;gap:.75rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:34px;height:34px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
 .header-btn:hover{background:#f5f3ff;color:#7c3aed;}
-.avatar-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(124,58,237,.25);}
-.avatar-btn::after{content:'';position:absolute;bottom:-3px;right:-3px;width:11px;height:11px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
-.avatar-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 20px 50px rgba(15,23,42,.14);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s;z-index:100;overflow:hidden;}
+.header-btn i{font-size:.875rem;}
+
+.avatar-btn{width:34px;height:34px;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:13px;cursor:pointer;position:relative;box-shadow:0 3px 10px rgba(124,58,237,.22);}
+.avatar-btn::after{content:'';position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+
+.avatar-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:#fff;border:1px solid #e7d9c5;border-radius:.75rem;box-shadow:0 16px 40px rgba(15,23,42,.12);opacity:0;visibility:hidden;transform:translateY(-6px);transition:all .2s;z-index:100;overflow:hidden;}
 .avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
-.avatar-menu-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;font-size:.8125rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;font-size:.75rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
 .avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
 .avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
-.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+
+/* ══════════════ CARDS ══════════════ */
+.rb-card{background:#fff;border-radius:.875rem;border:1px solid #e7d9c5;box-shadow:0 1px 8px rgba(15,23,42,.03);}
 .gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
 .gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input{width:100%;padding:.625rem .875rem;border:1.5px solid #e7d9c5;border-radius:.625rem;font-size:.8125rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
 .rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
-.rb-label{display:block;font-size:.75rem;font-weight:800;color:#57534e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.rb-label{display:block;font-size:.7rem;font-weight:800;color:#57534e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+.prog-bar{height:5px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
 
-.settings-nav-item{display:flex;align-items:center;gap:.75rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.8125rem;font-weight:800;color:#57534e;cursor:pointer;transition:all .15s;}
+/* ══════════════ SETTINGS SUB-NAV ══════════════ */
+.settings-nav-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.75rem;font-weight:800;color:#57534e;cursor:pointer;transition:all .15s;}
 .settings-nav-item:hover{background:#faf5ff;}
 .settings-nav-item.active{background:#f5f3ff;color:#6d28d9;}
 .settings-nav-item.danger{color:#e11d48;}
@@ -57,110 +71,137 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
 .settings-pane.active{display:block;animation:fadeUp .25s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-/* Switch */
-.rb-switch{position:relative;display:inline-block;width:44px;height:25px;flex-shrink:0;}
+/* ══════════════ SWITCH ══════════════ */
+.rb-switch{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;}
 .rb-switch input{opacity:0;width:0;height:0;}
 .rb-slider{position:absolute;cursor:pointer;inset:0;background:#e7d9c5;border-radius:9999px;transition:.2s;}
-.rb-slider::before{content:'';position:absolute;height:19px;width:19px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.rb-slider::before{content:'';position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .rb-switch input:checked + .rb-slider{background:linear-gradient(135deg,#7c3aed,#ec4899);}
-.rb-switch input:checked + .rb-slider::before{transform:translateX(19px);}
+.rb-switch input:checked + .rb-slider::before{transform:translateX(16px);}
 
-/* Notification category */
-.notif-category{border-radius:1rem;border:1px solid #f0e6d8;overflow:hidden;}
-.notif-cat-header{display:flex;align-items:center;gap:.75rem;padding:.875rem 1rem;background:#fdf4e8;}
-.notif-cat-header .icon-badge{width:2.25rem;height:2.25rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
-.notif-item{display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;border-top:1px solid #f8f4ed;transition:background .12s;}
+/* ══════════════ NOTIF CATEGORIES ══════════════ */
+.notif-category{border-radius:.75rem;border:1px solid #f0e6d8;overflow:hidden;}
+.notif-cat-header{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;background:#fdf4e8;}
+.notif-cat-header .icon-badge{width:1.875rem;height:1.875rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.notif-item{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;border-top:1px solid #f8f4ed;transition:background .12s;}
 .notif-item:hover{background:#faf5ff;}
-.notif-item .notif-content{flex:1;min-width:0;}
-.notif-item .notif-title{font-size:.875rem;font-weight:800;color:#0f172a;}
-.notif-item .notif-desc{font-size:.75rem;font-weight:600;color:#78716c;margin-top:.15rem;}
 
-/* Radio card */
-.radio-card{display:flex;align-items:center;gap:.875rem;border:1.5px solid #e7d9c5;border-radius:1rem;padding:1rem;cursor:pointer;transition:all .15s;background:#fff;}
+/* ══════════════ RADIO CARDS ══════════════ */
+.radio-card{display:flex;align-items:center;gap:.625rem;border:1.5px solid #e7d9c5;border-radius:.625rem;padding:.75rem;cursor:pointer;transition:all .15s;background:#fff;}
 .radio-card:hover{border-color:#c4b5fd;background:#faf5ff;}
 .radio-card.selected{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,.08);}
-.radio-dot{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+.radio-dot{width:1rem;height:1rem;border:1.5px solid #cbd5e1;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto;}
 .radio-card.selected .radio-dot{border-color:#7c3aed;}
-.radio-card.selected .radio-dot::after{content:'';width:.6rem;height:.6rem;border-radius:50%;background:#7c3aed;}
+.radio-card.selected .radio-dot::after{content:'';width:.5rem;height:.5rem;border-radius:50%;background:#7c3aed;}
 
-/* Theme card */
-.theme-card{border:1.5px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .15s;padding:.75rem;text-align:center;}
+/* ══════════════ THEME CARDS ══════════════ */
+.theme-card{border:1.5px solid #e7d9c5;border-radius:.625rem;cursor:pointer;transition:all .15s;padding:.625rem;text-align:center;}
 .theme-card:hover{border-color:#c4b5fd;}
 .theme-card.selected{border-color:#7c3aed;background:#f5f3ff;}
-.theme-swatch{height:52px;border-radius:.625rem;margin-bottom:.625rem;overflow:hidden;border:1px solid #e7d9c5;display:flex;}
+.theme-swatch{height:42px;border-radius:.5rem;margin-bottom:.5rem;overflow:hidden;border:1px solid #e7d9c5;display:flex;}
 
-.session-row{display:flex;align-items:center;gap:.875rem;padding:.875rem;border:1px solid #f0e6d8;border-radius:1rem;}
+/* ══════════════ SESSIONS ══════════════ */
+.session-row{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;border:1px solid #f0e6d8;border-radius:.625rem;}
+
+/* ══════════════ PASSWORD STRENGTH ══════════════ */
 .strength-bar{height:3px;border-radius:9999px;transition:width .3s,background .3s;}
 
-/* Plans améliorés */
-.plan-card{border:2px solid #e7d9c5;border-radius:1.25rem;padding:1.5rem 1.25rem;cursor:pointer;transition:all .2s;position:relative;background:#fff;}
-.plan-card:hover{transform:translateY(-4px);border-color:#c4b5fd;box-shadow:0 16px 32px rgba(124,58,237,.10);}
+/* ══════════════ PLAN CARDS ══════════════ */
+.plan-card{border:2px solid #e7d9c5;border-radius:1rem;padding:1.25rem 1rem;cursor:pointer;transition:all .2s;position:relative;background:#fff;}
+.plan-card:hover{transform:translateY(-3px);border-color:#c4b5fd;box-shadow:0 12px 24px rgba(124,58,237,.10);}
 .plan-card.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#fff);}
-.plan-card .plan-badge{position:absolute;top:-10px;right:1rem;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-size:.65rem;font-weight:900;padding:.25rem .625rem;border-radius:9999px;letter-spacing:.03em;}
-.plan-card .plan-name{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;}
-.plan-card .plan-price{font-size:2rem;font-weight:900;line-height:1;color:#0f172a;}
-.plan-card .plan-price small{font-size:.8125rem;font-weight:700;color:#78716c;}
-.plan-feature{display:flex;align-items:center;gap:.5rem;font-size:.75rem;font-weight:600;color:#57534e;padding:.25rem 0;}
+.plan-card .plan-badge{position:absolute;top:-8px;right:.75rem;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-size:.6rem;font-weight:900;padding:.2rem .5rem;border-radius:9999px;letter-spacing:.03em;}
+.plan-feature{display:flex;align-items:center;gap:.375rem;font-size:.7rem;font-weight:600;color:#57534e;padding:.2rem 0;}
 
-/* Payment method card */
-.pay-card{border:1.5px solid #e7d9c5;border-radius:1rem;padding:1rem;cursor:pointer;transition:all .15s;text-align:center;background:#fff;}
+/* ══════════════ PAYMENT CARD ══════════════ */
+.pay-card{border:1.5px solid #e7d9c5;border-radius:.625rem;padding:.75rem;cursor:pointer;transition:all .15s;text-align:center;background:#fff;}
 .pay-card:hover{border-color:#c4b5fd;background:#faf5ff;transform:translateY(-2px);}
 .pay-card.selected{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,.08);}
 
-/* Danger zone */
-.danger-zone{border:1.5px solid #fecdd3;background:#fff1f2;border-radius:1.25rem;}
-
-/* Billing row */
-.billing-row{display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;border-radius:.875rem;transition:background .12s;}
+/* ══════════════ BILLING ROW ══════════════ */
+.billing-row{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;border-radius:.625rem;transition:background .12s;}
 .billing-row:hover{background:#faf5ff;}
 
+/* ══════════════ DANGER ══════════════ */
+.danger-zone{border:1.5px solid #fecdd3;background:#fff1f2;border-radius:1rem;}
+
+/* ══════════════ MODAL ══════════════ */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.modal-box{background:#fff;border-radius:1.5rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:440px;padding:1.75rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);}
-@keyframes modalUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modal-box{background:#fff;border-radius:1.125rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:400px;padding:1.25rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);}
+@keyframes modalUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
-.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
-@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+/* ══════════════ TOAST ══════════════ */
+#rb-toast-host{position:fixed;bottom:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.375rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.5rem;padding:.625rem .875rem;border-radius:.625rem;font-size:.75rem;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
 <body>
 
 <div id="rb-toast-host"></div>
 
-<!-- Modal suppression compte -->
+<!-- MODAL NOTE -->
+<div id="note-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white text-sm"></i></div>
+      <div><p class="text-sm font-black text-slate-900">Prendre une note</p><p class="text-[10px] text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark text-sm"></i></button>
+    </div>
+    <input type="text" id="note-title" class="rb-input mb-2" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="4" class="rb-input mb-3" placeholder="Écris ta note ici..." style="resize:none;font-family:inherit;line-height:1.5;"></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" onclick="saveNote()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DELETE -->
 <div class="modal-overlay" id="modal-delete">
   <div class="modal-box">
-    <div class="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-      <i class="fa-solid fa-triangle-exclamation text-rose-500 text-xl"></i>
+    <div class="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center mb-3">
+      <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
     </div>
-    <h3 class="text-lg font-black text-slate-900 mb-1">Supprimer ton compte ?</h3>
-    <p class="text-sm text-slate-500 mb-5 leading-relaxed font-semibold">Cette action est <strong class="text-rose-600">irréversible</strong>. Toutes tes données seront définitivement supprimées.</p>
+    <h3 class="text-base font-black text-slate-900 mb-0.5">Supprimer ton compte ?</h3>
+    <p class="text-xs text-slate-500 mb-4 leading-relaxed font-semibold">Cette action est <strong class="text-rose-600">irréversible</strong>. Toutes tes données seront définitivement supprimées.</p>
     <label class="rb-label">Tape SUPPRIMER pour confirmer</label>
-    <input type="text" id="confirm-delete-input" class="rb-input mb-5" placeholder="SUPPRIMER" oninput="checkDeleteConfirm()"/>
-    <div class="flex gap-3">
-      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm hover:bg-[#faf5ff]" onclick="closeModal('modal-delete')">Annuler</button>
-      <button class="flex-1 bg-rose-500 text-white font-bold py-2.5 rounded-xl text-sm opacity-40 cursor-not-allowed" id="confirm-delete-btn" disabled onclick="doDeleteAccount()">Supprimer</button>
+    <input type="text" id="confirm-delete-input" class="rb-input mb-4" placeholder="SUPPRIMER" oninput="checkDeleteConfirm()"/>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-[#faf5ff]" onclick="closeModal('modal-delete')">Annuler</button>
+      <button class="flex-1 bg-rose-500 text-white font-bold py-2 rounded-lg text-xs opacity-40 cursor-not-allowed" id="confirm-delete-btn" disabled onclick="doDeleteAccount()">Supprimer</button>
     </div>
   </div>
 </div>
 
 <div class="flex">
 <aside class="sidebar" id="sidebar">
-  <div class="p-5 flex flex-col h-full overflow-y-auto">
-    <a href="relbrain-accueil.html" class="flex items-center gap-2.5 mb-5">
-      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative"><i class="fa-solid fa-brain text-base"></i><span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white"></span></div>
-      <div><p class="text-base font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p><p class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p></div>
+  <div class="px-4 py-4 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2 mb-4">
+      <div class="bg-violet-600 text-white p-1.5 rounded-lg shadow-sm shadow-violet-200 relative">
+        <i class="fa-solid fa-brain text-sm"></i>
+        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
+      </div>
+      <div>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
+      </div>
     </a>
-    <a href="relbrain-profil.html" class="avatar-card mb-6">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-sm shrink-0">K</div>
-      <div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-800 truncate">Pharel FOFE</p><p class="text-[10px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p></div>
-      <div class="text-right shrink-0"><p class="text-[10px] text-amber-500 font-black">🔥 12</p><p class="text-[9px] text-slate-400">jours</p></div>
+
+    <a href="relbrain-profil.html" class="avatar-card mb-4">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+      </div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
     </a>
-    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Menu</p>
-    <nav class="space-y-0.5 mb-4">
+
+    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
       <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
@@ -168,460 +209,471 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
     </nav>
-    <a href="relbrain-parametres.html" class="nav-item active mb-4"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
-    <div class="mt-auto space-y-2 pt-4 border-t border-[#e7d9c5]">
-      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up"></i> Upgrader</button>
+
+    <a href="relbrain-parametres.html" class="nav-item active mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+
+    <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
+      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
 
 <div class="main-content flex flex-col min-h-screen" id="main-content">
   <header class="app-header">
-    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars text-base"></i></button>
-    <div class="flex items-center gap-1.5 text-sm">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="flex items-center gap-1 text-xs">
       <span class="text-slate-500 font-bold">RelBrain</span>
-      <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+      <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
       <span class="font-black text-slate-800">Paramètres</span>
     </div>
-    <div class="ml-auto flex items-center gap-2">
-      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon text-base"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')"><i class="fa-solid fa-bell text-base"></i><span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span></button>
+    <div class="ml-auto flex items-center gap-1.5">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
+      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+        <i class="fa-solid fa-bell"></i>
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
+      </button>
       <div class="relative" id="avatar-wrap">
         <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
         <div class="avatar-menu" id="avatar-menu">
-          <div class="px-4 py-3 border-b border-[#e7d9c5]"><p class="text-sm font-black text-slate-800">Pharel FOFE</p><p class="text-[11px] text-slate-400 font-semibold">pharel@relbrain.ai</p></div>
-          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user w-4 text-violet-500"></i> Mon profil</a>
-          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear w-4 text-violet-500"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Déconnexion</a>
+          <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
+            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+          </div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
+          <a href="relbrain-landing.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
   </header>
 
-  <div class="p-5 md:p-6 max-w-5xl mx-auto w-full">
-    <div class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-black text-slate-900">Paramètres</h1>
-      <p class="text-sm text-slate-500 mt-1 font-semibold">Gère ta langue, ton thème, tes notifications et ton abonnement.</p>
+  <div class="p-4 md:p-5 max-w-5xl mx-auto w-full">
+
+    <div class="mb-4">
+      <h1 class="text-xl md:text-2xl font-black text-slate-900">Paramètres</h1>
+      <p class="text-xs text-slate-500 mt-0.5 font-semibold">Gère ta langue, ton thème, tes notifications et ton abonnement.</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
 
-      <!-- Sous-nav -->
+      <!-- SOUS-NAV -->
       <div class="lg:col-span-1">
-        <div class="rb-card p-2 lg:sticky lg:top-20 flex lg:flex-col gap-1 overflow-x-auto">
-          <div class="settings-nav-item active" onclick="switchSettings('langue')"><i class="fa-solid fa-globe w-4"></i> Langue</div>
-          <div class="settings-nav-item" onclick="switchSettings('theme')"><i class="fa-solid fa-palette w-4"></i> Thème</div>
-          <div class="settings-nav-item" onclick="switchSettings('notif')"><i class="fa-solid fa-bell w-4"></i> Notifications</div>
-          <div class="settings-nav-item" onclick="switchSettings('securite')"><i class="fa-solid fa-lock w-4"></i> Sécurité</div>
-          <div class="settings-nav-item" onclick="switchSettings('abonnement')"><i class="fa-solid fa-crown w-4"></i> Abonnement</div>
-          <div class="settings-nav-item danger" onclick="switchSettings('danger')"><i class="fa-solid fa-trash w-4"></i> Suppr. compte</div>
+        <div class="rb-card p-1.5 lg:sticky lg:top-20 flex lg:flex-col gap-0.5 overflow-x-auto">
+          <div class="settings-nav-item active" onclick="switchSettings('langue', this)"><i class="fa-solid fa-globe text-xs"></i> Langue</div>
+          <div class="settings-nav-item" onclick="switchSettings('theme', this)"><i class="fa-solid fa-palette text-xs"></i> Thème</div>
+          <div class="settings-nav-item" onclick="switchSettings('notif', this)"><i class="fa-solid fa-bell text-xs"></i> Notifications</div>
+          <div class="settings-nav-item" onclick="switchSettings('securite', this)"><i class="fa-solid fa-lock text-xs"></i> Sécurité</div>
+          <div class="settings-nav-item" onclick="switchSettings('abonnement', this)"><i class="fa-solid fa-crown text-xs"></i> Abonnement</div>
+          <div class="settings-nav-item danger" onclick="switchSettings('danger', this)"><i class="fa-solid fa-trash text-xs"></i> Suppr. compte</div>
         </div>
       </div>
 
-      <!-- Contenu -->
-      <div class="lg:col-span-3 space-y-5">
+      <!-- CONTENU -->
+      <div class="lg:col-span-3 space-y-3">
 
-        <!-- LANGUE -->
+        <!-- ═══ LANGUE ═══ -->
         <div class="settings-pane active" id="span-langue">
-          <div class="rb-card p-5">
-            <h2 class="font-black text-slate-900 text-base mb-1">Langue de l'interface</h2>
-            <p class="text-xs text-slate-400 mb-4 font-semibold">RelBrain et l'IA génèrent le contenu dans cette langue.</p>
-            <div class="grid sm:grid-cols-2 gap-3">
-              <div class="radio-card selected" onclick="selectRadio(this,'lang')">
-                <span class="text-2xl">🇫🇷</span><div><p class="text-sm font-black text-slate-800">Français</p><p class="text-[11px] text-slate-400 font-semibold">Langue par défaut</p></div><div class="radio-dot"></div>
+          <div class="rb-card p-4">
+            <h2 class="font-black text-slate-900 text-sm mb-0.5">Langue de l'interface</h2>
+            <p class="text-[10px] text-slate-400 mb-3 font-semibold">RelBrain et l'IA génèrent le contenu dans cette langue.</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+              <div class="radio-card selected" onclick="selectRadio(this)">
+                <span class="text-lg">🇫🇷</span>
+                <div><p class="text-xs font-black text-slate-800">Français</p><p class="text-[10px] text-slate-400 font-semibold">Langue par défaut</p></div>
+                <div class="radio-dot"></div>
               </div>
-              <div class="radio-card" onclick="selectRadio(this,'lang')">
-                <span class="text-2xl">🇬🇧</span><div><p class="text-sm font-black text-slate-800">English</p><p class="text-[11px] text-slate-400 font-semibold">Beta</p></div><div class="radio-dot"></div>
+              <div class="radio-card" onclick="selectRadio(this)">
+                <span class="text-lg">🇬🇧</span>
+                <div><p class="text-xs font-black text-slate-800">English</p><p class="text-[10px] text-slate-400 font-semibold">Beta</p></div>
+                <div class="radio-dot"></div>
               </div>
             </div>
-            <p class="text-[11px] text-slate-400 mt-4 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-500"></i> Espagnol et Arabe arrivent bientôt.</p>
+            <p class="text-[10px] text-slate-400 mt-3 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-info text-violet-500 text-[9px]"></i> Espagnol et Arabe arrivent bientôt.</p>
           </div>
         </div>
 
-        <!-- THEME -->
+        <!-- ═══ THEME ═══ -->
         <div class="settings-pane" id="span-theme">
-          <div class="rb-card p-5">
-            <h2 class="font-black text-slate-900 text-base mb-1">Apparence</h2>
-            <p class="text-xs text-slate-400 mb-4 font-semibold">Choisis comment RelBrain s'affiche.</p>
-            <div class="grid sm:grid-cols-3 gap-3">
+          <div class="rb-card p-4">
+            <h2 class="font-black text-slate-900 text-sm mb-0.5">Apparence</h2>
+            <p class="text-[10px] text-slate-400 mb-3 font-semibold">Choisis comment RelBrain s'affiche.</p>
+            <div class="grid sm:grid-cols-3 gap-2">
               <div class="theme-card selected" onclick="selectTheme(this,'light')">
                 <div class="theme-swatch"><div style="flex:1;background:#fdf4e8"></div><div style="width:28%;background:#f5f3ff"></div></div>
-                <p class="text-xs font-black text-slate-700">☀️ Clair</p>
+                <p class="text-[10px] font-black text-slate-700">☀️ Clair</p>
               </div>
               <div class="theme-card" onclick="selectTheme(this,'dark')">
                 <div class="theme-swatch"><div style="flex:1;background:#1e1b3a"></div><div style="width:28%;background:#312e63"></div></div>
-                <p class="text-xs font-black text-slate-700">🌙 Sombre</p>
+                <p class="text-[10px] font-black text-slate-700">🌙 Sombre</p>
               </div>
               <div class="theme-card" onclick="selectTheme(this,'system')">
                 <div class="theme-swatch"><div style="flex:1;background:#fdf4e8"></div><div style="width:28%;background:#1e1b3a"></div></div>
-                <p class="text-xs font-black text-slate-700">🖥️ Système</p>
+                <p class="text-[10px] font-black text-slate-700">🖥️ Système</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- NOTIFICATIONS (AMÉLIORÉ) -->
+        <!-- ═══ NOTIFICATIONS ═══ -->
         <div class="settings-pane" id="span-notif">
 
           <!-- Résumé -->
-          <div class="rb-card p-5 mb-4" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center text-white text-xl">🔔</div>
+          <div class="rb-card p-3.5 mb-3" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center text-white text-sm">🔔</div>
                 <div>
-                  <p class="font-black text-slate-900">Centre de notifications</p>
-                  <p class="text-xs text-slate-500 font-semibold"><span id="notif-active-count">7</span> notifications actives · Dernière : il y a 5 min</p>
+                  <p class="font-black text-slate-900 text-xs">Centre de notifications</p>
+                  <p class="text-[10px] text-slate-500 font-semibold"><span id="notif-active-count">7</span> notifications actives · Dernière : il y a 5 min</p>
                 </div>
               </div>
-              <button class="text-xs font-black text-violet-600 hover:underline shrink-0" onclick="toast('Toutes les notifications ont été activées','success')">Tout activer</button>
+              <button class="text-[10px] font-black text-violet-600 hover:underline shrink-0" onclick="toast('Toutes les notifications ont été activées','success')">Tout activer</button>
             </div>
           </div>
 
-          <!-- Catégorie : Étude -->
-          <div class="notif-category mb-3">
+          <!-- Catégorie Étude -->
+          <div class="notif-category mb-2">
             <div class="notif-cat-header">
               <div class="icon-badge bg-violet-100 text-violet-600"><i class="fa-solid fa-graduation-cap"></i></div>
               <div class="flex-1">
-                <p class="text-sm font-black text-slate-900">Étude & Rappels</p>
-                <p class="text-[11px] text-slate-500 font-semibold">Rappels d'étude et suivi de progression</p>
+                <p class="text-xs font-black text-slate-900">Étude & Rappels</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Rappels d'étude et suivi de progression</p>
               </div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Rappel de révision quotidien</p><p class="notif-desc">À l'heure qui te convient — 18h00 par défaut</p></div>
-              <select class="text-xs font-bold border border-[#e7d9c5] rounded-lg px-2 py-1.5 bg-white focus:outline-none" onchange="toast('Heure enregistrée','success')">
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Rappel de révision quotidien</p><p class="text-[10px] text-slate-500 font-semibold">À l'heure qui te convient — 18h00 par défaut</p></div>
+              <select class="text-[10px] font-bold border border-[#e7d9c5] rounded-md px-1.5 py-1 bg-white focus:outline-none" onchange="toast('Heure enregistrée','success')">
                 <option>08h00</option><option>12h00</option><option selected>18h00</option><option>20h00</option><option>21h00</option>
               </select>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Objectif atteint</p><p class="notif-desc">Quand tu atteins ton objectif quotidien</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Objectif atteint</p><p class="text-[10px] text-slate-500 font-semibold">Quand tu atteins ton objectif quotidien</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Streak en danger</p><p class="notif-desc">Alerte 2h avant la fin de ta série 🔥</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Streak en danger</p><p class="text-[10px] text-slate-500 font-semibold">Alerte 2h avant la fin de ta série 🔥</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
           </div>
 
-          <!-- Catégorie : Quiz & IA -->
-          <div class="notif-category mb-3">
+          <!-- Catégorie Quiz & IA -->
+          <div class="notif-category mb-2">
             <div class="notif-cat-header">
               <div class="icon-badge bg-pink-100 text-pink-600"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
               <div class="flex-1">
-                <p class="text-sm font-black text-slate-900">Quiz & IA</p>
-                <p class="text-[11px] text-slate-500 font-semibold">Générations IA, quiz terminés, recommandations</p>
+                <p class="text-xs font-black text-slate-900">Quiz & IA</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Générations IA, quiz terminés, recommandations</p>
               </div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Quiz terminé</p><p class="notif-desc">Résumé et statistiques après chaque quiz</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Quiz terminé</p><p class="text-[10px] text-slate-500 font-semibold">Résumé et statistiques après chaque quiz</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Document analysé</p><p class="notif-desc">Quand l'IA finit d'analyser un document</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Document analysé</p><p class="text-[10px] text-slate-500 font-semibold">Quand l'IA finit d'analyser un document</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Recommandations IA</p><p class="notif-desc">Nouvelles suggestions personnalisées</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Recommandations IA</p><p class="text-[10px] text-slate-500 font-semibold">Nouvelles suggestions personnalisées</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
           </div>
 
-          <!-- Catégorie : Gamification -->
-          <div class="notif-category mb-3">
+          <!-- Catégorie Récompenses -->
+          <div class="notif-category mb-2">
             <div class="notif-cat-header">
               <div class="icon-badge bg-amber-100 text-amber-600"><i class="fa-solid fa-trophy"></i></div>
               <div class="flex-1">
-                <p class="text-sm font-black text-slate-900">Récompenses & Classement</p>
-                <p class="text-[11px] text-slate-500 font-semibold">Badges, ligues, compétitions</p>
+                <p class="text-xs font-black text-slate-900">Récompenses & Classement</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Badges, ligues, compétitions</p>
               </div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Nouveau badge</p><p class="notif-desc">À chaque badge débloqué 🏆</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Nouveau badge</p><p class="text-[10px] text-slate-500 font-semibold">À chaque badge débloqué 🏆</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Classement hebdomadaire</p><p class="notif-desc">Ton rang final chaque dimanche</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Classement hebdomadaire</p><p class="text-[10px] text-slate-500 font-semibold">Ton rang final chaque dimanche</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Fin de ligue</p><p class="notif-desc">Alerte 6h avant la fin de la semaine</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Fin de ligue</p><p class="text-[10px] text-slate-500 font-semibold">Alerte 6h avant la fin de la semaine</p></div>
               <label class="rb-switch"><input type="checkbox" onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
           </div>
 
-          <!-- Catégorie : Marketing -->
-          <div class="notif-category mb-4">
+          <!-- Catégorie Newsletter -->
+          <div class="notif-category mb-3">
             <div class="notif-cat-header">
               <div class="icon-badge bg-slate-100 text-slate-600"><i class="fa-solid fa-envelope"></i></div>
               <div class="flex-1">
-                <p class="text-sm font-black text-slate-900">Newsletter & Produit</p>
-                <p class="text-[11px] text-slate-500 font-semibold">Nouveautés et astuces</p>
+                <p class="text-xs font-black text-slate-900">Newsletter & Produit</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Nouveautés et astuces</p>
               </div>
               <label class="rb-switch"><input type="checkbox" onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Newsletter RelBrain</p><p class="notif-desc">Astuces de révision chaque semaine</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Newsletter RelBrain</p><p class="text-[10px] text-slate-500 font-semibold">Astuces de révision chaque semaine</p></div>
               <label class="rb-switch"><input type="checkbox" onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
             <div class="notif-item">
-              <div class="notif-content"><p class="notif-title">Nouveaux features</p><p class="notif-desc">Quand de nouvelles fonctionnalités sortent</p></div>
+              <div class="flex-1"><p class="text-xs font-black text-slate-800">Nouveaux features</p><p class="text-[10px] text-slate-500 font-semibold">Quand de nouvelles fonctionnalités sortent</p></div>
               <label class="rb-switch"><input type="checkbox" checked onchange="onNotifToggle(this)"><span class="rb-slider"></span></label>
             </div>
           </div>
 
           <!-- Canal -->
-          <div class="rb-card p-5">
-            <h3 class="font-black text-slate-900 text-sm mb-3">Canaux de réception</h3>
-            <div class="grid sm:grid-cols-3 gap-3">
-              <label class="radio-card selected cursor-pointer" onclick="selectRadio(this,'channel')">
-                <i class="fa-solid fa-envelope text-violet-500"></i>
-                <div><p class="text-xs font-black text-slate-800">Email</p><p class="text-[10px] text-slate-400 font-semibold">Recommandé</p></div>
+          <div class="rb-card p-4">
+            <h3 class="font-black text-slate-900 text-xs mb-2.5">Canaux de réception</h3>
+            <div class="grid sm:grid-cols-3 gap-2">
+              <label class="radio-card selected cursor-pointer" onclick="selectRadio(this)">
+                <i class="fa-solid fa-envelope text-violet-500 text-sm"></i>
+                <div><p class="text-[11px] font-black text-slate-800">Email</p><p class="text-[9px] text-slate-400 font-semibold">Recommandé</p></div>
                 <div class="radio-dot"></div>
               </label>
-              <label class="radio-card cursor-pointer" onclick="selectRadio(this,'channel')">
-                <i class="fa-solid fa-mobile-screen text-violet-500"></i>
-                <div><p class="text-xs font-black text-slate-800">Push</p><p class="text-[10px] text-slate-400 font-semibold">Mobile</p></div>
+              <label class="radio-card cursor-pointer" onclick="selectRadio(this)">
+                <i class="fa-solid fa-mobile-screen text-violet-500 text-sm"></i>
+                <div><p class="text-[11px] font-black text-slate-800">Push</p><p class="text-[9px] text-slate-400 font-semibold">Mobile</p></div>
                 <div class="radio-dot"></div>
               </label>
-              <label class="radio-card cursor-pointer" onclick="selectRadio(this,'channel')">
-                <i class="fa-solid fa-comment-sms text-violet-500"></i>
-                <div><p class="text-xs font-black text-slate-800">SMS</p><p class="text-[10px] text-slate-400 font-semibold">+237 6XX XXX XXX</p></div>
+              <label class="radio-card cursor-pointer" onclick="selectRadio(this)">
+                <i class="fa-solid fa-comment-sms text-violet-500 text-sm"></i>
+                <div><p class="text-[11px] font-black text-slate-800">SMS</p><p class="text-[9px] text-slate-400 font-semibold">+237 6XX XXX</p></div>
                 <div class="radio-dot"></div>
               </label>
             </div>
           </div>
         </div>
 
-        <!-- SÉCURITÉ -->
+        <!-- ═══ SÉCURITÉ ═══ -->
         <div class="settings-pane" id="span-securite">
-          <div class="rb-card p-5 mb-4">
-            <h2 class="font-black text-slate-900 text-base mb-4">Changer le mot de passe</h2>
-            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+          <div class="rb-card p-4 mb-3">
+            <h2 class="font-black text-slate-900 text-sm mb-3">Changer le mot de passe</h2>
+            <div class="grid sm:grid-cols-2 gap-3 mb-3">
               <div class="sm:col-span-2"><label class="rb-label">Mot de passe actuel</label><input type="password" class="rb-input" placeholder="••••••••"/></div>
               <div><label class="rb-label">Nouveau</label><input type="password" class="rb-input" placeholder="Min. 8 caractères" oninput="checkStrength()"/></div>
               <div><label class="rb-label">Confirmer</label><input type="password" class="rb-input" placeholder="Répéter"/></div>
             </div>
-            <button class="gradient-bg text-white font-black px-5 py-2.5 rounded-xl text-sm shadow-md shadow-violet-200" onclick="toast('Mot de passe mis à jour','success')">Mettre à jour</button>
+            <button class="gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200" onclick="toast('Mot de passe mis à jour','success')">Mettre à jour</button>
           </div>
-          <div class="rb-card p-5 mb-4">
+          <div class="rb-card p-4 mb-3">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="font-black text-slate-900 text-base mb-1">Authentification à deux facteurs</h2>
-                <p class="text-xs text-slate-400 font-semibold max-w-md">Couche de sécurité supplémentaire via une app d'authentification.</p>
+                <h2 class="font-black text-slate-900 text-xs mb-0.5">Authentification à deux facteurs</h2>
+                <p class="text-[10px] text-slate-400 font-semibold max-w-md">Couche de sécurité supplémentaire via une app d'authentification.</p>
               </div>
               <label class="rb-switch"><input type="checkbox" onchange="toast(this.checked?'2FA activée':'2FA désactivée','info')"><span class="rb-slider"></span></label>
             </div>
           </div>
-          <div class="rb-card p-5">
-            <h2 class="font-black text-slate-900 text-base mb-4">Sessions actives</h2>
-            <div class="space-y-2.5">
+          <div class="rb-card p-4">
+            <h2 class="font-black text-slate-900 text-sm mb-3">Sessions actives</h2>
+            <div class="space-y-1.5">
               <div class="session-row">
-                <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-laptop text-violet-500 text-sm"></i></div>
-                <div class="flex-1"><p class="text-sm font-black text-slate-800">Chrome · Windows <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full ml-1">Cet appareil</span></p><p class="text-xs text-slate-400 font-semibold">Douala, Cameroun · à l'instant</p></div>
+                <div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-laptop text-violet-500 text-xs"></i></div>
+                <div class="flex-1"><p class="text-xs font-black text-slate-800">Chrome · Windows <span class="text-[9px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full ml-1">Cet appareil</span></p><p class="text-[10px] text-slate-400 font-semibold">Douala, Cameroun · à l'instant</p></div>
               </div>
               <div class="session-row">
-                <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-mobile-screen text-violet-500 text-sm"></i></div>
-                <div class="flex-1"><p class="text-sm font-black text-slate-800">App RelBrain · iPhone</p><p class="text-xs text-slate-400 font-semibold">Douala, Cameroun · il y a 3h</p></div>
-                <button class="text-xs font-black text-rose-500 hover:underline" onclick="revokeSession(this)">Déconnecter</button>
+                <div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-mobile-screen text-violet-500 text-xs"></i></div>
+                <div class="flex-1"><p class="text-xs font-black text-slate-800">App RelBrain · iPhone</p><p class="text-[10px] text-slate-400 font-semibold">Douala, Cameroun · il y a 3h</p></div>
+                <button class="text-[10px] font-black text-rose-500 hover:underline" onclick="revokeSession(this)">Déconnecter</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ABONNEMENT (AMÉLIORÉ) -->
+        <!-- ═══ ABONNEMENT ═══ -->
         <div class="settings-pane" id="span-abonnement">
 
           <!-- Carte statut actuel -->
-          <div class="rb-card p-6 mb-5 relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);border:0;">
+          <div class="rb-card p-4 mb-3 relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);border:0;">
             <div class="absolute inset-0" style="background:radial-gradient(circle at 80% 10%, rgba(255,255,255,.18), transparent 55%);"></div>
-            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">👑</div>
+            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center text-xl">👑</div>
                 <div class="text-white">
-                  <p class="text-[11px] font-black uppercase tracking-widest opacity-90">Plan actuel</p>
-                  <p class="text-2xl font-black">Pro</p>
-                  <p class="text-xs font-bold opacity-90 mt-0.5">Renouvellement le 14 août 2026 · 9€/mois</p>
+                  <p class="text-[10px] font-black uppercase tracking-widest opacity-90">Plan actuel</p>
+                  <p class="text-lg font-black">Pro</p>
+                  <p class="text-[10px] font-bold opacity-90 mt-0.5">Renouvellement le 14 août 2026 · 9€/mois</p>
                 </div>
               </div>
-              <div class="flex flex-col gap-2 items-start md:items-end">
-                <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ Actif</span>
-                <button class="text-xs font-black text-white underline opacity-90 hover:opacity-100" onclick="toast('Renouvellement anticipé','info')">Renouveler maintenant →</button>
+              <div class="flex flex-col gap-1 items-start md:items-end">
+                <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">✓ Actif</span>
+                <button class="text-[10px] font-black text-white underline opacity-90 hover:opacity-100" onclick="toast('Renouvellement anticipé','info')">Renouveler maintenant →</button>
               </div>
             </div>
-            <div class="relative z-10 grid grid-cols-3 gap-2 mt-5">
-              <div class="bg-white/15 backdrop-blur rounded-xl p-3 text-center text-white">
-                <p class="text-xl font-black leading-none">∞</p>
-                <p class="text-[10px] font-bold uppercase tracking-wider opacity-90 mt-1">Documents</p>
+            <div class="relative z-10 grid grid-cols-3 gap-1.5 mt-3">
+              <div class="bg-white/15 backdrop-blur rounded-lg p-2 text-center text-white">
+                <p class="text-base font-black leading-none">∞</p>
+                <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-0.5">Documents</p>
               </div>
-              <div class="bg-white/15 backdrop-blur rounded-xl p-3 text-center text-white">
-                <p class="text-xl font-black leading-none">128</p>
-                <p class="text-[10px] font-bold uppercase tracking-wider opacity-90 mt-1">Quiz ce mois</p>
+              <div class="bg-white/15 backdrop-blur rounded-lg p-2 text-center text-white">
+                <p class="text-base font-black leading-none">128</p>
+                <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-0.5">Quiz ce mois</p>
               </div>
-              <div class="bg-white/15 backdrop-blur rounded-xl p-3 text-center text-white">
-                <p class="text-xl font-black leading-none">18j</p>
-                <p class="text-[10px] font-bold uppercase tracking-wider opacity-90 mt-1">Avant renouv.</p>
+              <div class="bg-white/15 backdrop-blur rounded-lg p-2 text-center text-white">
+                <p class="text-base font-black leading-none">18j</p>
+                <p class="text-[9px] font-bold uppercase tracking-wider opacity-90 mt-0.5">Avant renouv.</p>
               </div>
             </div>
           </div>
 
-          <!-- Comparateur plans -->
-          <div class="rb-card p-5 mb-5">
-            <h2 class="font-black text-slate-900 text-base mb-1">Changer de forfait</h2>
-            <p class="text-xs text-slate-500 font-semibold mb-5">Évolue ou reviens au gratuit à tout moment — sans engagement.</p>
-            <div class="grid sm:grid-cols-3 gap-4">
+          <!-- Comparateur -->
+          <div class="rb-card p-4 mb-3">
+            <h2 class="font-black text-slate-900 text-sm mb-0.5">Changer de forfait</h2>
+            <p class="text-[10px] text-slate-500 font-semibold mb-3">Évolue ou reviens au gratuit à tout moment — sans engagement.</p>
+            <div class="grid sm:grid-cols-3 gap-3">
 
               <!-- FREE -->
               <div class="plan-card" onclick="choosePlan(this,'Gratuit')">
-                <p class="plan-name text-slate-500">Gratuit</p>
-                <div class="plan-price mb-4">0€<small>/mois</small></div>
-                <div class="space-y-1.5 mb-4 pb-4 border-b border-[#f0e6d8]">
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> 5 documents/mois</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Quiz 10 questions</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Flashcards basiques</div>
-                  <div class="plan-feature" style="opacity:.35"><i class="fa-solid fa-xmark text-xs"></i> Mode examen</div>
-                  <div class="plan-feature" style="opacity:.35"><i class="fa-solid fa-xmark text-xs"></i> IA adaptative</div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-0.5">Gratuit</p>
+                <div class="text-2xl font-black mb-3 text-slate-900">0€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> 5 documents/mois</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Quiz 10 questions</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Flashcards basiques</div>
+                  <div class="plan-feature" style="opacity:.35"><i class="fa-solid fa-xmark text-[9px]"></i> Mode examen</div>
+                  <div class="plan-feature" style="opacity:.35"><i class="fa-solid fa-xmark text-[9px]"></i> IA adaptative</div>
                 </div>
-                <p class="text-[11px] font-bold text-slate-400 text-center">Sélectionner</p>
+                <p class="text-[10px] font-bold text-slate-400 text-center">Sélectionner</p>
               </div>
 
-              <!-- PRO (actuel) -->
+              <!-- PRO -->
               <div class="plan-card selected" onclick="choosePlan(this,'Pro')">
                 <span class="plan-badge">⭐ ACTUEL</span>
-                <p class="plan-name text-violet-600">Pro</p>
-                <div class="plan-price mb-4">9€<small>/mois</small></div>
-                <div class="space-y-1.5 mb-4 pb-4 border-b border-[#f0e6d8]">
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Documents illimités</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Quiz 30 questions</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Flashcards + SM-2</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> Mode examen blanc</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> IA adaptative</div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-violet-600 mb-0.5">Pro</p>
+                <div class="text-2xl font-black mb-3 text-slate-900">9€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Documents illimités</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Quiz 30 questions</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Flashcards + SM-2</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Mode examen blanc</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> IA adaptative</div>
                 </div>
-                <p class="text-[11px] font-black text-violet-600 text-center">✓ Ton plan actuel</p>
+                <p class="text-[10px] font-black text-violet-600 text-center">✓ Ton plan actuel</p>
               </div>
 
               <!-- PREMIUM -->
               <div class="plan-card" onclick="choosePlan(this,'Premium')">
                 <span class="plan-badge" style="background:linear-gradient(135deg,#fbbf24,#d97706)">✨ PREMIUM</span>
-                <p class="plan-name text-amber-600">Premium</p>
-                <div class="plan-price mb-4">19€<small>/mois</small></div>
-                <div class="space-y-1.5 mb-4 pb-4 border-b border-[#f0e6d8]">
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-xs"></i> Tout de Pro +</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-xs"></i> Documents vidéo</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-xs"></i> Tuteur IA 24/7</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-xs"></i> Analyse prédictive</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-xs"></i> Support prioritaire</div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-amber-600 mb-0.5">Premium</p>
+                <div class="text-2xl font-black mb-3 text-slate-900">19€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Tout de Pro +</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Documents vidéo</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Tuteur IA 24/7</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Analyse prédictive</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Support prioritaire</div>
                 </div>
-                <p class="text-[11px] font-bold text-amber-600 text-center">Mettre à niveau →</p>
+                <p class="text-[10px] font-bold text-amber-600 text-center">Mettre à niveau →</p>
               </div>
             </div>
-
-            <!-- Toggle mensuel/annuel -->
-            <div class="mt-5 pt-4 border-t border-[#f0e6d8] flex items-center justify-between flex-wrap gap-3">
+            <div class="mt-3 pt-3 border-t border-[#f0e6d8] flex items-center justify-between flex-wrap gap-2">
               <div>
-                <p class="text-sm font-black text-slate-800">Économise 30% avec le plan annuel 🎉</p>
-                <p class="text-xs text-slate-500 font-semibold mt-0.5">Utilise le code <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-black">BRAIN30</span></p>
+                <p class="text-xs font-black text-slate-800">Économise 30% avec le plan annuel 🎉</p>
+                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Code <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-black">BRAIN30</span></p>
               </div>
-              <button class="text-xs font-black text-violet-600 hover:underline" onclick="toast('Bascule annuelle — bientôt disponible','info')">Passer à l'annuel →</button>
+              <button class="text-[10px] font-black text-violet-600 hover:underline" onclick="toast('Bascule annuelle — bientôt disponible','info')">Passer à l'annuel →</button>
             </div>
           </div>
 
           <!-- Moyen de paiement -->
-          <div class="rb-card p-5 mb-5">
-            <h2 class="font-black text-slate-900 text-base mb-1">Moyen de paiement</h2>
-            <p class="text-xs text-slate-500 font-semibold mb-4">Choisis comment renouveler ton abonnement.</p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="rb-card p-4 mb-3">
+            <h2 class="font-black text-slate-900 text-sm mb-0.5">Moyen de paiement</h2>
+            <p class="text-[10px] text-slate-500 font-semibold mb-3">Choisis comment renouveler ton abonnement.</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <div class="pay-card" onclick="choosePay(this,'Orange Money')">
-                <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center text-lg" style="background:#fff2e6;">🟠</div>
-                <p class="text-xs font-black text-slate-700">Orange Money</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5">+237</p>
+                <div class="w-8 h-8 rounded-lg mx-auto mb-1.5 flex items-center justify-center text-base" style="background:#fff2e6;">🟠</div>
+                <p class="text-[10px] font-black text-slate-700">Orange Money</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-0.5">+237</p>
               </div>
               <div class="pay-card" onclick="choosePay(this,'MTN Mobile Money')">
-                <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center text-lg" style="background:#fff8e1;">🟡</div>
-                <p class="text-xs font-black text-slate-700">MTN MoMo</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5">+237</p>
+                <div class="w-8 h-8 rounded-lg mx-auto mb-1.5 flex items-center justify-center text-base" style="background:#fff8e1;">🟡</div>
+                <p class="text-[10px] font-black text-slate-700">MTN MoMo</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-0.5">+237</p>
               </div>
               <div class="pay-card selected" onclick="choosePay(this,'Carte bancaire')">
-                <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center bg-violet-50"><i class="fa-solid fa-credit-card text-violet-500"></i></div>
-                <p class="text-xs font-black text-slate-700">Carte bancaire</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5">Visa · MC</p>
+                <div class="w-8 h-8 rounded-lg mx-auto mb-1.5 flex items-center justify-center bg-violet-50"><i class="fa-solid fa-credit-card text-violet-500 text-sm"></i></div>
+                <p class="text-[10px] font-black text-slate-700">Carte</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-0.5">Visa · MC</p>
               </div>
               <div class="pay-card" onclick="choosePay(this,'PayPal')">
-                <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center bg-blue-50"><i class="fa-brands fa-paypal text-blue-600"></i></div>
-                <p class="text-xs font-black text-slate-700">PayPal</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5">International</p>
+                <div class="w-8 h-8 rounded-lg mx-auto mb-1.5 flex items-center justify-center bg-blue-50"><i class="fa-brands fa-paypal text-blue-600 text-sm"></i></div>
+                <p class="text-[10px] font-black text-slate-700">PayPal</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-0.5">International</p>
               </div>
             </div>
-            <button class="mt-4 gradient-bg text-white font-black px-5 py-2.5 rounded-xl text-sm shadow-md shadow-violet-200" onclick="toast('Moyen de paiement enregistré','success')">Enregistrer ce moyen de paiement</button>
+            <button class="mt-3 gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200" onclick="toast('Moyen de paiement enregistré','success')">Enregistrer</button>
           </div>
 
-          <!-- Historique facturation -->
-          <div class="rb-card p-5">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="font-black text-slate-900 text-base">Historique de facturation</h2>
-              <button class="text-xs font-black text-violet-600 hover:underline" onclick="toast('Téléchargement de toutes les factures','info')">Tout télécharger</button>
+          <!-- Historique -->
+          <div class="rb-card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-black text-slate-900 text-sm">Historique de facturation</h2>
+              <button class="text-[10px] font-black text-violet-600 hover:underline" onclick="toast('Téléchargement de toutes les factures','info')">Tout télécharger</button>
             </div>
-            <div class="space-y-1">
+            <div class="space-y-0.5">
               <div class="billing-row">
-                <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-xs"></i></div>
-                <div class="flex-1"><p class="text-sm font-black text-slate-800">Facture #RB-2026-0714</p><p class="text-[11px] text-slate-400 font-semibold">14 juillet 2026 · Plan Pro</p></div>
-                <span class="text-sm font-black text-slate-800">9,00 €</span>
-                <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Payé</span>
-                <button class="w-7 h-7 rounded-lg bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-xs"></i></button>
+                <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-[10px]"></i></div>
+                <div class="flex-1"><p class="text-xs font-black text-slate-800">Facture #RB-2026-0714</p><p class="text-[10px] text-slate-400 font-semibold">14 juillet 2026 · Plan Pro</p></div>
+                <span class="text-xs font-black text-slate-800">9,00 €</span>
+                <span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">Payé</span>
+                <button class="w-6 h-6 rounded-md bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-[9px]"></i></button>
               </div>
               <div class="billing-row">
-                <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-xs"></i></div>
-                <div class="flex-1"><p class="text-sm font-black text-slate-800">Facture #RB-2026-0614</p><p class="text-[11px] text-slate-400 font-semibold">14 juin 2026 · Plan Pro</p></div>
-                <span class="text-sm font-black text-slate-800">9,00 €</span>
-                <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Payé</span>
-                <button class="w-7 h-7 rounded-lg bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-xs"></i></button>
+                <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-[10px]"></i></div>
+                <div class="flex-1"><p class="text-xs font-black text-slate-800">Facture #RB-2026-0614</p><p class="text-[10px] text-slate-400 font-semibold">14 juin 2026 · Plan Pro</p></div>
+                <span class="text-xs font-black text-slate-800">9,00 €</span>
+                <span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">Payé</span>
+                <button class="w-6 h-6 rounded-md bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-[9px]"></i></button>
               </div>
               <div class="billing-row">
-                <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-xs"></i></div>
-                <div class="flex-1"><p class="text-sm font-black text-slate-800">Facture #RB-2026-0514</p><p class="text-[11px] text-slate-400 font-semibold">14 mai 2026 · Plan Pro</p></div>
-                <span class="text-sm font-black text-slate-800">9,00 €</span>
-                <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Payé</span>
-                <button class="w-7 h-7 rounded-lg bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-xs"></i></button>
+                <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 text-[10px]"></i></div>
+                <div class="flex-1"><p class="text-xs font-black text-slate-800">Facture #RB-2026-0514</p><p class="text-[10px] text-slate-400 font-semibold">14 mai 2026 · Plan Pro</p></div>
+                <span class="text-xs font-black text-slate-800">9,00 €</span>
+                <span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">Payé</span>
+                <button class="w-6 h-6 rounded-md bg-violet-50 hover:bg-violet-100 flex items-center justify-center" onclick="toast('Téléchargement…','info')"><i class="fa-solid fa-download text-violet-500 text-[9px]"></i></button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DANGER -->
+        <!-- ═══ DANGER ═══ -->
         <div class="settings-pane" id="span-danger">
-          <div class="danger-zone p-5">
-            <div class="flex items-start gap-3 mb-4">
-              <div class="w-11 h-11 bg-rose-100 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-rose-500"></i></div>
+          <div class="danger-zone p-4">
+            <div class="flex items-start gap-2.5 mb-3">
+              <div class="w-9 h-9 bg-rose-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i></div>
               <div>
-                <h2 class="font-black text-rose-700 text-base mb-1">Zone de danger</h2>
-                <p class="text-sm text-rose-600 font-semibold leading-relaxed">La suppression de ton compte est définitive. Toutes tes données seront perdues.</p>
+                <h2 class="font-black text-rose-700 text-sm mb-0.5">Zone de danger</h2>
+                <p class="text-xs text-rose-600 font-semibold leading-relaxed">La suppression de ton compte est définitive. Toutes tes données seront perdues.</p>
               </div>
             </div>
-            <button class="bg-rose-500 hover:bg-rose-600 text-white font-black px-5 py-2.5 rounded-xl text-sm" onclick="openModal('modal-delete')"><i class="fa-solid fa-trash mr-1.5"></i> Supprimer mon compte</button>
+            <button class="bg-rose-500 hover:bg-rose-600 text-white font-black px-4 py-2 rounded-lg text-xs" onclick="openModal('modal-delete')"><i class="fa-solid fa-trash mr-1"></i> Supprimer mon compte</button>
           </div>
         </div>
 
       </div>
     </div>
 
-    <footer class="border-t border-[#e7d9c5] py-5 mt-5">
-      <p class="text-xs text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
+    <footer class="border-t border-[#e7d9c5] py-4 mt-4">
+      <p class="text-[10px] text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
     </footer>
   </div>
 </div>
 </div>
 
 <script>
-function switchSettings(name){
-  document.querySelectorAll('.settings-nav-item').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.settings-pane').forEach(el => el.classList.remove('active'));
-  event.target.closest('.settings-nav-item').classList.add('active');
+function switchSettings(name, el){
+  document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.settings-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
   document.getElementById('span-'+name).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function selectRadio(el, group){
+function selectRadio(el){
   el.parentElement.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   toast('Préférence enregistrée ✓','success');
@@ -671,19 +723,20 @@ function checkDeleteConfirm(){
   const btn = document.getElementById('confirm-delete-btn');
   const ok = val === 'SUPPRIMER';
   btn.disabled = !ok;
-  btn.className = 'flex-1 bg-rose-500 text-white font-bold py-2.5 rounded-xl text-sm transition-opacity ' + (ok ? 'hover:bg-rose-600' : 'opacity-40 cursor-not-allowed');
+  btn.className = 'flex-1 bg-rose-500 text-white font-bold py-2 rounded-lg text-xs transition-opacity ' + (ok ? 'hover:bg-rose-600' : 'opacity-40 cursor-not-allowed');
 }
 function doDeleteAccount(){
   toast('Compte en cours de suppression…','error');
   setTimeout(() => { window.location.href = 'relbrain-landing.html'; }, 1200);
 }
-function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'260px';}else{sb.classList.toggle('open');}}
+function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
 function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
 document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-function openNote(){document.getElementById('note-modal')?.classList.add('open');}
-function closeNote(){document.getElementById('note-modal')?.classList.remove('open');}
-function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el.remove(),300);},3000);}
+function openNote(){document.getElementById('note-modal').classList.add('open');}
+function closeNote(){document.getElementById('note-modal').classList.remove('open');}
+function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
+function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
 </script>
 </body>
 </html>

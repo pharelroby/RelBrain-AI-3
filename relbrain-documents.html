@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.AI – Mes documents</title>
+<title>RelBrain.ai – Mes documents</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
@@ -11,66 +11,86 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
-body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
-.sidebar{width:260px;min-width:260px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
-.sidebar.collapsed{transform:translateX(-260px);}
-@media(max-width:900px){.sidebar{transform:translateX(-260px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
-.main-content{margin-left:260px;flex:1;min-width:0;transition:margin .3s;}
-.nav-item{display:flex;align-items:center;gap:.875rem;padding:.75rem .875rem;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-size:.8125rem;}
+
+/* ══════════════ SIDEBAR COMPACTE ══════════════ */
+.sidebar{width:240px;min-width:240px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-240px);}
+@media(max-width:900px){.sidebar{transform:translateX(-240px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:240px;flex:1;min-width:0;transition:margin .28s;}
+
+.nav-item{display:flex;align-items:center;gap:.625rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.8125rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
 .nav-item:hover{background:#faf5ff;color:#7c3aed;}
 .nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
 .nav-item.active .nav-icon{color:#7c3aed;}
-.nav-item .nav-icon{width:1.25rem;text-align:center;flex-shrink:0;font-size:.9rem;color:#78716c;}
-.avatar-card{display:flex;align-items:center;gap:.75rem;padding:.875rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.nav-item .nav-icon{width:1rem;text-align:center;flex-shrink:0;font-size:.85rem;color:#78716c;}
+
+.avatar-card{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:.75rem;cursor:pointer;transition:all .2s;text-decoration:none;}
 .avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
-.note-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.8125rem;cursor:pointer;transition:all .2s;width:100%;}
+
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.75rem;cursor:pointer;transition:all .2s;width:100%;}
 .note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
-.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.8125rem;box-shadow:0 8px 20px rgba(124,58,237,.28);cursor:pointer;transition:all .2s;border:0;width:100%;}
-.upgrade-btn:hover{transform:translateY(-2px);}
-.app-header{height:64px;background:rgba(253,244,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:30;}
-.header-btn{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.75rem;box-shadow:0 4px 12px rgba(124,58,237,.22);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-1px);}
+
+/* ══════════════ HEADER COMPACT ══════════════ */
+.app-header{height:56px;background:rgba(253,244,232,.9);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1rem;gap:.75rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:34px;height:34px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
 .header-btn:hover{background:#f5f3ff;color:#7c3aed;}
-.avatar-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(124,58,237,.25);}
-.avatar-btn::after{content:'';position:absolute;bottom:-3px;right:-3px;width:11px;height:11px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
-.avatar-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 20px 50px rgba(15,23,42,.14);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s;z-index:100;overflow:hidden;}
+.header-btn i{font-size:.875rem;}
+
+.avatar-btn{width:34px;height:34px;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:13px;cursor:pointer;position:relative;box-shadow:0 3px 10px rgba(124,58,237,.22);}
+.avatar-btn::after{content:'';position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+
+.avatar-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:#fff;border:1px solid #e7d9c5;border-radius:.75rem;box-shadow:0 16px 40px rgba(15,23,42,.12);opacity:0;visibility:hidden;transform:translateY(-6px);transition:all .2s;z-index:100;overflow:hidden;}
 .avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
-.avatar-menu-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;font-size:.8125rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;font-size:.75rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
 .avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
 .avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
-.rb-card{background:#fff;border-radius:1.25rem;border:1px solid #e7d9c5;box-shadow:0 2px 12px rgba(15,23,42,.04);}
+
+/* ══════════════ CARDS COMPACTES ══════════════ */
+.rb-card{background:#fff;border-radius:.875rem;border:1px solid #e7d9c5;box-shadow:0 1px 8px rgba(15,23,42,.03);}
 .gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
 .gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input{width:100%;padding:.625rem .875rem;border:1.5px solid #e7d9c5;border-radius:.625rem;font-size:.8125rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
 .rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
 .rb-input::placeholder{color:#a8a29e;font-weight:500;}
-.rb-textarea{width:100%;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.6;font-family:inherit;}
+.rb-textarea{width:100%;padding:.625rem .875rem;border:1.5px solid #e7d9c5;border-radius:.625rem;font-size:.8125rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.5;font-family:inherit;}
 .rb-textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
-.prog-bar{height:8px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
+.prog-bar{height:5px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:9999px;transition:width .5s cubic-bezier(.4,0,.2,1);}
-.upload-zone{border:2px dashed #e7d9c5;border-radius:1.25rem;padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s;background:#fff;}
+
+/* ══════════════ UPLOAD ZONE ══════════════ */
+.upload-zone{border:2px dashed #e7d9c5;border-radius:.875rem;padding:1.75rem 1rem;text-align:center;cursor:pointer;transition:all .2s;background:#fff;}
 .upload-zone:hover{border-color:#c4b5fd;background:#faf5ff;}
-.upload-zone.dragging{border-color:#7c3aed;background:#f5f3ff;transform:scale(1.005);}
-.upload-zone .up-icon{width:3.5rem;height:3.5rem;border-radius:1rem;background:#f5f3ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.35rem;}
-.filter-chip{padding:.5rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;border:1.5px solid #e7d9c5;background:#fff;color:#57534e;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.375rem;white-space:nowrap;}
+.upload-zone.dragging{border-color:#7c3aed;background:#f5f3ff;}
+
+/* ══════════════ FILTRES ══════════════ */
+.filter-chip{padding:.375rem .75rem;border-radius:9999px;font-size:.7rem;font-weight:800;border:1.5px solid #e7d9c5;background:#fff;color:#57534e;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap;}
 .filter-chip:hover{border-color:#c4b5fd;color:#7c3aed;}
 .filter-chip.selected{background:#7c3aed;color:#fff;border-color:#7c3aed;}
-.doc-card{background:#fff;border:1px solid #e7d9c5;border-radius:1.25rem;padding:1.25rem;cursor:pointer;transition:all .25s;text-decoration:none;display:flex;flex-direction:column;}
-.doc-card:hover{transform:translateY(-4px);border-color:#c4b5fd;box-shadow:0 16px 32px rgba(124,58,237,.10);}
+
+/* ══════════════ DOC CARDS ══════════════ */
+.doc-card{background:#fff;border:1px solid #e7d9c5;border-radius:.875rem;padding:1rem;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;flex-direction:column;}
+.doc-card:hover{transform:translateY(-3px);border-color:#c4b5fd;box-shadow:0 12px 24px rgba(124,58,237,.10);}
 .doc-card.due{border-color:#fca5a5;background:linear-gradient(135deg,#fff1f2,#fff);}
-.doc-card.due:hover{box-shadow:0 16px 32px rgba(244,63,94,.12);}
-.view-toggle{padding:.5rem;border:1.5px solid #e7d9c5;background:#fff;cursor:pointer;color:#78716c;transition:all .15s;}
-.view-toggle.active{background:#f5f3ff;color:#6d28d9;border-color:#7c3aed;}
-.badge-pill{display:inline-flex;align-items:center;gap:.25rem;padding:.15rem .5rem;border-radius:9999px;font-size:.65rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;}
-.storage-bar{height:10px;background:#f0e6d8;border-radius:9999px;overflow:hidden;display:flex;}
+.doc-card.due:hover{box-shadow:0 12px 24px rgba(244,63,94,.12);}
+
+.badge-pill{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .4rem;border-radius:9999px;font-size:.6rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;}
+
+.storage-bar{height:8px;background:#f0e6d8;border-radius:9999px;overflow:hidden;display:flex;}
+
+/* ══════════════ MODAL ══════════════ */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.modal-box{background:#fff;border-radius:1.5rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:440px;padding:1.75rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
-@keyframes modalUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
-.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
-@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+.modal-box{background:#fff;border-radius:1.125rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:420px;padding:1.25rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+@keyframes modalUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+#rb-toast-host{position:fixed;bottom:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.375rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.5rem;padding:.625rem .875rem;border-radius:.625rem;font-size:.75rem;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
 <body>
@@ -80,16 +100,16 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
 <!-- MODAL NOTE -->
 <div id="note-modal" class="modal-overlay">
   <div class="modal-box">
-    <div class="flex items-center gap-3 mb-4">
-      <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white"></i></div>
-      <div><p class="font-black text-slate-900">Prendre une note</p><p class="text-xs text-slate-500 font-semibold">L'IA va l'analyser</p></div>
-      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white text-sm"></i></div>
+      <div><p class="text-sm font-black text-slate-900">Prendre une note</p><p class="text-[10px] text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark text-sm"></i></button>
     </div>
-    <input type="text" id="note-title" class="rb-input mb-3" placeholder="Titre de la note"/>
-    <textarea id="note-content" rows="5" class="rb-textarea mb-4" placeholder="Écris ta note ici..."></textarea>
+    <input type="text" id="note-title" class="rb-input mb-2" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="4" class="rb-textarea mb-3" placeholder="Écris ta note ici..."></textarea>
     <div class="flex gap-2">
-      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
-      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="saveNote()">Enregistrer</button>
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" onclick="saveNote()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -97,49 +117,59 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
 <!-- MODAL UPLOAD -->
 <div id="upload-modal" class="modal-overlay">
   <div class="modal-box">
-    <div class="flex items-center gap-3 mb-4">
-      <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center"><i class="fa-solid fa-cloud-arrow-up text-white"></i></div>
-      <div><p class="font-black text-slate-900">Importer un document</p><p class="text-xs text-slate-500 font-semibold">PDF, DOCX, PPTX, TXT, images</p></div>
-      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeUpload()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-cloud-arrow-up text-white text-sm"></i></div>
+      <div><p class="text-sm font-black text-slate-900">Importer un document</p><p class="text-[10px] text-slate-500 font-semibold">PDF, DOCX, PPTX, TXT, images</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeUpload()"><i class="fa-solid fa-xmark text-sm"></i></button>
     </div>
-    <div class="upload-zone mb-4" id="upload-zone-modal" onclick="document.getElementById('file-input-modal').click()">
-      <div class="up-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-      <p class="font-black text-slate-800 mb-1">Glisse ton fichier ici</p>
-      <p class="text-xs text-slate-500 font-semibold">ou clique pour parcourir</p>
-      <input type="file" id="file-input-modal" class="hidden" accept=".pdf,.docx,.pptx,.txt,image/*"/>
+    <div class="upload-zone mb-3" onclick="toast('Sélectionne un fichier','info')">
+      <div class="w-11 h-11 rounded-lg bg-violet-50 flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-cloud-arrow-up text-violet-500"></i></div>
+      <p class="text-xs font-black text-slate-800 mb-0.5">Glisse ton fichier ici</p>
+      <p class="text-[10px] text-slate-500 font-semibold">ou clique pour parcourir</p>
     </div>
-    <div class="grid grid-cols-2 gap-3 mb-4">
-      <div><label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Matière</label>
-        <select class="rb-input" id="modal-subject">
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Matière</label>
+        <select class="rb-input">
           <option>Informatique</option><option>Mathématiques</option><option>Physique</option>
           <option>Chimie</option><option>Biologie</option><option>Histoire</option><option>Autre</option>
         </select>
       </div>
-      <div><label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Titre</label>
+      <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Titre</label>
         <input type="text" class="rb-input" placeholder="Titre du document"/>
       </div>
     </div>
     <div class="flex gap-2">
-      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2.5 rounded-xl text-sm" onclick="closeUpload()">Annuler</button>
-      <button class="flex-1 gradient-bg text-white font-black py-2.5 rounded-xl text-sm" onclick="simulateUpload()">Importer</button>
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs" onclick="closeUpload()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" onclick="simulateUpload()">Importer</button>
     </div>
   </div>
 </div>
 
 <div class="flex">
 <aside class="sidebar" id="sidebar">
-  <div class="p-5 flex flex-col h-full overflow-y-auto">
-    <a href="relbrain-accueil.html" class="flex items-center gap-2.5 mb-5">
-      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative"><i class="fa-solid fa-brain text-base"></i><span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white"></span></div>
-      <div><p class="text-base font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p><p class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p></div>
+  <div class="px-4 py-4 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2 mb-4">
+      <div class="bg-violet-600 text-white p-1.5 rounded-lg shadow-sm shadow-violet-200 relative">
+        <i class="fa-solid fa-brain text-sm"></i>
+        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
+      </div>
+      <div>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
+      </div>
     </a>
-    <a href="relbrain-profil.html" class="avatar-card mb-6">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-sm shrink-0">K</div>
-      <div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-800 truncate">Pharel FOFE</p><p class="text-[10px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p></div>
-      <div class="text-right shrink-0"><p class="text-[10px] text-amber-500 font-black">🔥 12</p><p class="text-[9px] text-slate-400">jours</p></div>
+
+    <a href="relbrain-profil.html" class="avatar-card mb-4">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+      </div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
     </a>
-    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Menu</p>
-    <nav class="space-y-0.5 mb-4">
+
+    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
       <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item active"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
@@ -147,115 +177,123 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
     </nav>
-    <a href="relbrain-parametres.html" class="nav-item mb-4"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
-    <div class="mt-auto space-y-2 pt-4 border-t border-[#e7d9c5]">
-      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up"></i> Upgrader</button>
+
+    <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+
+    <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
+      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
 
 <div class="main-content flex flex-col min-h-screen" id="main-content">
   <header class="app-header">
-    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars text-base"></i></button>
-    <div class="flex items-center gap-1.5 text-sm">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="flex items-center gap-1 text-xs">
       <span class="text-slate-500 font-bold">RelBrain</span>
-      <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+      <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
       <span class="font-black text-slate-800">Mes documents</span>
     </div>
-    <div class="ml-auto flex items-center gap-2">
-      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon text-base"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')"><i class="fa-solid fa-bell text-base"></i><span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span></button>
+    <div class="ml-auto flex items-center gap-1.5">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
+      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+        <i class="fa-solid fa-bell"></i>
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
+      </button>
       <div class="relative" id="avatar-wrap">
         <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
         <div class="avatar-menu" id="avatar-menu">
-          <div class="px-4 py-3 border-b border-[#e7d9c5]"><p class="text-sm font-black text-slate-800">Pharel FOFE</p><p class="text-[11px] text-slate-400 font-semibold">pharel@relbrain.ai</p></div>
-          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user w-4 text-violet-500"></i> Mon profil</a>
-          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear w-4 text-violet-500"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Déconnexion</a>
+          <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
+            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+          </div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
+          <a href="relbrain-landing.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
   </header>
 
-  <div class="p-5 md:p-6 max-w-6xl mx-auto w-full space-y-5">
+  <div class="p-4 md:p-5 space-y-4">
 
-    <!-- TITRE + ACTIONS -->
-    <div class="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+    <!-- En-tête -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div>
-        <h1 class="text-2xl md:text-3xl font-black text-slate-900">Mes documents</h1>
-        <p class="text-sm text-slate-500 mt-1 font-semibold">Tous tes cours importés et analysés par l'IA.</p>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900">Mes documents</h1>
+        <p class="text-xs text-slate-500 mt-0.5 font-semibold">Tous tes cours importés et analysés par l'IA.</p>
       </div>
-      <button class="gradient-bg text-white font-black px-5 py-2.5 rounded-xl text-sm shadow-md shadow-violet-200 hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 self-start md:self-auto" onclick="openUpload()">
+      <button class="gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200 hover:-translate-y-0.5 transition-all inline-flex items-center gap-1.5 self-start sm:self-auto" onclick="openUpload()">
         <i class="fa-solid fa-cloud-arrow-up"></i> Importer
       </button>
     </div>
 
-    <!-- ALERTES IA (rétention) -->
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div class="rb-card p-4 flex items-start gap-3 border-rose-200" style="background:linear-gradient(135deg,#fff1f2,#fff);">
-        <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center shrink-0"><i class="fa-solid fa-fire text-rose-500"></i></div>
+    <!-- ALERTES IA -->
+    <div class="grid sm:grid-cols-2 gap-3">
+      <div class="rb-card p-3.5 flex items-start gap-2.5 border-rose-200" style="background:linear-gradient(135deg,#fff1f2,#fff);">
+        <div class="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center shrink-0"><i class="fa-solid fa-fire text-rose-500 text-sm"></i></div>
         <div class="flex-1">
-          <p class="text-sm font-black text-rose-800">3 documents à réviser</p>
-          <p class="text-xs text-rose-600 font-semibold mb-2">Tu ne les as pas ouverts depuis 7 jours</p>
-          <button class="text-xs font-black text-rose-600 hover:underline" onclick="toast('Ouverture des documents à revoir…','info')">Réviser maintenant →</button>
+          <p class="text-xs font-black text-rose-800">3 documents à réviser</p>
+          <p class="text-[10px] text-rose-600 font-semibold mb-1.5">Non ouverts depuis 7 jours</p>
+          <button class="text-[10px] font-black text-rose-600 hover:underline" onclick="toast('Ouverture des documents à revoir…','info')">Réviser maintenant →</button>
         </div>
       </div>
-      <div class="rb-card p-4 flex items-start gap-3 border-violet-200" style="background:linear-gradient(135deg,rgba(124,58,237,.06),#fff);">
-        <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-violet-500"></i></div>
+      <div class="rb-card p-3.5 flex items-start gap-2.5 border-violet-200" style="background:linear-gradient(135deg,rgba(124,58,237,.06),#fff);">
+        <div class="w-9 h-9 rounded-lg bg-violet-100 flex items-center justify-center shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-violet-500 text-sm"></i></div>
         <div class="flex-1">
-          <p class="text-sm font-black text-violet-800">Nouveaux quiz disponibles</p>
-          <p class="text-xs text-violet-600 font-semibold mb-2">2 documents analysés hier — quiz prêts à lancer</p>
-          <button class="text-xs font-black text-violet-600 hover:underline" onclick="location.href='relbrain-quiz-setup.html'">Lancer un quiz →</button>
+          <p class="text-xs font-black text-violet-800">Nouveaux quiz disponibles</p>
+          <p class="text-[10px] text-violet-600 font-semibold mb-1.5">2 documents analysés hier</p>
+          <button class="text-[10px] font-black text-violet-600 hover:underline" onclick="location.href='relbrain-quiz-setup.html'">Lancer un quiz →</button>
         </div>
       </div>
     </div>
 
     <!-- STORAGE + STATS -->
-    <div class="grid md:grid-cols-3 gap-4">
-      <div class="rb-card p-5 md:col-span-2">
-        <div class="flex items-center justify-between mb-3">
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="rb-card p-4 md:col-span-2">
+        <div class="flex items-center justify-between mb-2.5">
           <div>
             <p class="font-black text-slate-900 text-sm">Espace de stockage</p>
-            <p class="text-xs text-slate-500 font-semibold">180 Mo utilisés sur 2 Go</p>
+            <p class="text-[10px] text-slate-500 font-semibold">180 Mo / 2 Go</p>
           </div>
-          <span class="text-xl font-black text-slate-900">9%</span>
+          <span class="text-lg font-black text-slate-900">9%</span>
         </div>
-        <div class="storage-bar mb-3">
+        <div class="storage-bar mb-2.5">
           <div class="h-full bg-violet-500" style="width:5%"></div>
           <div class="h-full bg-pink-500" style="width:3%"></div>
           <div class="h-full bg-amber-400" style="width:1%"></div>
         </div>
-        <div class="flex flex-wrap gap-3 text-[11px] font-bold text-slate-500">
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-violet-500"></span> PDF · 100 Mo</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span> DOCX · 60 Mo</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Autres · 20 Mo</span>
+        <div class="flex flex-wrap gap-2.5 text-[10px] font-bold text-slate-500">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-violet-500"></span> PDF · 100 Mo</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-500"></span> DOCX · 60 Mo</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Autres · 20 Mo</span>
         </div>
       </div>
-      <div class="rb-card p-5">
-        <p class="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Total documents</p>
-        <p class="text-3xl font-black text-slate-900">24</p>
-        <p class="text-[11px] font-bold text-emerald-600 mt-2"><i class="fa-solid fa-arrow-up"></i> +6 ce mois</p>
+      <div class="rb-card p-4">
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Total documents</p>
+        <p class="text-2xl font-black text-slate-900">24</p>
+        <p class="text-[10px] font-bold text-emerald-600 mt-1.5"><i class="fa-solid fa-arrow-up"></i> +6 ce mois</p>
       </div>
     </div>
 
     <!-- RECHERCHE + FILTRES -->
-    <div class="rb-card p-4">
-      <div class="flex flex-col md:flex-row gap-3 mb-3">
+    <div class="rb-card p-3.5">
+      <div class="flex flex-col md:flex-row gap-2.5 mb-2.5">
         <div class="relative flex-1">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-          <input type="text" id="search-input" class="rb-input pl-10" placeholder="Rechercher un document..." oninput="filterDocs()"/>
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="search-input" class="rb-input pl-8" placeholder="Rechercher un document..." oninput="filterDocs()"/>
         </div>
-        <div class="flex items-center gap-1.5">
-          <button class="view-toggle rounded-l-xl rounded-r-none active" onclick="setView('grid',this)"><i class="fa-solid fa-grid-2"></i></button>
-          <button class="view-toggle rounded-r-xl rounded-l-none" onclick="setView('list',this)"><i class="fa-solid fa-list"></i></button>
+        <div class="flex items-center gap-1">
+          <button class="w-8 h-8 rounded-lg border-1.5 border-[#e7d9c5] bg-white flex items-center justify-center text-violet-600 active-view" id="view-grid-btn" onclick="setView('grid')"><i class="fa-solid fa-table-cells text-xs"></i></button>
+          <button class="w-8 h-8 rounded-lg border-1.5 border-[#e7d9c5] bg-white flex items-center justify-center text-slate-500 hover:text-violet-600" id="view-list-btn" onclick="setView('list')"><i class="fa-solid fa-list text-xs"></i></button>
         </div>
       </div>
-      <div class="flex flex-wrap gap-2" id="filters">
+      <div class="flex flex-wrap gap-1.5" id="filters">
         <button class="filter-chip selected" onclick="setFilter(this,'all')"><i class="fa-solid fa-inbox"></i> Tous · 24</button>
         <button class="filter-chip" onclick="setFilter(this,'due')"><i class="fa-solid fa-clock text-rose-500"></i> À réviser · 3</button>
         <button class="filter-chip" onclick="setFilter(this,'recent')"><i class="fa-solid fa-bolt text-amber-500"></i> Récents</button>
-        <button class="filter-chip" onclick="setFilter(this,'info')"><i class="fa-solid fa-code text-violet-500"></i> Informatique</button>
+        <button class="filter-chip" onclick="setFilter(this,'info')"><i class="fa-solid fa-code text-violet-500"></i> Info</button>
         <button class="filter-chip" onclick="setFilter(this,'maths')"><i class="fa-solid fa-square-root-variable text-blue-500"></i> Maths</button>
         <button class="filter-chip" onclick="setFilter(this,'bio')"><i class="fa-solid fa-dna text-emerald-500"></i> Bio</button>
         <button class="filter-chip" onclick="setFilter(this,'fav')"><i class="fa-solid fa-star text-amber-500"></i> Favoris</button>
@@ -263,10 +301,10 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
     </div>
 
     <!-- GRILLE DOCUMENTS -->
-    <div id="docs-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <div id="docs-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
 
-    <footer class="border-t border-[#e7d9c5] py-5">
-      <p class="text-xs text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
+    <footer class="border-t border-[#e7d9c5] py-4">
+      <p class="text-[10px] text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
     </footer>
   </div>
 </div>
@@ -274,12 +312,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;}
 
 <script>
 const docs = [
-  {id:1, title:'Algorithmique avancée', subject:'Informatique', subjKey:'info', pages:42, size:'4.2 Mo', date:'Il y a 2 jours', dateMs:2, status:'ready', color:'violet', icon:'fa-code', due:false, fav:true, progress:78, chunks:48},
-  {id:2, title:'Physique Ch.4 — Ondes', subject:'Physique', subjKey:'phys', pages:28, size:'2.8 Mo', date:'Il y a 5 jours', dateMs:5, status:'ready', color:'blue', icon:'fa-atom', due:true, fav:false, progress:42, chunks:32},
-  {id:3, title:'Maths — Probabilités', subject:'Mathématiques', subjKey:'maths', pages:35, size:'3.5 Mo', date:'Il y a 1 semaine', dateMs:7, status:'ready', color:'amber', icon:'fa-square-root-variable', due:true, fav:false, progress:35, chunks:40},
-  {id:4, title:'Biologie cellulaire', subject:'SVT', subjKey:'bio', pages:56, size:'6.1 Mo', date:'Il y a 2 semaines', dateMs:14, status:'ready', color:'emerald', icon:'fa-dna', due:false, fav:true, progress:92, chunks:64},
-  {id:5, title:'Chimie organique', subject:'Chimie', subjKey:'chim', pages:31, size:'3.0 Mo', date:'Il y a 2 semaines', dateMs:16, status:'processing', color:'rose', icon:'fa-flask', due:false, fav:false, progress:0, chunks:0},
-  {id:6, title:'Histoire — 20e siècle', subject:'Histoire', subjKey:'hist', pages:24, size:'2.2 Mo', date:'Il y a 3 semaines', dateMs:21, status:'ready', color:'slate', icon:'fa-landmark', due:true, fav:false, progress:20, chunks:28},
+  {id:1, title:'Algorithmique avancée', subject:'Informatique', subjKey:'info', pages:42, size:'4.2 Mo', date:'Il y a 2 jours', dateMs:2, status:'ready', color:'violet', icon:'fa-code', due:false, fav:true, progress:78},
+  {id:2, title:'Physique Ch.4 — Ondes', subject:'Physique', subjKey:'phys', pages:28, size:'2.8 Mo', date:'Il y a 5 jours', dateMs:5, status:'ready', color:'blue', icon:'fa-atom', due:true, fav:false, progress:42},
+  {id:3, title:'Maths — Probabilités', subject:'Mathématiques', subjKey:'maths', pages:35, size:'3.5 Mo', date:'Il y a 1 semaine', dateMs:7, status:'ready', color:'amber', icon:'fa-square-root-variable', due:true, fav:false, progress:35},
+  {id:4, title:'Biologie cellulaire', subject:'SVT', subjKey:'bio', pages:56, size:'6.1 Mo', date:'Il y a 2 semaines', dateMs:14, status:'ready', color:'emerald', icon:'fa-dna', due:false, fav:true, progress:92},
+  {id:5, title:'Chimie organique', subject:'Chimie', subjKey:'chim', pages:31, size:'3.0 Mo', date:'Il y a 2 semaines', dateMs:16, status:'processing', color:'rose', icon:'fa-flask', due:false, fav:false, progress:0},
+  {id:6, title:'Histoire — 20e siècle', subject:'Histoire', subjKey:'hist', pages:24, size:'2.2 Mo', date:'Il y a 3 semaines', dateMs:21, status:'ready', color:'slate', icon:'fa-landmark', due:true, fav:false, progress:20},
 ];
 
 let currentFilter = 'all';
@@ -295,10 +333,10 @@ function render(){
   if (currentSearch) list = list.filter(d => d.title.toLowerCase().includes(currentSearch.toLowerCase()) || d.subject.toLowerCase().includes(currentSearch.toLowerCase()));
 
   const grid = document.getElementById('docs-grid');
-  if (currentView === 'list') { grid.className = 'space-y-3'; } else { grid.className = 'grid sm:grid-cols-2 lg:grid-cols-3 gap-4'; }
+  if (currentView === 'list') { grid.className = 'space-y-2'; } else { grid.className = 'grid sm:grid-cols-2 lg:grid-cols-3 gap-3'; }
 
   if (list.length === 0) {
-    grid.innerHTML = `<div class="col-span-full text-center py-12"><div class="text-4xl mb-3">📂</div><p class="text-sm font-bold text-slate-500">Aucun document ne correspond à ce filtre.</p></div>`;
+    grid.innerHTML = `<div class="col-span-full text-center py-10"><div class="text-3xl mb-2">📂</div><p class="text-xs font-bold text-slate-500">Aucun document ne correspond à ce filtre.</p></div>`;
     return;
   }
 
@@ -313,32 +351,32 @@ function renderCard(d){
   const isProcessing = d.status === 'processing';
   return `
     <div class="doc-card ${d.due?'due':''}" onclick="openDoc(${d.id})">
-      <div class="flex items-start justify-between mb-3">
-        <div class="w-11 h-11 rounded-xl bg-${d.color}-50 flex items-center justify-center"><i class="fa-solid ${d.icon} text-${d.color}-500"></i></div>
-        <div class="flex items-center gap-1.5">
+      <div class="flex items-start justify-between mb-2.5">
+        <div class="w-9 h-9 rounded-lg bg-${d.color}-50 flex items-center justify-center"><i class="fa-solid ${d.icon} text-${d.color}-500 text-sm"></i></div>
+        <div class="flex items-center gap-1">
           ${d.due ? '<span class="badge-pill bg-rose-100 text-rose-700">🔥 À revoir</span>' : ''}
-          ${d.fav ? '<i class="fa-solid fa-star text-amber-400 text-sm"></i>' : ''}
+          ${d.fav ? '<i class="fa-solid fa-star text-amber-400 text-xs"></i>' : ''}
         </div>
       </div>
-      <p class="text-sm font-black text-slate-800 mb-1 line-clamp-2">${d.title}</p>
-      <p class="text-[11px] text-slate-500 font-semibold mb-3">${d.subject} · ${d.pages} pages · ${d.size}</p>
+      <p class="text-xs font-black text-slate-800 mb-0.5 line-clamp-2">${d.title}</p>
+      <p class="text-[10px] text-slate-500 font-semibold mb-2.5">${d.subject} · ${d.pages}p · ${d.size}</p>
       ${isProcessing ? `
         <div class="mt-auto">
-          <div class="flex items-center gap-2 mb-2">
-            <div class="w-3 h-3 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>
-            <span class="text-[10px] font-black text-violet-600">Analyse IA…</span>
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <div class="w-2.5 h-2.5 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>
+            <span class="text-[9px] font-black text-violet-600">Analyse IA…</span>
           </div>
           <div class="prog-bar"><div class="prog-fill gradient-bg" style="width:70%"></div></div>
         </div>
       ` : `
         <div class="mt-auto">
-          <div class="flex items-center gap-2 mb-2">
+          <div class="flex items-center gap-1.5 mb-1.5">
             <div class="prog-bar flex-1"><div class="prog-fill bg-${d.color}-500" style="width:${d.progress}%"></div></div>
-            <span class="text-[10px] font-black text-slate-500">${d.progress}%</span>
+            <span class="text-[9px] font-black text-slate-500">${d.progress}%</span>
           </div>
-          <div class="flex items-center justify-between pt-2 border-t border-[#f0e6d8]">
-            <span class="text-[10px] font-bold text-slate-400">${d.date}</span>
-            <span class="text-[10px] font-black text-emerald-600">Analysé ✓</span>
+          <div class="flex items-center justify-between pt-1.5 border-t border-[#f0e6d8]">
+            <span class="text-[9px] font-bold text-slate-400">${d.date}</span>
+            <span class="text-[9px] font-black text-emerald-600">Analysé ✓</span>
           </div>
         </div>
       `}
@@ -347,21 +385,21 @@ function renderCard(d){
 
 function renderRow(d){
   return `
-    <div class="doc-card flex-row items-center gap-4 !p-4" style="display:flex;flex-direction:row;" onclick="openDoc(${d.id})">
-      <div class="w-12 h-12 rounded-xl bg-${d.color}-50 flex items-center justify-center shrink-0"><i class="fa-solid ${d.icon} text-${d.color}-500"></i></div>
+    <div class="rb-card p-3 flex items-center gap-3 cursor-pointer hover:border-violet-300 transition-colors" onclick="openDoc(${d.id})">
+      <div class="w-10 h-10 rounded-lg bg-${d.color}-50 flex items-center justify-center shrink-0"><i class="fa-solid ${d.icon} text-${d.color}-500 text-sm"></i></div>
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 mb-1">
-          <p class="text-sm font-black text-slate-800 truncate">${d.title}</p>
-          ${d.due ? '<span class="badge-pill bg-rose-100 text-rose-700 shrink-0">🔥 À revoir</span>' : ''}
-          ${d.fav ? '<i class="fa-solid fa-star text-amber-400 text-xs shrink-0"></i>' : ''}
+        <div class="flex items-center gap-1.5 mb-0.5">
+          <p class="text-xs font-black text-slate-800 truncate">${d.title}</p>
+          ${d.due ? '<span class="badge-pill bg-rose-100 text-rose-700 shrink-0">🔥</span>' : ''}
+          ${d.fav ? '<i class="fa-solid fa-star text-amber-400 text-[10px] shrink-0"></i>' : ''}
         </div>
-        <p class="text-[11px] text-slate-500 font-semibold">${d.subject} · ${d.pages} pages · ${d.size} · ${d.date}</p>
+        <p class="text-[10px] text-slate-500 font-semibold">${d.subject} · ${d.pages}p · ${d.size} · ${d.date}</p>
       </div>
-      <div class="hidden md:flex items-center gap-3 shrink-0">
-        <div class="w-24"><div class="prog-bar"><div class="prog-fill bg-${d.color}-500" style="width:${d.progress}%"></div></div></div>
-        <span class="text-xs font-black text-slate-600 w-10 text-right">${d.progress}%</span>
+      <div class="hidden md:flex items-center gap-2 shrink-0">
+        <div class="w-20"><div class="prog-bar"><div class="prog-fill bg-${d.color}-500" style="width:${d.progress}%"></div></div></div>
+        <span class="text-[10px] font-black text-slate-600 w-8 text-right">${d.progress}%</span>
       </div>
-      <button class="text-slate-300 hover:text-violet-600 transition-colors shrink-0" onclick="event.stopPropagation();toast('Options',' info')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      <button class="text-slate-300 hover:text-violet-600 transition-colors shrink-0" onclick="event.stopPropagation();toast('Options',' info')"><i class="fa-solid fa-ellipsis-vertical text-xs"></i></button>
     </div>`;
 }
 
@@ -371,10 +409,10 @@ function setFilter(el, f){
   currentFilter = f;
   render();
 }
-function setView(v, el){
-  document.querySelectorAll('.view-toggle').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+function setView(v){
   currentView = v;
+  document.getElementById('view-grid-btn').classList.toggle('active-view', v === 'grid');
+  document.getElementById('view-list-btn').classList.toggle('active-view', v === 'list');
   render();
 }
 function filterDocs(){ currentSearch = document.getElementById('search-input').value; render(); }
@@ -389,11 +427,16 @@ function openNote(){document.getElementById('note-modal').classList.add('open');
 function closeNote(){document.getElementById('note-modal').classList.remove('open');}
 function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 
-function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'260px';}else{sb.classList.toggle('open');}}
+function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
 function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
 document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el.remove(),300);},3000);}
+function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
+
+/* Styles dynamiques actif/inactif sur view toggles */
+const styleEl = document.createElement('style');
+styleEl.textContent = `.active-view{background:#f5f3ff !important;color:#6d28d9 !important;border-color:#7c3aed !important;}`;
+document.head.appendChild(styleEl);
 
 render();
 </script>
