@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.ai – Flashcards</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -113,7 +117,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -168,29 +172,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
-      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item active"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -205,20 +210,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -280,7 +285,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       <div class="rb-card p-3.5 flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-emerald-500 text-sm"></i></div>
         <div>
-          <p class="text-xl font-black text-slate-900 leading-none">156</p>
+          <p class="text-xl font-black text-slate-900 leading-none" id="stat-mastered">156</p>
           <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Maîtrisées</p>
         </div>
       </div>
@@ -294,7 +299,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       <div class="rb-card p-3.5 flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-fire text-violet-500 text-sm"></i></div>
         <div>
-          <p class="text-xl font-black text-slate-900 leading-none">18</p>
+          <p class="text-xl font-black text-slate-900 leading-none" id="stat-total">18</p>
           <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Total</p>
         </div>
       </div>
@@ -360,6 +365,13 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         </div>
       </div>
     </div>
+
+    <!-- Signature RelBrain : courbe de l'oubli — pourquoi chaque carte revient au bon moment -->
+    <details class="rb-sheet max-w-xl mx-auto" style="padding:1rem 1.25rem" id="why-review">
+      <summary class="text-xs font-black text-slate-700 cursor-pointer flex items-center gap-2"><i class="fa-solid fa-chart-line text-violet-500"></i> Pourquoi la carte revient-elle maintenant ?</summary>
+      <p class="text-[11px] text-slate-500 font-semibold mt-2 mb-2">Sans révision, on oublie l'essentiel d'un cours en quelques jours. Chaque révision faite <mark class="rb-mark">juste avant l'oubli</mark> remonte la mémoire et l'ancre plus longtemps : c'est l'algorithme SM-2 qui choisit ce moment pour toi.</p>
+      <svg class="rb-curve" data-reviews="1,3,7,16" aria-label="Courbe de l'oubli"></svg>
+    </details>
 
     <!-- TAB FAVORIS -->
     <div class="tab-pane" id="pane-fav">
@@ -588,10 +600,208 @@ document.addEventListener('click',e=>{const w=document.getElementById('avatar-wr
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
 
-renderCard();
-renderFavGrid();
-renderHardList();
-renderHistory();
+if (!(window.RB_CONFIG && RB_CONFIG.SUPABASE_URL)) {
+  renderCard();
+  renderFavGrid();
+  renderHardList();
+  renderHistory();
+}
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Flashcards (révision espacée SM-2)
+     Cartes dues (get_due_flashcards) → évaluation (review_flashcard) →
+     prochain passage calculé côté serveur, XP, série, défis.  ?deck=<id>
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(async function () {
+    var params = new URLSearchParams(location.search);
+    var decksList = [], currentDeck = params.get('deck') || null, allMine = [], reviewed = 0, sessionStart = Date.now(), shownAt = Date.now();
+
+    function intervalLabel(days, due) {
+      if (!days) { var m = Math.max(1, Math.round((new Date(due) - Date.now()) / 60000)); return m < 60 ? m + ' min' : Math.round(m / 60) + ' h'; }
+      if (days === 1) return '1 jour';
+      if (days < 30) return days + ' jours';
+      if (days < 365) return Math.round(days / 30) + ' mois';
+      return '1 an';
+    }
+    function toView(c) {
+      var d = decksList.find(function (x) { return x.id === c.deck_id; });
+      return { id: c.id, cat: c.concept || (d && d.title) || 'Carte', front: c.front, back: c.back, is_favorite: c.is_favorite, raw: c };
+    }
+
+    async function loadDecks() {
+      decksList = await RB.data.flashcards.decks();
+      var pills = document.getElementById('deck-pills');
+      pills.innerHTML = '<button class="deck-pill ' + (!currentDeck ? 'selected' : '') + '" data-deck="">🔁 Toutes les cartes dues</button>' +
+        decksList.map(function (d) {
+          var n = (d.flashcards && d.flashcards[0] && d.flashcards[0].count) || 0;
+          return '<button class="deck-pill ' + (currentDeck === d.id ? 'selected' : '') + '" data-deck="' + d.id + '">' + RB.escape(d.title) + ' · ' + n + '</button>';
+        }).join('') +
+        '<a class="deck-pill" href="relbrain-documents.html" title="Ouvre un document puis « Flashcards »">✨ Générer depuis un cours</a>';
+      pills.querySelectorAll('[data-deck]').forEach(function (b) {
+        b.addEventListener('click', function () { currentDeck = b.getAttribute('data-deck') || null; loadDecks(); loadCards(); });
+      });
+    }
+
+    function emptyState(nextDue) {
+      document.getElementById('fc-cat').textContent = 'Session terminée';
+      document.getElementById('fc-front').innerHTML = allMine.length
+        ? 'Tout est révisé 🎉<br/><span style="font-size:.8rem;font-weight:600;color:var(--rb-muted)">' + (nextDue ? 'Prochaine carte ' + RB.timeAgo(nextDue).replace('il y a', 'dans') : 'Reviens demain') + '</span>'
+        : 'Aucune carte pour l\'instant';
+      document.getElementById('fc-back').textContent = allMine.length ? 'La révision espacée fait son travail : chaque carte revient juste avant que tu l\'oublies.' : 'Ouvre un document et clique sur « Flashcards » : l\'IA crée ton paquet.';
+      document.getElementById('fc-progress-label').textContent = '0 carte due';
+      document.getElementById('fc-progress-bar').style.width = '100%';
+      setRatingState(false);
+      document.getElementById('rating-hint').innerHTML = allMine.length ? '<button class="rb-btn rb-btn--ghost rb-btn--sm" id="review-anyway">Réviser quand même</button>' : '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-documents.html">Créer des flashcards</a>';
+      var again = document.getElementById('review-anyway');
+      if (again) again.onclick = function () { deck = allMine.map(toView); cIdx = 0; renderCard(); };
+    }
+
+    async function loadCards() {
+      try {
+        var res = await Promise.all([RB.data.flashcards.due(currentDeck, 100), RB.data.flashcards.cards(currentDeck)]);
+        allMine = res[1];
+        allCards.length = 0;
+        allMine.forEach(function (c) { allCards.push(toView(c)); });
+        deck = res[0].map(toView);
+        cIdx = 0;
+        favorites = new Set(); hardCards = new Set();
+        allCards.forEach(function (c, i) {
+          if (c.is_favorite) favorites.add(i);
+          if (c.raw.lapses > 0 || Number(c.raw.ease_factor) < 2.1) hardCards.add(i);
+        });
+        var mastered = allMine.filter(function (c) { return c.interval_days >= 21; }).length;
+        document.getElementById('stat-due').textContent = deck.length;
+        document.getElementById('stat-total').textContent = allMine.length;
+        document.getElementById('stat-mastered').textContent = mastered;
+        if (deck.length) renderCard();
+        else {
+          var next = allMine.map(function (c) { return c.due_at; }).sort()[0];
+          emptyState(next);
+        }
+        renderFavGrid(); renderHardList();
+      } catch (e) { RB.handleError(e, 'Impossible de charger tes cartes.'); }
+    }
+
+    // Les index des favoris / difficiles pointent vers allCards
+    var baseRender = window.renderCard;
+    window.renderCard = function () {
+      if (!deck.length) return emptyState();
+      baseRender();
+      var c = deck[cIdx], i = allCards.findIndex(function (x) { return x.id === c.id; });
+      document.getElementById('fav-icon').className = favorites.has(i) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star';
+      document.getElementById('fav-label').textContent = favorites.has(i) ? 'Dans les favoris' : 'Ajouter aux favoris';
+      document.getElementById('fc-progress-label').textContent = 'Carte ' + (cIdx + 1) + ' / ' + deck.length + ' · ' + reviewed + ' révisée' + (reviewed > 1 ? 's' : '');
+      // Libellés des boutons = vrais intervalles SM-2 prévisionnels
+      var raw = c.raw, ef = Number(raw.ease_factor) || 2.5, reps = raw.repetitions || 0;
+      var good = reps === 0 ? 1 : reps === 1 ? 6 : Math.ceil(Math.max(raw.interval_days, 1) * ef);
+      var labels = ['10 min', Math.max(1, Math.ceil(good * 0.6)) + ' j', good + ' j', Math.ceil(good * 1.3) + ' j'];
+      document.querySelectorAll('#rate-buttons .rate-btn p:last-child').forEach(function (p, k) { p.textContent = labels[k]; });
+      shownAt = Date.now();
+    };
+
+
+    // Listes rendues en HTML : contenu échappé (cartes générées par l'IA ou saisies)
+    window.renderFavGrid = function () {
+      var grid = document.getElementById('fav-grid'), empty = document.getElementById('fav-empty'), arr = Array.from(favorites);
+      document.getElementById('stat-fav').textContent = arr.length;
+      if (!arr.length) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+      grid.innerHTML = arr.map(function (i) {
+        var c = allCards[i]; if (!c) return '';
+        return '<div class="mini-card" onclick="jumpTo(' + i + ')"><div class="flex items-center justify-between mb-1.5"><span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-violet-50 text-violet-700">' + RB.escape(c.cat) + '</span><i class="fa-solid fa-star text-amber-400 text-[10px]"></i></div><p class="text-xs font-black text-slate-800 leading-snug">' + RB.escape(c.front) + '</p></div>';
+      }).join('');
+    };
+    window.renderHardList = function () {
+      var arr = Array.from(hardCards), list = document.getElementById('hard-list');
+      document.getElementById('hard-count').textContent = arr.length;
+      list.innerHTML = arr.length ? arr.map(function (i) {
+        var c = allCards[i]; if (!c) return '';
+        return '<div class="hard-row"><div class="w-7 h-7 rounded-lg bg-rose-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-rose-500 text-[10px]"></i></div><div class="flex-1 min-w-0"><p class="text-xs font-black text-slate-800 truncate">' + RB.escape(c.front) + '</p><p class="text-[9px] text-slate-400 font-semibold">' + RB.escape(c.cat) + ' · oubliée ' + (c.raw.lapses || 0) + ' fois · facilité ' + Number(c.raw.ease_factor).toFixed(2).replace('.', ',') + '</p></div><button class="text-[10px] font-black text-violet-600 hover:underline shrink-0" onclick="jumpTo(' + i + ')">Réviser →</button></div>';
+      }).join('') : '<p class="text-xs text-slate-400 font-semibold text-center py-4">Aucune carte difficile pour le moment 💪</p>';
+    };
+
+    window.rateCard = async function (level) {
+      var c = deck[cIdx]; if (!c) return;
+      var btns = document.querySelectorAll('#rate-buttons .rate-btn');
+      setRatingState(false);
+      try {
+        var r = await RB.data.flashcards.review(c.id, level, Date.now() - shownAt);
+        reviewed++;
+        var origin = btns[['again', 'hard', 'good', 'easy'].indexOf(level)];
+        if (level === 'again') { toast('On la revoit dans 10 minutes 🔁', 'info'); deck.push(deck.splice(cIdx, 1)[0]); }
+        else {
+          toast('Prochain passage : ' + intervalLabel(r.interval_days, r.due_at), level === 'hard' ? 'info' : 'success');
+          deck.splice(cIdx, 1);
+          if (level === 'easy') RB.motion.burst(origin, { count: 7, set: 'stars', spread: 60 });
+        }
+        if (r.xp && r.xp.awarded) RB.celebrate(r.xp, origin);
+        document.getElementById('stat-due').textContent = deck.filter(function (x) { return new Date(x.raw.due_at) <= new Date(); }).length;
+        if (cIdx >= deck.length) cIdx = 0;
+        setTimeout(function () { deck.length ? renderCard() : (RB.motion.burst(document.getElementById('flip-card'), { count: 18 }), emptyState()); }, 350);
+        if (reviewed % 10 === 0) logSession();
+      } catch (e) { RB.handleError(e); setRatingState(true); }
+    };
+
+    window.toggleFav = async function () {
+      var c = deck[cIdx]; if (!c) return;
+      var i = allCards.findIndex(function (x) { return x.id === c.id; });
+      var on = !favorites.has(i);
+      if (on) favorites.add(i); else favorites.delete(i);
+      renderCard(); renderFavGrid();
+      try { await RB.data.flashcards.toggleFavorite(c.id, on); toast(on ? 'Ajoutée aux favoris ⭐' : 'Retirée des favoris', 'info'); }
+      catch (e) { RB.handleError(e); }
+    };
+
+    window.addCard = async function () {
+      var f = document.getElementById('card-front-input').value.trim(), b = document.getElementById('card-back-input').value.trim();
+      if (!f || !b) { toast('Remplis les deux faces', 'error'); return; }
+      try {
+        var card = await RB.data.flashcards.create(currentDeck, f, b);
+        closeCardModal(); toast('Carte ajoutée ✨ Elle est due dès maintenant.', 'success');
+        if (!currentDeck) currentDeck = card.deck_id;
+        await loadDecks(); await loadCards();
+      } catch (e) { RB.handleError(e); }
+    };
+
+    window.renderHistory = async function () {
+      try {
+        var rows = await RB.data.flashcards.history(400);
+        // Regroupe les révisions en sessions (écart > 30 min = nouvelle session)
+        var sessions = [], cur = null;
+        rows.slice().reverse().forEach(function (r) {
+          var t = new Date(r.reviewed_at).getTime();
+          var deckTitle = (r.flashcards && r.flashcards.flashcard_decks && r.flashcards.flashcard_decks.title) || '—';
+          if (!cur || t - cur.end > 30 * 60000) { cur = { start: t, end: t, count: 0, ok: 0, decks: {} }; sessions.push(cur); }
+          cur.end = t; cur.count++; if (r.quality >= 3) cur.ok++; cur.decks[deckTitle] = 1;
+        });
+        var body = document.getElementById('hist-body');
+        if (!sessions.length) { body.innerHTML = '<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400 font-semibold">Aucune révision pour l\'instant.</td></tr>'; return; }
+        body.innerHTML = sessions.reverse().slice(0, 20).map(function (s) {
+          var ret = Math.round(s.ok / s.count * 100), mins = Math.max(1, Math.round((s.end - s.start) / 60000));
+          return '<tr class="hover:bg-[#faf5ff] transition-colors"><td class="px-4 py-2.5 font-bold text-slate-800 text-[11px]">' + new Date(s.start).toLocaleString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</td>' +
+            '<td class="px-3 py-2.5 text-center text-slate-600 text-[10px] font-semibold">' + RB.escape(Object.keys(s.decks).join(', ')) + '</td>' +
+            '<td class="px-3 py-2.5 text-center text-slate-600 text-[10px] font-bold">' + s.count + '</td>' +
+            '<td class="px-3 py-2.5 text-center"><span class="text-[9px] font-black px-1.5 py-0.5 rounded-full border ' + (ret >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : ret >= 70 ? 'text-amber-700 bg-amber-50 border-amber-100' : 'text-rose-700 bg-rose-50 border-rose-100') + '">' + ret + '%</span></td>' +
+            '<td class="px-3 py-2.5 text-center text-slate-500 text-[10px] font-bold">' + mins + ' min</td></tr>';
+        }).join('');
+      } catch (e) { /* onglet facultatif */ }
+    };
+
+    function logSession() {
+      var secs = (Date.now() - sessionStart) / 1000;
+      if (reviewed && secs > 60) { RB.data.logSession('flashcards', secs, null, null, reviewed).catch(function () {}); sessionStart = Date.now(); }
+    }
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') logSession(); });
+
+    document.getElementById('fc-front').textContent = 'Chargement de tes cartes…';
+    await loadDecks();
+    await loadCards();
+    renderHistory();
+  });
+});
+</script>
+
 </body>
 </html>

@@ -2,10 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.AI – Connexion</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -192,6 +198,55 @@ function showToast(msg, type){
   host.appendChild(el);
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(20px)'; setTimeout(()=>el.remove(),300); },3000);
 }
+</script>
+
+<!-- ═══ INTÉGRATION BACKEND — Supabase Auth (voir relbrain-app.js) ═══ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.RB || RB.demo) return; // mode démo : comportement d'origine
+  var params = new URLSearchParams(location.search);
+  function safeNext() {
+    var n = params.get('next') || '';
+    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n.replace(/^\//, '')) ? n.replace(/^\//, '') : 'relbrain-accueil.html';
+  }
+  function setLoading(btn, on, html) {
+    if (!btn) return;
+    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + (html || ''); btn.disabled = true; }
+    else { btn.innerHTML = btn.dataset.html || btn.innerHTML; btn.disabled = false; }
+  }
+  var card = document.querySelector('main .rounded-3xl');
+    // Déjà connecté → page suivante
+  RB.auth.session().then(function (s) { if (s) location.replace(safeNext()); });
+
+  window.doLogin = async function () {
+    var email = document.getElementById('email'), password = document.getElementById('password');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+      email.classList.add('error'); document.getElementById('email-error').classList.add('show'); RB.motion.shake(card); return;
+    }
+    if (!password.value) { password.classList.add('error'); RB.motion.shake(card); showToast('Entre ton mot de passe.', 'error'); return; }
+    var btn = document.getElementById('login-btn');
+    setLoading(btn, true, 'Connexion…');
+    try {
+      await RB.auth.signIn(email.value.trim().toLowerCase(), password.value);
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Connecté'; btn.classList.add('is-success');
+      showToast('Connexion réussie ✓', 'success');
+      setTimeout(function () { location.href = safeNext(); }, 500);
+    } catch (e) {
+      setLoading(btn, false);
+      RB.motion.shake(card);
+      if (e.code === 'email_not_confirmed') {
+        try { sessionStorage.setItem('rb_signup_email', email.value.trim()); } catch (x) {}
+        showToast(e.message, 'error');
+        setTimeout(function () { location.href = 'relbrain-validation-email.html'; }, 1800);
+      } else showToast(e.message || 'Connexion impossible.', 'error');
+    }
+  };
+  window.socialLogin = function (provider) {
+    if (provider !== 'Google' || RB_CONFIG.GOOGLE_AUTH === false) return showToast('Connexion ' + provider + ' — bientôt disponible !', 'info');
+    RB.auth.google(safeNext()).catch(function (e) { showToast(e.message, 'error'); });
+  };
+  if (params.get('next')) showToast('Connecte-toi pour accéder à cette page 🔒', 'info');
+});
 </script>
 </body>
 </html>

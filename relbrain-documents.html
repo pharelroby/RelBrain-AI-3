@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.ai – Mes documents</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -93,7 +97,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -122,25 +126,28 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       <div><p class="text-sm font-black text-slate-900">Importer un document</p><p class="text-[10px] text-slate-500 font-semibold">PDF, DOCX, PPTX, TXT, images</p></div>
       <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeUpload()"><i class="fa-solid fa-xmark text-sm"></i></button>
     </div>
-    <div class="upload-zone mb-3" onclick="toast('Sélectionne un fichier','info')">
-      <div class="w-11 h-11 rounded-lg bg-violet-50 flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-cloud-arrow-up text-violet-500"></i></div>
-      <p class="text-xs font-black text-slate-800 mb-0.5">Glisse ton fichier ici</p>
-      <p class="text-[10px] text-slate-500 font-semibold">ou clique pour parcourir</p>
-    </div>
+    <label class="upload-zone mb-3 block" id="upload-zone" for="upload-file">
+      <input type="file" id="upload-file" class="rb-sr-only" accept=".pdf,.docx,.pptx,.txt,.md,.png,.jpg,.jpeg,.webp,application/pdf,image/*"/>
+      <div class="w-11 h-11 rounded-lg bg-violet-50 flex items-center justify-center mx-auto mb-2" id="upload-icon"><i class="fa-solid fa-cloud-arrow-up text-violet-500"></i></div>
+      <p class="text-xs font-black text-slate-800 mb-0.5" id="upload-label">Glisse ton fichier ici</p>
+      <p class="text-[10px] text-slate-500 font-semibold" id="upload-hint">ou clique pour parcourir · max 20 Mo</p>
+    </label>
+    <div id="upload-progress" class="mb-3 hidden"></div>
     <div class="grid grid-cols-2 gap-2 mb-3">
       <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Matière</label>
-        <select class="rb-input">
+        <select class="rb-input" id="upload-subject">
+          <option value="">Détection auto ✨</option>
           <option>Informatique</option><option>Mathématiques</option><option>Physique</option>
           <option>Chimie</option><option>Biologie</option><option>Histoire</option><option>Autre</option>
         </select>
       </div>
       <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Titre</label>
-        <input type="text" class="rb-input" placeholder="Titre du document"/>
+        <input type="text" class="rb-input" id="upload-title" placeholder="Titre (optionnel)"/>
       </div>
     </div>
     <div class="flex gap-2">
       <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs" onclick="closeUpload()">Annuler</button>
-      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" onclick="simulateUpload()">Importer</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" id="upload-btn" onclick="simulateUpload()">Importer</button>
     </div>
   </div>
 </div>
@@ -160,29 +167,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
-      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item active"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -197,20 +205,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -350,7 +358,7 @@ function render(){
 function renderCard(d){
   const isProcessing = d.status === 'processing';
   return `
-    <div class="doc-card ${d.due?'due':''}" onclick="openDoc(${d.id})">
+    <div class="doc-card ${d.due?'due':''}" onclick="openDoc('${d.id}')">
       <div class="flex items-start justify-between mb-2.5">
         <div class="w-9 h-9 rounded-lg bg-${d.color}-50 flex items-center justify-center"><i class="fa-solid ${d.icon} text-${d.color}-500 text-sm"></i></div>
         <div class="flex items-center gap-1">
@@ -385,7 +393,7 @@ function renderCard(d){
 
 function renderRow(d){
   return `
-    <div class="rb-card p-3 flex items-center gap-3 cursor-pointer hover:border-violet-300 transition-colors" onclick="openDoc(${d.id})">
+    <div class="rb-card p-3 flex items-center gap-3 cursor-pointer hover:border-violet-300 transition-colors" onclick="openDoc('${d.id}')">
       <div class="w-10 h-10 rounded-lg bg-${d.color}-50 flex items-center justify-center shrink-0"><i class="fa-solid ${d.icon} text-${d.color}-500 text-sm"></i></div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-1.5 mb-0.5">
@@ -440,5 +448,258 @@ document.head.appendChild(styleEl);
 
 render();
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Mes documents
+     Upload sécurisé (bucket privé) → analyse IA suivie en temps réel →
+     fiche document (résumé, notions, quiz, flashcards, suppression).
+     En mode démo (relbrain-config.js vide), la maquette d'origine reste active.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div id="doc-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title">
+  <div class="modal-box" style="max-width:560px" id="doc-modal-body"></div>
+</div>
+<script>
+// Exécuté après relbrain-app.js (scripts « defer » chargés avant DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function () {
+  var zone = document.getElementById('upload-zone');
+  var input = document.getElementById('upload-file');
+  var chosen = null;
+
+  function fmtSize(b) {
+    if (!b && b !== 0) return '—';
+    if (b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + ' Ko';
+    return (b / 1024 / 1024).toFixed(1).replace('.', ',') + ' Mo';
+  }
+  function setFile(f) {
+    chosen = f;
+    document.getElementById('upload-label').textContent = f.name;
+    var hint = document.getElementById('upload-hint');
+    hint.textContent = fmtSize(f.size);
+    document.getElementById('upload-icon').innerHTML = '<i class="fa-solid fa-file-circle-check text-emerald-500"></i>';
+    if (!document.getElementById('upload-title').value) document.getElementById('upload-title').value = f.name.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/[_-]+/g, ' ');
+    if (window.RB && RB.data) {
+      try { RB.data.documents.validate(f); }
+      catch (e) { hint.textContent = e.message; hint.style.color = 'var(--rb-rose)'; chosen = null; RB.motion && RB.motion.shake(zone); return; }
+    }
+    hint.style.color = '';
+  }
+  input.addEventListener('change', function () { if (input.files[0]) setFile(input.files[0]); });
+  ['dragenter', 'dragover'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('dragging'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('dragging'); }); });
+  zone.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) setFile(f); });
+
+  RB.onReady(function () {
+    var SUBJECTS = [
+      [/info|algo|program|réseau|donnée|code|logiciel/i, 'info', 'violet', 'fa-code'],
+      [/math|probab|algèbre|analyse|géométr|statist|calcul/i, 'maths', 'amber', 'fa-square-root-variable'],
+      [/bio|svt|vivant|cellul|génét|médecine|anatom/i, 'bio', 'emerald', 'fa-dna'],
+      [/phys|onde|méca|électr|optique/i, 'phys', 'blue', 'fa-atom'],
+      [/chim/i, 'chim', 'rose', 'fa-flask'],
+      [/hist|géo|civique/i, 'hist', 'slate', 'fa-landmark'],
+    ];
+    function classify(text) {
+      for (var i = 0; i < SUBJECTS.length; i++) if (SUBJECTS[i][0].test(text)) return { key: SUBJECTS[i][1], color: SUBJECTS[i][2], icon: SUBJECTS[i][3] };
+      return { key: 'autre', color: 'slate', icon: 'fa-file-lines' };
+    }
+    var mastery = {}, byId = {};
+
+    function map(d) {
+      var c = classify((d.subject || '') + ' ' + d.title);
+      var opened = d.last_opened_at || d.created_at;
+      byId[d.id] = d;
+      return {
+        id: d.id, title: RB.escape(d.title), subject: RB.escape(d.subject || (d.status === 'ready' ? 'Général' : 'Analyse…')),
+        subjKey: c.key, pages: d.page_count || '—', size: fmtSize(d.size_bytes), date: RB.timeAgo(d.created_at),
+        dateMs: (Date.now() - new Date(d.created_at)) / 864e5,
+        status: d.status === 'ready' ? 'ready' : d.status === 'failed' ? 'failed' : 'processing',
+        color: c.color, icon: c.icon, fav: d.is_favorite,
+        due: d.status === 'ready' && Date.now() - new Date(opened) > 7 * 864e5,
+        progress: d.status === 'ready' ? Math.round(mastery[d.subject] || 0) : d.progress || 0,
+        message: RB.escape(d.status_message || ''),
+      };
+    }
+
+    // Cartes : progression réelle, état d'échec explicite
+    var baseCard = window.renderCard;
+    window.renderCard = function (d) {
+      if (d.status === 'failed') {
+        return '<div class="doc-card" style="border-color:#fecdd3" onclick="openDoc(\'' + d.id + '\')">' +
+          '<div class="flex items-start justify-between mb-2.5"><div class="w-9 h-9 rounded-lg bg-rose-50 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i></div></div>' +
+          '<p class="text-xs font-black text-slate-800 mb-0.5 line-clamp-2">' + d.title + '</p>' +
+          '<p class="text-[10px] text-rose-600 font-semibold">' + (d.message || "L'analyse a échoué.") + '</p></div>';
+      }
+      var html = baseCard(d);
+      if (d.status === 'processing') {
+        html = html.replace('style="width:70%"', 'style="width:' + Math.max(5, d.progress) + '%"')
+          .replace('Analyse IA…', d.message || 'Analyse IA…')
+          .replace('<div class="w-2.5 h-2.5 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>', '<span class="rb-synapse" style="--rb-synapse-size:1rem"><i></i><i></i><i></i></span>');
+      } else {
+        html = html.replace('Analysé ✓', 'Maîtrise ' + d.progress + ' %');
+      }
+      return html;
+    };
+
+    function updateStats(list) {
+      var total = list.length, due = list.filter(function (d) { return d.due; }).length;
+      var bytes = list.reduce(function (n, d) { return n + (byId[d.id].size_bytes || 0); }, 0);
+      var statNum = document.querySelector('.grid.md\\:grid-cols-3 .text-2xl');
+      if (statNum) statNum.textContent = total;
+      document.querySelectorAll('.filter-chip').forEach(function (c) {
+        if (/Tous/.test(c.textContent)) c.innerHTML = '<i class="fa-solid fa-inbox"></i> Tous · ' + total;
+        if (/réviser/.test(c.textContent)) c.innerHTML = '<i class="fa-solid fa-clock text-rose-500"></i> À réviser · ' + due;
+      });
+      document.querySelectorAll('p').forEach(function (p) {
+        if (/^\d+ documents? à réviser$/.test(p.textContent.trim())) p.textContent = due + ' document' + (due > 1 ? 's' : '') + ' à réviser';
+        if (/ Mo \/ /.test(p.textContent) && p.textContent.length < 20) p.textContent = fmtSize(bytes) + ' utilisés';
+      });
+    }
+
+    async function refresh() {
+      try {
+        var res = await Promise.all([RB.data.documents.list(), RB.data.activity(90).catch(function () { return { subjects: [] }; })]);
+        mastery = {};
+        (res[1].subjects || []).forEach(function (s) { mastery[s.subject] = Number(s.mastery); });
+        docs.length = 0;
+        res[0].forEach(function (d) { docs.push(map(d)); });
+        updateStats(docs);
+        render();
+        if (!docs.length) {
+          document.getElementById('docs-grid').innerHTML =
+            '<div class="col-span-full rb-sheet rb-ruled text-center" style="padding:3rem 1.5rem">' +
+            '<p style="font-family:var(--rb-font-display);font-size:1.5rem;font-weight:650;margin-bottom:.5rem">Ton cahier est encore vide</p>' +
+            '<p class="text-xs text-slate-500 font-semibold mb-4">Importe un cours (PDF, Word, photo de tes notes) : l\'IA en tire un quiz, des flashcards et un résumé.</p>' +
+            '<button class="rb-btn rb-btn--ink" onclick="openUpload()"><i class="fa-solid fa-cloud-arrow-up"></i> Importer mon premier cours</button></div>';
+        }
+      } catch (e) { RB.handleError(e, 'Impossible de charger tes documents.'); }
+    }
+
+    // Squelettes pendant le premier chargement
+    document.getElementById('docs-grid').innerHTML = [1, 2, 3].map(function () {
+      return '<div class="doc-card"><div class="rb-skeleton" style="width:36px;height:36px;margin-bottom:.75rem"></div><div class="rb-skeleton rb-skeleton-line"></div><div class="rb-skeleton rb-skeleton-line"></div><div class="rb-skeleton rb-skeleton-line"></div></div>';
+    }).join('');
+    refresh();
+
+    // Temps réel : l'avancement de l'analyse s'affiche sans recharger
+    var wasProcessing = {};
+    RB.data.documents.subscribe(function (row, type) {
+      if (!row) return;
+      if (type === 'DELETE') { var i = docs.findIndex(function (d) { return d.id === row.id; }); if (i >= 0) docs.splice(i, 1); render(); return; }
+      var mapped = map(row);
+      var idx = docs.findIndex(function (d) { return d.id === row.id; });
+      if (idx >= 0) docs[idx] = mapped; else docs.unshift(mapped);
+      render();
+      if (row.status === 'ready' && wasProcessing[row.id]) {
+        var card = document.querySelector('[onclick="openDoc(\'' + row.id + '\')"]');
+        RB.motion && RB.motion.burst(card || document.body, { count: 12 });
+      }
+      wasProcessing[row.id] = row.status === 'processing' || row.status === 'pending';
+    });
+
+    // Import réel
+    window.simulateUpload = async function () {
+      var btn = document.getElementById('upload-btn');
+      if (!chosen) { RB.motion.shake(zone); toast('Choisis d\'abord un fichier', 'error'); return; }
+      var file = chosen, title = document.getElementById('upload-title').value.trim(), subject = document.getElementById('upload-subject').value;
+      btn.classList.add('rb-btn', 'is-loading'); btn.disabled = true;
+      var progress = document.getElementById('upload-progress');
+      progress.classList.remove('hidden');
+      var stop = RB.motion.thinking(progress, ['Envoi sécurisé du fichier', 'Chiffrement et stockage']);
+      try {
+        var job = RB.data.documents.upload(file, {
+          title: title, subject: subject,
+          onStage: function (stage) {
+            if (stage === 'process') {
+              stop(); closeUpload(); resetUpload();
+              toast('Fichier reçu ✓ L\'IA analyse ton cours…', 'success');
+            }
+          },
+        });
+        var r = await job;
+        RB.celebrate(r.xp, document.getElementById('docs-grid'));
+        toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        if (r.warning) setTimeout(function () { toast(r.warning, 'info'); }, 1500);
+        refresh();
+      } catch (e) {
+        stop(); RB.handleError(e); RB.motion.shake(zone); refresh();
+      } finally {
+        btn.classList.remove('is-loading'); btn.disabled = false;
+      }
+    };
+    function resetUpload() {
+      chosen = null; input.value = '';
+      document.getElementById('upload-label').textContent = 'Glisse ton fichier ici';
+      document.getElementById('upload-hint').textContent = 'ou clique pour parcourir · max 20 Mo';
+      document.getElementById('upload-icon').innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-violet-500"></i>';
+      document.getElementById('upload-title').value = '';
+      document.getElementById('upload-progress').classList.add('hidden');
+    }
+
+    // Fiche document
+    var modal = document.getElementById('doc-modal'), body = document.getElementById('doc-modal-body');
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
+    window.openDoc = function (id) {
+      var d = byId[id]; if (!d) return;
+      RB.data.documents.markOpened(id);
+      var concepts = (d.key_concepts || []).slice(0, 12);
+      body.innerHTML =
+        '<div class="flex items-start gap-3 mb-3"><div style="flex:1;min-width:0">' +
+          '<span class="rb-tag mb-2">' + RB.escape(d.subject || 'Document') + '</span>' +
+          '<h2 id="doc-modal-title" style="font-family:var(--rb-font-display);font-size:1.4rem;font-weight:650;line-height:1.2;margin-top:.4rem">' + RB.escape(d.title) + '</h2>' +
+          '<p class="text-[10px] text-slate-500 font-semibold mt-1">' + [d.page_count ? d.page_count + ' pages' : '', d.word_count ? RB.formatNumber(d.word_count) + ' mots' : '', 'importé ' + RB.timeAgo(d.created_at)].filter(Boolean).join(' · ') + '</p>' +
+        '</div><button class="text-slate-400 hover:text-slate-700" aria-label="Fermer" onclick="document.getElementById(\'doc-modal\').classList.remove(\'open\')"><i class="fa-solid fa-xmark"></i></button></div>' +
+        (d.status !== 'ready'
+          ? '<div class="rb-callout mb-3"><i class="fa-solid fa-circle-info"></i><div>' + RB.escape(d.status_message || (d.status === 'failed' ? "L'analyse a échoué." : 'Analyse en cours…')) + '</div></div>'
+          : (d.summary_short ? '<p class="text-xs text-slate-600 font-semibold leading-relaxed mb-3" style="line-height:1.65">' + RB.escape(d.summary_short) + '</p>' : '') +
+            (concepts.length ? '<p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5">Notions clés</p><div class="flex flex-wrap gap-1.5 mb-4">' +
+              concepts.map(function (c) { return '<span class="rb-tag ' + (c.importance === 3 ? 'rb-tag--pink' : 'rb-tag--outline') + '" title="' + RB.escape(c.definition || '') + '">' + RB.escape(c.name) + '</span>'; }).join('') + '</div>' : '') +
+            '<div class="grid grid-cols-2 gap-2 mb-2">' +
+              '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-quiz-setup.html?doc=' + d.id + '"><i class="fa-solid fa-bolt"></i> Quiz</a>' +
+              '<button class="rb-btn rb-btn--paper rb-btn--sm" id="doc-cards-btn"><i class="fa-solid fa-layer-group"></i> Flashcards</button>' +
+              '<button class="rb-btn rb-btn--ghost rb-btn--sm" id="doc-sum-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Fiche de révision</button>' +
+              '<button class="rb-btn rb-btn--ghost rb-btn--sm" id="doc-fav-btn"><i class="fa-' + (d.is_favorite ? 'solid' : 'regular') + ' fa-star"></i> ' + (d.is_favorite ? 'Favori' : 'Ajouter aux favoris') + '</button>' +
+            '</div><div id="doc-summary"></div>') +
+        '<button class="text-[11px] font-black text-rose-600 hover:underline mt-3" id="doc-del-btn"><i class="fa-solid fa-trash-can"></i> Supprimer ce document</button>';
+      modal.classList.add('open');
+
+      var del = document.getElementById('doc-del-btn');
+      del.onclick = async function () {
+        if (!confirm('Supprimer « ' + d.title + ' » et ses analyses ? Cette action est définitive.')) return;
+        try { await RB.data.documents.remove(d.id); modal.classList.remove('open'); toast('Document supprimé', 'success'); refresh(); }
+        catch (e) { RB.handleError(e); }
+      };
+      if (d.status !== 'ready') return;
+      document.getElementById('doc-fav-btn').onclick = async function () {
+        d.is_favorite = !d.is_favorite;
+        await RB.data.documents.toggleFavorite(d.id, d.is_favorite);
+        refresh(); openDoc(d.id);
+      };
+      document.getElementById('doc-cards-btn').onclick = async function () {
+        var b = this; b.classList.add('is-loading');
+        try {
+          var r = await RB.data.flashcards.generate({ document_id: d.id, count: 15 });
+          toast(r.cards.length + ' flashcards créées 🃏', 'success');
+          location.href = 'relbrain-flashcards.html?deck=' + r.deck.id;
+        } catch (e) { RB.handleError(e); b.classList.remove('is-loading'); }
+      };
+      document.getElementById('doc-sum-btn').onclick = async function () {
+        var box = document.getElementById('doc-summary');
+        var stop = RB.motion.thinking(box, ['Lecture du cours', 'Sélection de l\'essentiel', 'Mise en page de ta fiche']);
+        try {
+          var r = await RB.data.documents.summary(d.id, 'key_points');
+          stop();
+          var s = r.summary;
+          box.innerHTML = '<div class="rb-sheet rb-ruled" style="padding:1.1rem 1.1rem 1.1rem 2.75rem;margin-top:.5rem">' +
+            '<p style="font-family:var(--rb-font-display);font-weight:650;font-size:1.05rem;margin-bottom:.35rem">' + RB.escape(s.title) + '</p>' +
+            '<p class="text-xs font-semibold mb-2"><mark class="rb-mark">' + RB.escape(s.tldr) + '</mark></p>' +
+            s.sections.map(function (sec) { return '<p class="text-[11px] font-black mt-2">' + RB.escape(sec.heading) + '</p><ul class="text-[11px] text-slate-600 font-semibold" style="list-style:disc;padding-left:1rem">' + sec.points.map(function (p) { return '<li>' + RB.escape(p) + '</li>'; }).join('') + '</ul>'; }).join('') +
+            (s.exam_tips.length ? '<p class="rb-annotation mt-3">⚠ ' + RB.escape(s.exam_tips[0]) + '</p>' : '') + '</div>';
+          RB.motion.reveal(box);
+          RB.data.logSession('summary', 120, d.id, d.subject);
+        } catch (e) { stop(); RB.handleError(e); }
+      };
+    };
+  }, function demo() { /* mode démo : comportement d'origine */ });
+});
+</script>
+
 </body>
 </html>

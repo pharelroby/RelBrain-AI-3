@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Communauté — RelBrain</title>
+<meta name="description" content="Rejoins la communauté RelBrain : Discord, WhatsApp, TikTok, Instagram et YouTube. Entraide, astuces de révision et programme ambassadeurs."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+<style>.comm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:900px){.comm-grid{grid-template-columns:1fr}}
+.comm{padding:1.6rem;display:flex;flex-direction:column;gap:.6rem;position:relative;overflow:hidden}
+.comm::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:var(--c)}
+.comm--big{grid-row:span 2}
+.comm p{color:var(--rb-muted);font-weight:550;line-height:1.6;font-size:.92rem}
+.comm-ico{width:3rem;height:3rem;border-radius:.9rem .9rem .9rem .3rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;background:var(--c)}
+.comm-list{display:grid;gap:.4rem;margin:.5rem 0 1rem;font-size:.88rem;font-weight:650;color:var(--rb-ink-2)}
+.comm-list li::before{content:'✦ ';color:var(--rb-pink)}
+.comm--big .rb-btn{margin-top:auto;align-self:flex-start}</style>
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Communauté</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">On apprend mieux <em>ensemble</em>.</h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Rejoins des milliers d'élèves et d'étudiants qui préparent le Bac, le GCE, les concours et leurs partiels. Entraide, astuces, défis — et l'équipe RelBrain à portée de message.</p>
+    
+  </div>
+</section>
+<section class="rb-page-body">
+  <div class="rb-container">
+    <div class="comm-grid" data-rb-stagger="80">
+      <article class="rb-sheet rb-lift comm comm--big" style="--c:#5865f2">
+        <span class="comm-ico"><i class="fa-brands fa-discord"></i></span>
+        <h2 class="rb-h2">Discord officiel</h2>
+        <p>Le QG de la communauté : salons par matière et par examen (Bac C/D, GCE A-Level, ENS, Polytech, FMSB…), sessions de révision en vocal, entraide sur les exercices, annonces et bêta-tests.</p>
+        <ul class="comm-list"><li>#bac-2027 · #gce · #concours</li><li>Révisions en groupe chaque soir</li><li>Support de l'équipe en direct</li></ul>
+        <a class="rb-btn rb-btn--ink" data-social="discord" href="#" target="_blank" rel="noopener">Rejoindre le Discord</a>
+      </article>
+      <article class="rb-sheet rb-lift comm" id="whatsapp" style="--c:#16a34a">
+        <span class="comm-ico"><i class="fa-brands fa-whatsapp"></i></span>
+        <h2 class="rb-h3">WhatsApp</h2>
+        <p>La <strong>chaîne</strong> pour les annonces et une astuce de révision par jour ; le <strong>groupe</strong> pour échanger entre élèves (modéré).</p>
+        <div class="rb-row" style="--rb-gap:.5rem;margin-top:auto"><a class="rb-btn rb-btn--paper rb-btn--sm" data-social="whatsappChannel" href="#" target="_blank" rel="noopener">Suivre la chaîne</a><a class="rb-btn rb-btn--ghost rb-btn--sm" data-social="whatsappGroup" href="#" target="_blank" rel="noopener">Rejoindre le groupe</a></div>
+      </article>
+      <article class="rb-sheet rb-lift comm" style="--c:#111">
+        <span class="comm-ico"><i class="fa-brands fa-tiktok"></i></span>
+        <h2 class="rb-h3">TikTok</h2>
+        <p>Méthodes de mémorisation en 60 secondes, défis de quiz et coulisses.</p>
+        <a class="rb-btn rb-btn--paper rb-btn--sm" data-social="tiktok" href="#" target="_blank" rel="noopener" style="margin-top:auto">@relbrain</a>
+      </article>
+      <article class="rb-sheet rb-lift comm" style="--c:#e1306c">
+        <span class="comm-ico"><i class="fa-brands fa-instagram"></i></span>
+        <h2 class="rb-h3">Instagram</h2>
+        <p>Fiches visuelles, témoignages d'élèves et nouveautés.</p>
+        <a class="rb-btn rb-btn--paper rb-btn--sm" data-social="instagram" href="#" target="_blank" rel="noopener" style="margin-top:auto">@relbrain</a>
+      </article>
+      <article class="rb-sheet rb-lift comm" style="--c:#ff0000">
+        <span class="comm-ico"><i class="fa-brands fa-youtube"></i></span>
+        <h2 class="rb-h3">YouTube</h2>
+        <p>Tutoriels complets, méthodes de travail et lives de révision avant les examens.</p>
+        <a class="rb-btn rb-btn--paper rb-btn--sm" data-social="youtube" href="#" target="_blank" rel="noopener" style="margin-top:auto">S'abonner</a>
+      </article>
+    </div>
+
+    <div class="rb-grid" style="margin-top:clamp(3rem,2rem + 3vw,5rem);align-items:start">
+      <div class="rb-col-6 rb-reveal">
+        <span class="rb-eyebrow">Charte de la communauté</span>
+        <h2 class="rb-h2" style="margin:.5rem 0 1rem">Cinq règles, pas une de plus.</h2>
+        <ol class="rb-prose" style="font-size:1rem">
+          <li><strong>Bienveillance d'abord.</strong> Toutes les questions sont légitimes.</li>
+          <li><strong>On aide à comprendre</strong>, on ne donne pas les réponses d'un devoir noté.</li>
+          <li><strong>Pas de fuite de sujets</strong> d'examen ni de triche.</li>
+          <li><strong>Pas de spam</strong> ni de publicité non sollicitée.</li>
+          <li><strong>Protège ta vie privée</strong> : ne partage ni numéro, ni adresse en public.</li>
+        </ol>
+      </div>
+      <div class="rb-col-6 rb-reveal--scale">
+        <div class="rb-sheet rb-sheet--paper rb-ruled" style="padding:1.75rem 1.75rem 1.75rem 3.2rem">
+          <span class="rb-tag rb-tag--amber">Programme Ambassadeurs</span>
+          <p style="font-family:var(--rb-font-display);font-size:1.45rem;font-weight:650;margin:.75rem 0 .5rem">Représente RelBrain dans ton lycée ou ton campus.</p>
+          <p class="rb-caption" style="font-size:.9rem">Organise des sessions de révision, fais remonter les besoins de ta promo — et profite de RelBrain Pro offert, de goodies et d'une attestation d'engagement.</p>
+          <a class="rb-btn rb-btn--ink" href="relbrain-contact.html?sujet=partnership" style="margin-top:1.25rem">Devenir ambassadeur·rice</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-social]').forEach(function (a) { var u = window.RB && RB.SOCIAL && RB.SOCIAL[a.dataset.social]; if (u) a.href = u; });
+});
+</script>
+</body>
+</html>

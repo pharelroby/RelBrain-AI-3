@@ -2,10 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.AI – Valide ton email</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -30,7 +36,7 @@ body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
       <div class="bg-violet-600 text-white p-1.5 rounded-xl shadow-md shadow-violet-200"><i class="fa-solid fa-brain text-base"></i></div>
       <span class="text-base font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
     </a>
-    <a href="Dashboard.html" class="text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5">
+    <a href="dashboard.html" class="text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5">
       Passer pour l'instant <i class="fa-solid fa-arrow-right text-[10px]"></i>
     </a>
   </div>
@@ -82,7 +88,7 @@ body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
             </div>
           </div>
 
-          <a href="Dashboard.html" class="block w-full gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 hover:-translate-y-0.5 transition-all text-sm">
+          <a href="dashboard.html" class="block w-full gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 hover:-translate-y-0.5 transition-all text-sm">
             <i class="fa-solid fa-gauge mr-1.5"></i> Accéder au Dashboard
           </a>
         </div>
@@ -119,6 +125,43 @@ function simulateValidation(){
   document.getElementById('step-done').classList.add('active');
 }
 startResendCooldown();
+</script>
+
+<!-- ═══ INTÉGRATION BACKEND — Supabase Auth (voir relbrain-app.js) ═══ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.RB || RB.demo) return; // mode démo : comportement d'origine
+  var params = new URLSearchParams(location.search);
+  function safeNext() {
+    var n = params.get('next') || '';
+    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n.replace(/^\//, '')) ? n.replace(/^\//, '') : 'relbrain-accueil.html';
+  }
+  function setLoading(btn, on, html) {
+    if (!btn) return;
+    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + (html || ''); btn.disabled = true; }
+    else { btn.innerHTML = btn.dataset.html || btn.innerHTML; btn.disabled = false; }
+  }
+  var card = document.querySelector('main .rounded-3xl');
+    var sim = document.querySelector('#step-pending button[onclick="simulateValidation()"]');
+  if (sim) sim.remove();
+  var skip = document.querySelector('nav a[href="dashboard.html"], nav a[href="dashboard.html"]');
+  if (skip) skip.href = 'relbrain-login.html';
+  RB.auth.session().then(function (s) {
+    if (s && (params.get('confirmed') || (s.user && s.user.email_confirmed_at))) {
+      simulateValidation();
+      document.querySelectorAll('#step-done a').forEach(function (a) { a.href = 'relbrain-accueil.html'; });
+      setTimeout(function () { RB.motion.burst(document.querySelector('#step-done .success-icon') || card, { count: 18 }); }, 350);
+    }
+  });
+  window.resendEmail = async function () {
+    if (resendCooldown > 0) return;
+    var email = document.getElementById('target-email').textContent.trim();
+    if (!/@/.test(email)) { RB.toast('Adresse inconnue : reconnecte-toi pour renvoyer le lien.', 'error'); return; }
+    startResendCooldown();
+    try { await RB.auth.resend(email); RB.toast('Email renvoyé ✓ Pense à vérifier tes spams.', 'success'); }
+    catch (e) { RB.toast(e.message, 'error'); }
+  };
+});
 </script>
 </body>
 </html>

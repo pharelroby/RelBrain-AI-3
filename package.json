@@ -1,0 +1,36 @@
+{
+  "name": "relbrain",
+  "version": "2.0.0",
+  "private": true,
+  "description": "RelBrain AI — plateforme d'apprentissage intelligente (site statique + fonctions serverless Vercel + Supabase).",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "typecheck": "tsc --noEmit",
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --linked > lib/database.types.ts",
+    "vapid": "web-push generate-vapid-keys"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "@vercel/edge": "^1.1.2",
+    "jose": "^5.9.6",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.8.0",
+    "openai": "^4.77.0",
+    "pdf-parse": "^1.1.1",
+    "resend": "^4.0.1",
+    "stripe": "^17.4.0",
+    "web-push": "^3.6.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/web-push": "^3.6.4",
+    "@vercel/node": "^3.2.29",
+    "typescript": "^5.6.3"
+  }
+}

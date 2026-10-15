@@ -1,0 +1,6 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Alias de compatibilité — les pages historiques chargent ce fichier.
+   Toute la vérité visuelle vit dans relbrain-design-system.css : ne rien
+   ajouter ici, modifier le design system à la place.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@import url('relbrain-design-system.css');

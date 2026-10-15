@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Guide d'utilisation — RelBrain</title>
+<meta name="description" content="Bien démarrer, importer un document, générer un quiz, réviser avec les flashcards SM-2, XP et ligues, paiement Mobile Money, FAQ technique et API."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Guide d'utilisation</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">Tout comprendre <em>en 10 minutes</em>.</h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Du premier import à la ligue Maître : comment tirer le meilleur de RelBrain, pas à pas.</p>
+    <div class="rb-page-meta rb-reveal" style="--rb-delay:220ms"><span><i class="fa-solid fa-clock"></i>Lecture : 10 min</span><span><i class="fa-solid fa-life-ring"></i><a href="relbrain-support.html">Centre d'aide</a></span></div>
+  </div>
+</section><section class="rb-page-body">
+  <div class="rb-container rb-docs-layout">
+    <aside><a class="rb-btn rb-btn--ink rb-btn--sm rb-btn--block" href="relbrain-signup.html" style="margin-bottom:1rem">Créer mon compte</a><nav class="rb-docs-nav" data-rb-toc aria-label="Sommaire"></nav></aside>
+    <article class="rb-prose">
+
+<h2 id="demarrage">Démarrer en 3 minutes</h2>
+<ol>
+<li><strong>Crée ton compte</strong> sur la <a href="relbrain-signup.html">page d'inscription</a> (email ou Google), puis valide ton adresse via le lien reçu : <strong>+150 XP</strong> de bienvenue et de validation.</li>
+<li><strong>Complète ton profil</strong> (niveau, filière, objectifs) : l'IA calibre ses questions selon ton niveau — Terminale C, L2 Informatique, prépa ENS…</li>
+<li><strong>Importe ton premier cours</strong> depuis <a href="relbrain-documents.html">Mes documents</a>, puis lance un quiz. C'est tout.</li>
+</ol>
+<div class="rb-callout rb-callout--tip"><i class="fa-solid fa-lightbulb"></i><div><strong>Astuce :</strong> installe RelBrain sur ton téléphone. Sur Android (Chrome) : menu ⋮ → « Ajouter à l'écran d'accueil ». Sur iPhone (Safari) : bouton Partager → « Sur l'écran d'accueil ». L'application s'ouvre alors en plein écran et reste utilisable avec une connexion instable.</div></div>
+
+<h2 id="importer">Importer un document</h2>
+<p>Dans <a href="relbrain-documents.html">Mes documents</a>, clique sur <span class="rb-kbd">Importer</span> ou glisse ton fichier dans la zone prévue.</p>
+<table>
+<thead><tr><th>Format</th><th>Conseils</th></tr></thead>
+<tbody>
+<tr><td>PDF</td><td>Idéal. Si ton PDF est un scan (photo de pages), RelBrain te le signale : importe plutôt les pages en photo pour l'OCR.</td></tr>
+<tr><td>Word (DOCX), PowerPoint (PPTX)</td><td>Le texte et les diapositives sont extraits automatiquement.</td></tr>
+<tr><td>Photos (JPG, PNG, WEBP)</td><td>Notes manuscrites, tableau, polycopié : l'IA lit le texte (OCR). Prends la photo bien à plat, avec une bonne lumière.</td></tr>
+<tr><td>Texte, Markdown</td><td>Ou colle directement ton texte dans <em>Mes Quiz → Coller du texte</em>.</td></tr>
+</tbody>
+</table>
+<p>Taille maximale : <strong>20 Mo</strong> (10 Mo avec le forfait gratuit). L'analyse prend en général 15 à 60 secondes : la progression s'affiche en direct sur la carte du document, tu peux continuer à naviguer pendant ce temps.</p>
+<p>Une fois l'analyse terminée, clique sur la carte pour ouvrir la fiche du document : résumé, <mark class="rb-mark">notions clés</mark> classées par importance, et boutons <em>Quiz</em>, <em>Flashcards</em> et <em>Fiche de révision</em>.</p>
+<div class="rb-callout"><i class="fa-solid fa-lock"></i><div>Tes fichiers sont stockés dans un espace privé, accessible uniquement par ton compte. <a href="relbrain-confidentialite.html">En savoir plus</a>.</div></div>
+
+<h2 id="quiz">Générer un quiz</h2>
+<ol>
+<li>Ouvre <a href="relbrain-quiz-setup.html">Mes Quiz</a> et choisis la source : un cours analysé, un nouveau fichier, un texte collé ou simplement une matière.</li>
+<li>Règle le <strong>nombre de questions</strong> (10 en gratuit, jusqu'à 30 en Pro, 50 en Premium), le <strong>type</strong> et la <strong>difficulté</strong> :
+<ul>
+<li><strong>Facile</strong> — définitions, mémorisation ;</li>
+<li><strong>Moyen</strong> — compréhension, reformulation ;</li>
+<li><strong>Difficile</strong> — application, calculs ;</li>
+<li><strong>Expert</strong> — analyse et pièges classiques d'examen et de concours.</li>
+</ul></li>
+<li>Active les options : chronomètre, explications, <strong>IA adaptative</strong> (Pro : cible tes points faibles), ordre aléatoire.</li>
+<li>Clique sur <em>Générer</em>. Chaque réponse est corrigée immédiatement, avec une explication.</li>
+</ol>
+<p><strong>Types de questions :</strong> QCM (4 choix), Vrai/Faux, réponse courte (les variantes d'orthographe et les accents sont tolérés), calcul (avec une marge d'arrondi) et rédaction type examen (tu compares ta réponse au corrigé modèle et tu t'auto-évalues honnêtement).</p>
+<p>À la fin du quiz, RelBrain te montre ton score, tes XP gagnés (avec les bonus de vitesse et de perfection), et les <strong>notions à renforcer</strong> — un clic suffit pour lancer un quiz ciblé dessus.</p>
+
+<h2 id="flashcards">Réviser avec les flashcards</h2>
+<p>Depuis la fiche d'un document, clique sur <em>Flashcards</em> : l'IA crée un paquet de cartes « une idée par carte ». Tu peux aussi créer tes propres cartes avec le bouton <span class="rb-kbd">+</span>.</p>
+<p>Retourne chaque carte, puis évalue-toi honnêtement :</p>
+<table>
+<thead><tr><th>Bouton</th><th>Signification</th><th>Effet</th></tr></thead>
+<tbody>
+<tr><td>Encore</td><td>Je ne savais pas</td><td>La carte revient dans 10 minutes</td></tr>
+<tr><td>Difficile</td><td>J'ai hésité</td><td>Intervalle raccourci</td></tr>
+<tr><td>Bien</td><td>Je savais</td><td>1 jour, puis 6 jours, puis l'intervalle grandit</td></tr>
+<tr><td>Facile</td><td>Évident</td><td>Intervalle allongé de 30 %</td></tr>
+</tbody>
+</table>
+<p>C'est l'algorithme <strong>SM-2</strong> (le même qu'Anki) : chaque carte revient <em>juste avant</em> que tu ne l'oublies. Les intervalles affichés sous les boutons sont les vrais délais calculés pour la carte. Révise les cartes dues chaque jour : quelques minutes suffisent.</p>
+<svg class="rb-curve" data-reviews="1,3,7,16" aria-label="Courbe de l'oubli et révisions espacées"></svg>
+
+<h2 id="coach">Résumés et coach IA</h2>
+<p><strong>Fiches de révision :</strong> depuis la fiche d'un document, <em>Fiche de révision</em> génère les points clés à connaître, avec les pièges d'examen signalés. Le résumé détaillé (tout le plan du cours) est inclus dans Pro.</p>
+<p><strong>Coach :</strong> sur la page <a href="relbrain-accueil.html">Accueil</a>, pose tes questions. Clique sur <span class="rb-kbd">+</span> pour choisir un de tes cours : le coach s'appuiera sur ses passages les plus pertinents. Pour un exercice, il te donne d'abord un indice — demande « la solution complète » si tu bloques.</p>
+
+<h2 id="progression">Progression, XP et ligues</h2>
+<ul>
+<li><strong>XP</strong> : 6 à 20 XP par bonne réponse selon la difficulté (2 XP pour l'effort même en cas d'erreur), 2 XP par flashcard, 15 XP par cours importé, des bonus de défis et de badges.</li>
+<li><strong>Multiplicateurs</strong> : +5 % par semaine complète de série (jusqu'à ×1,5), +50 % pour un quiz parfait, +25 % pour un quiz rapide et juste.</li>
+<li><strong>Niveaux</strong> : chaque niveau demande 1,5× plus d'XP que le précédent. Tous les 5 niveaux, tu gagnes un <em>gel de série</em>.</li>
+<li><strong>Série</strong> : étudie au moins une fois par jour (un quiz, quelques cartes ou 2 minutes de lecture). Un gel de série protège automatiquement une journée manquée.</li>
+<li><strong>Ligues</strong> : chaque semaine, tu es placé·e avec jusqu'à 30 élèves de ta ligue. Dimanche à minuit (heure de Douala), le top 7 monte, les 5 derniers descendent. Bronze → Argent → Or → Platine → Diamant → Maître.</li>
+<li><strong>Défis</strong> : 3 défis quotidiens et 1 défi hebdomadaire, visibles sur l'Accueil.</li>
+<li><strong>Points faibles</strong> : le <a href="dashboard.html">Dashboard</a> liste les notions sous 70 % de réussite, et l'<a href="relbrain-historique.html">Historique</a> détaille ton activité.</li>
+</ul>
+
+<h2 id="abonnement">Abonnement et paiement</h2>
+<p>Dans <a href="relbrain-parametres.html#abonnement">Paramètres → Abonnement</a>, choisis Pro ou Premium, la durée (1 mois, ou 12 mois au prix de 10) et ton moyen de paiement :</p>
+<ul>
+<li><strong>MTN Mobile Money</strong> — saisis ton numéro, puis valide la demande sur ton téléphone avec ton code PIN. L'accès s'active automatiquement.</li>
+<li><strong>Orange Money</strong> — tu es redirigé·e vers la page de paiement sécurisée d'Orange, puis ramené·e sur RelBrain.</li>
+<li><strong>Carte bancaire</strong> (Visa, Mastercard) — paiement sécurisé par Stripe, en euros.</li>
+</ul>
+<p>Il n'y a <strong>pas de prélèvement automatique</strong> : tu reçois un rappel 3 jours avant la fin de ta période.</p>
+
+<h2 id="faq">FAQ technique</h2>
+<div class="rb-accordion">
+<details><summary>L'analyse de mon document échoue.</summary><div>Vérifie que le fichier contient du texte sélectionnable (et non une image scannée), qu'il fait moins de 20 Mo et qu'il n'est pas protégé par mot de passe. Pour un scan, importe les pages en photo. Si le problème persiste, <a href="relbrain-contact.html?sujet=bug">signale-le</a>.</div></details>
+<details><summary>Je ne reçois pas l'email de confirmation.</summary><div>Regarde dans les spams et l'onglet « Promotions ». Tu peux renvoyer l'email depuis la page de validation (une fois toutes les 30 secondes). Vérifie aussi l'orthographe de ton adresse.</div></details>
+<details><summary>Les notifications ne s'affichent pas sur mon téléphone.</summary><div>Active le canal <em>Push</em> dans Paramètres → Notifications et autorise les notifications quand le navigateur le demande. Sur iPhone, les notifications web nécessitent d'avoir installé RelBrain sur l'écran d'accueil (iOS 16.4 ou plus récent).</div></details>
+<details><summary>J'ai payé par Mobile Money mais mon compte est toujours gratuit.</summary><div>La confirmation de l'opérateur peut prendre quelques minutes. Recharge la page Abonnement : le statut est vérifié automatiquement. Si rien ne change après 30 minutes, <a href="relbrain-contact.html?sujet=support">contacte-nous</a> avec la référence de la transaction.</div></details>
+<details><summary>RelBrain fonctionne-t-il hors connexion ?</summary><div>Les pages déjà ouvertes restent consultables. La génération IA et la synchronisation de tes progrès nécessitent une connexion ; une connexion 3G suffit.</div></details>
+<details><summary>Puis-je utiliser RelBrain dans une autre langue ?</summary><div>Oui : choisis English dans Paramètres → Langue. L'IA répond et génère alors en anglais (utile pour le GCE et les cours anglophones).</div></details>
+</div>
+
+<h2 id="api">Intégration API</h2>
+<p>Les forfaits Pro et Premium donnent accès à l'API publique RelBrain : lister tes quiz, générer un quiz depuis un texte, l'intégrer dans ton propre outil. Documentation complète, exemples et limites : <a href="relbrain-integrations.html">API & intégrations</a>.</p>
+
+    </article>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+
+</body>
+</html>

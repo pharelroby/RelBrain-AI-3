@@ -1,0 +1,184 @@
+{
+  "_doc": "Contenu du blog RelBrain. Ajouter un article = ajouter un objet dans « posts » (le plus récent en premier). Types de blocs : p, h2, h3, ul, ol, quote, callout, tip, warn. Mise en forme inline : **gras**, _italique_, [lien](url).",
+  "categories": [
+    { "id": "methode", "label": "Méthodes de travail" },
+    { "id": "science", "label": "Sciences de l'apprentissage" },
+    { "id": "examens", "label": "Examens & concours" }
+  ],
+  "posts": [
+    {
+      "slug": "preparer-le-bac-avec-relbrain",
+      "title": "Préparer le Bac avec RelBrain : guide complet",
+      "excerpt": "Un plan en trois phases, de J-90 à la veille de l'épreuve, pour transformer tes cours en points le jour J — sans nuits blanches.",
+      "category": "examens",
+      "tags": ["Bac", "GCE", "planning", "révisions"],
+      "author": { "name": "L'équipe pédagogique RelBrain", "role": "Coachs & enseignants" },
+      "date": "2026-10-10",
+      "reading_minutes": 9,
+      "cover": { "glyph": "🎓", "from": "#7c3aed", "to": "#ec4899" },
+      "blocks": [
+        { "type": "p", "text": "Le Baccalauréat — ou le GCE A-Level — ne se joue pas la dernière semaine. Il se joue dans les trois mois qui précèdent, et surtout dans la **régularité**. Bonne nouvelle : avec une méthode simple et les bons outils, 30 à 45 minutes de travail ciblé par jour valent mieux que des week-ends entiers de relecture. Voici le plan que nous recommandons, phase par phase." },
+        { "type": "callout", "text": "**Le principe en une phrase :** apprends une première fois, puis passe ton temps à te _tester_ et à _réviser au bon moment_. C'est exactement ce que RelBrain automatise." },
+        { "type": "h2", "text": "Avant de commencer : fais l'inventaire" },
+        { "type": "p", "text": "Liste toutes les matières de ta série avec leur **coefficient** et ton niveau actuel (à l'aise, moyen, fragile). Une matière à fort coefficient où tu es fragile est ta priorité numéro un : c'est là que chaque heure rapporte le plus de points." },
+        { "type": "ul", "items": [
+          "Rassemble tes cours, fiches de TD et anciens sujets dans un même endroit.",
+          "Importe-les dans RelBrain chapitre par chapitre : un fichier par chapitre donne des quiz plus précis qu'un énorme PDF.",
+          "Pas de version numérique ? Prends tes cahiers en photo : RelBrain lit les notes manuscrites."
+        ] },
+        { "type": "h2", "text": "Phase 1 — De J-90 à J-30 : construire" },
+        { "type": "p", "text": "Objectif : avoir vu et compris **tout le programme** au moins une fois, et commencer à l'ancrer en mémoire." },
+        { "type": "ol", "items": [
+          "**Un chapitre à la fois.** Lis le cours, puis ouvre sa fiche dans RelBrain : les notions clés sont classées par importance. Vérifie que tu sais expliquer chacune avec tes mots.",
+          "**Quiz « Facile » puis « Moyen ».** Juste après la lecture, fais un quiz de 10 questions. Les erreurs ne sont pas des échecs : ce sont des indications précieuses.",
+          "**Crée le paquet de flashcards** du chapitre et révise les cartes dues chaque jour. Dix minutes le matin suffisent.",
+          "**Garde ta série.** Même un jour chargé, fais au moins quelques cartes : la régularité compte plus que la durée."
+        ] },
+        { "type": "tip", "text": "Alterne les matières dans la semaine (par exemple maths le lundi, SVT le mardi, philo le mercredi…). Mélanger les sujets demande plus d'effort sur le moment, mais améliore la rétention à long terme." },
+        { "type": "h2", "text": "Phase 2 — De J-30 à J-7 : consolider" },
+        { "type": "p", "text": "Tu connais le programme. Il faut maintenant le **retrouver vite et sans erreur**, en conditions d'examen." },
+        { "type": "ul", "items": [
+          "Ouvre ton **Dashboard** : la section « Points faibles » liste les notions sous 70 % de réussite. Lance un **quiz ciblé** sur chacune.",
+          "Passe en difficulté **Difficile** et **Expert** : questions d'application et pièges classiques, comme le jour J.",
+          "Fais au moins un **examen blanc** par matière importante, chronométré, sans aide. Pour les matières rédigées (philo, histoire-géo), utilise les questions de type « Rédaction » et compare ta réponse au corrigé modèle.",
+          "Demande au **coach** de t'expliquer autrement une notion qui résiste : « Explique-moi la loi d'Ohm comme si j'avais 12 ans, puis donne-moi un exercice. »"
+        ] },
+        { "type": "quote", "text": "Le jour de l'examen, tu ne fais pas mieux que tes entraînements : tu fais comme tes entraînements. Entraîne-toi donc dans les mêmes conditions." },
+        { "type": "h2", "text": "Phase 3 — De J-7 à J-1 : affûter, pas bourrer" },
+        { "type": "p", "text": "La dernière semaine n'est pas le moment d'apprendre un chapitre entier. C'est le moment de **sécuriser** ce que tu sais." },
+        { "type": "ul", "items": [
+          "Relis les **fiches « points clés »** de chaque chapitre et les pièges signalés dans la marge.",
+          "Continue tes flashcards dues : elles reviennent pile au moment où tu risquais d'oublier.",
+          "Réduis la durée, garde la régularité. La veille : une révision légère, puis repos.",
+          "**Dors.** Le sommeil consolide ce que tu as appris dans la journée. Une nuit blanche fait perdre bien plus de points qu'elle n'en rapporte."
+        ] },
+        { "type": "h2", "text": "Une semaine type en phase 2" },
+        { "type": "p", "text": "Exemple pour un élève de Terminale scientifique, avec environ 1 h 30 de travail personnel par jour :" },
+        { "type": "ul", "items": [
+          "**Chaque matin (10 min)** : flashcards dues, toutes matières.",
+          "**Lundi / Mercredi / Vendredi** : maths (quiz ciblé sur les points faibles + un exercice type Bac).",
+          "**Mardi / Jeudi** : physique-chimie et SVT en alternance (quiz Difficile + révision du chapitre le plus fragile).",
+          "**Samedi** : un examen blanc chronométré dans une matière à fort coefficient.",
+          "**Dimanche** : bilan de la semaine dans le Dashboard, repos, et un peu de lecture pour la philo."
+        ] },
+        { "type": "warn", "text": "RelBrain t'aide à apprendre, il ne remplace ni tes enseignants ni les sujets officiels. Si une question générée te semble fausse, vérifie dans ton cours et signale-la : chaque signalement nous aide à progresser." },
+        { "type": "h2", "text": "En résumé" },
+        { "type": "ol", "items": [
+          "Importe tes cours chapitre par chapitre.",
+          "Teste-toi juste après chaque lecture.",
+          "Révise tes flashcards dues chaque jour.",
+          "Cible tes points faibles à partir de J-30.",
+          "Entraîne-toi en conditions réelles, puis repose-toi avant l'épreuve."
+        ] },
+        { "type": "p", "text": "Bonne préparation — et rendez-vous dans la ligue Maître. 💜" }
+      ]
+    },
+    {
+      "slug": "5-techniques-de-memorisation-prouvees",
+      "title": "5 techniques de mémorisation prouvées par la science",
+      "excerpt": "Relire et surligner donnent l'impression d'apprendre. Voici ce que la recherche en psychologie cognitive recommande vraiment — et comment l'appliquer dès ce soir.",
+      "category": "science",
+      "tags": ["mémoire", "méthodes", "neurosciences"],
+      "author": { "name": "L'équipe pédagogique RelBrain", "role": "Sciences de l'apprentissage" },
+      "date": "2026-09-28",
+      "reading_minutes": 8,
+      "cover": { "glyph": "🧠", "from": "#f59e0b", "to": "#ec4899" },
+      "blocks": [
+        { "type": "p", "text": "En 2013, une équipe de chercheurs menée par **John Dunlosky** a passé en revue des centaines d'études sur dix techniques d'apprentissage parmi les plus utilisées par les élèves. Leur verdict a surpris beaucoup de monde : **relire** et **surligner**, les deux méthodes préférées des étudiants, sont parmi les moins efficaces. À l'inverse, deux techniques obtiennent la meilleure note — et trois autres sont prometteuses." },
+        { "type": "callout", "text": "On le dit franchement : chez RelBrain, le surligneur est notre animation signature. Mais il sert à **repérer** l'essentiel, pas à le mémoriser. La mémorisation, elle, vient des techniques ci-dessous." },
+        { "type": "h2", "text": "1. Se tester (l'effet de test)" },
+        { "type": "p", "text": "Essayer de **retrouver une information de mémoire** la renforce bien davantage que de la relire. Dans une expérience célèbre (Roediger & Karpicke, 2006), des étudiants qui s'étaient testés sur un texte s'en souvenaient nettement mieux une semaine plus tard que ceux qui l'avaient relu plusieurs fois — alors qu'ils se sentaient _moins_ sûrs d'eux." },
+        { "type": "ul", "items": [
+          "**En pratique :** ferme ton cours et réponds à des questions. Quiz, flashcards, ou simplement « qu'est-ce que je retiens de ce chapitre ? » sur une feuille blanche.",
+          "**Avec RelBrain :** un quiz de 10 questions juste après la lecture d'un chapitre, puis des quiz ciblés sur tes erreurs."
+        ] },
+        { "type": "h2", "text": "2. Espacer les révisions" },
+        { "type": "p", "text": "Le psychologue **Hermann Ebbinghaus** a montré dès 1885 que l'on oublie très vite ce que l'on vient d'apprendre : c'est la _courbe de l'oubli_. Mais chaque révision faite au bon moment ralentit cet oubli. Une méta-analyse (Cepeda et al., 2006) portant sur plus de 300 expériences confirme qu'à temps de travail égal, **étaler** ses révisions sur plusieurs jours est bien plus efficace que tout réviser d'un coup." },
+        { "type": "ul", "items": [
+          "**En pratique :** révise un cours le lendemain, puis quelques jours après, puis une à deux semaines plus tard.",
+          "**Avec RelBrain :** l'algorithme SM-2 calcule pour chaque flashcard le moment idéal. Tu n'as qu'à réviser les cartes « dues » du jour."
+        ] },
+        { "type": "tip", "text": "Ces deux premières techniques sont les seules à avoir reçu la note « utilité élevée » dans la revue de Dunlosky. Si tu ne dois en retenir que deux, ce sont elles." },
+        { "type": "h2", "text": "3. Mélanger les types d'exercices (l'entrelacement)" },
+        { "type": "p", "text": "Faire vingt exercices identiques à la suite donne une impression de maîtrise… trompeuse. En **mélangeant** des problèmes de types différents, tu t'entraînes à reconnaître _quelle méthode_ utiliser — exactement ce que demande un examen. Des études en mathématiques (Rohrer & Taylor, 2007) ont observé de nets progrès aux tests finaux avec cette approche." },
+        { "type": "ul", "items": [
+          "**En pratique :** dans une séance de maths, alterne dérivées, probabilités et suites au lieu de faire un bloc par thème.",
+          "**Avec RelBrain :** choisis le type de quiz « Mixte » et réunis plusieurs chapitres."
+        ] },
+        { "type": "h2", "text": "4. Se demander « pourquoi ? » (interrogation élaborative)" },
+        { "type": "p", "text": "Expliquer **pourquoi** un fait est vrai, ou comment une notion se relie à ce que tu sais déjà, crée des connexions qui facilitent le rappel. L'auto-explication — commenter à voix haute chaque étape d'une démonstration — fonctionne de façon similaire. La recherche les juge d'utilité « modérée » : efficaces, surtout combinées aux techniques 1 et 2." },
+        { "type": "ul", "items": [
+          "**En pratique :** pour chaque notion, demande-toi « pourquoi ? » et « quel lien avec le chapitre précédent ? ».",
+          "**Avec RelBrain :** lis les explications des réponses — y compris quand tu as juste — et demande au coach de relier deux notions entre elles."
+        ] },
+        { "type": "h2", "text": "5. Associer mots et images (double codage)" },
+        { "type": "p", "text": "Selon la théorie du double codage du psychologue **Allan Paivio**, une information encodée à la fois sous forme verbale et visuelle offre deux chemins pour la retrouver. Schémas, frises chronologiques, cartes mentales : transformer un texte en image (et inversement) aide à mémoriser." },
+        { "type": "ul", "items": [
+          "**En pratique :** pour chaque chapitre, dessine un schéma de mémoire, puis compare-le au cours.",
+          "**Avec RelBrain :** prends ton schéma en photo et importe-le : l'IA en tirera des questions."
+        ] },
+        { "type": "h2", "text": "Ce qu'il faut arrêter (ou presque)" },
+        { "type": "ul", "items": [
+          "**Relire en boucle** : agréable, mais on confond « je reconnais » et « je sais ».",
+          "**Surligner tout le cours** : utile pour repérer, inutile s'il n'y a pas de test ensuite.",
+          "**Tout réviser la veille** : ça peut passer pour l'examen du lendemain, mais l'essentiel est oublié quelques jours plus tard."
+        ] },
+        { "type": "quote", "text": "Le bon apprentissage est souvent inconfortable sur le moment. Si tes révisions te semblent trop faciles, c'est probablement qu'elles ne t'apprennent pas grand-chose." },
+        { "type": "h3", "text": "Pour aller plus loin" },
+        { "type": "ul", "items": [
+          "Dunlosky, J. et al. (2013). _Improving Students' Learning With Effective Learning Techniques_. Psychological Science in the Public Interest.",
+          "Roediger, H. L. & Karpicke, J. D. (2006). _Test-Enhanced Learning_. Psychological Science.",
+          "Cepeda, N. J. et al. (2006). _Distributed practice in verbal recall tasks: A review and quantitative synthesis_. Psychological Bulletin.",
+          "Rohrer, D. & Taylor, K. (2007). _The shuffling of mathematics problems improves learning_. Instructional Science."
+        ] }
+      ]
+    },
+    {
+      "slug": "reviser-efficacement-avec-l-ia",
+      "title": "Comment réviser efficacement avec l'IA",
+      "excerpt": "L'IA peut te faire gagner des heures… ou te donner l'illusion d'apprendre. La différence tient en une règle : laisse-la te questionner, pas répondre à ta place.",
+      "category": "methode",
+      "tags": ["IA", "méthode", "coach"],
+      "author": { "name": "L'équipe pédagogique RelBrain", "role": "Coachs & enseignants" },
+      "date": "2026-09-15",
+      "reading_minutes": 7,
+      "cover": { "glyph": "✨", "from": "#0ea5e9", "to": "#7c3aed" },
+      "blocks": [
+        { "type": "p", "text": "Demander à une IA de résumer un chapitre prend dix secondes. Lire ce résumé, deux minutes. Et pourtant, une semaine plus tard, il n'en reste presque rien. Le problème n'est pas l'IA : c'est la façon de l'utiliser. Une IA peut être un formidable **partenaire d'entraînement**, à condition de lui donner le bon rôle." },
+        { "type": "callout", "text": "**La règle d'or :** l'IA doit te faire _produire_ (répondre, expliquer, rédiger), pas seulement te faire _consommer_ (lire des réponses toutes faites)." },
+        { "type": "h2", "text": "1. Pars de TES cours, pas d'internet" },
+        { "type": "p", "text": "Ton professeur insiste sur certaines notions, utilise certaines notations, attend certaines méthodes de rédaction. Une IA qui répond « en général » peut s'en écarter. En t'appuyant sur tes propres documents, tu révises **ce qui sera évalué**, avec le vocabulaire de ton cours." },
+        { "type": "tip", "text": "Dans RelBrain, importe tes cours puis, sur l'Accueil, clique sur « + » pour choisir un document : le coach répondra à partir de ses passages les plus pertinents, et te signalera quand une question dépasse le cours." },
+        { "type": "h2", "text": "2. Transforme chaque lecture en questions" },
+        { "type": "p", "text": "Le réflexe le plus rentable : après avoir lu un chapitre, **fais-toi interroger**. Un quiz de 10 questions juste après la lecture, puis un autre deux jours plus tard. Chaque bonne réponse retrouvée de mémoire renforce le souvenir ; chaque erreur te montre exactement quoi retravailler." },
+        { "type": "ul", "items": [
+          "Commence en difficulté **Facile** ou **Moyen** pour vérifier la compréhension.",
+          "Passe en **Difficile** pour l'application, puis **Expert** pour les pièges d'examen.",
+          "Lis toujours l'explication, même quand tu as juste : tu peux avoir eu raison pour de mauvaises raisons."
+        ] },
+        { "type": "h2", "text": "3. Utilise le coach comme un professeur particulier exigeant" },
+        { "type": "p", "text": "Un bon professeur ne te donne pas la solution : il te met sur la piste. Demande la même chose à l'IA. Quelques formulations qui fonctionnent bien :" },
+        { "type": "ul", "items": [
+          "« Pose-moi trois questions pour vérifier que j'ai compris la photosynthèse. Ne donne pas les réponses. »",
+          "« Voici ma démonstration. Ne la corrige pas : dis-moi seulement à quelle ligne se trouve la première erreur. »",
+          "« Explique-moi la différence entre une pile et une file avec un exemple de la vie quotidienne, puis interroge-moi. »",
+          "« Je suis bloqué sur cet exercice. Donne-moi un indice, pas la solution. »"
+        ] },
+        { "type": "h2", "text": "4. Ne crois pas l'IA sur parole" },
+        { "type": "p", "text": "Les modèles d'IA sont impressionnants, mais ils peuvent se tromper avec beaucoup d'assurance : une date, un signe dans un calcul, une définition approximative. Prends l'habitude de **vérifier dans ton cours** toute information importante, surtout si elle te surprend. Chez RelBrain, nous limitons ce risque en obligeant l'IA à s'appuyer sur ton document et à expliquer chaque réponse — mais le risque zéro n'existe pas." },
+        { "type": "warn", "text": "Utiliser une IA pendant un devoir surveillé ou un examen est de la triche. RelBrain est fait pour t'entraîner avant, pas pour répondre à ta place pendant." },
+        { "type": "h2", "text": "5. Laisse l'algorithme choisir quand réviser" },
+        { "type": "p", "text": "Le plus difficile n'est pas d'apprendre, c'est de **revenir au bon moment**. Trop tôt, c'est du temps perdu ; trop tard, il faut tout réapprendre. Les flashcards de RelBrain utilisent la révision espacée : chaque carte revient juste avant que tu ne l'oublies. Ton seul travail : réviser les cartes dues chaque jour." },
+        { "type": "h2", "text": "6. Mesure tes progrès, pas tes heures" },
+        { "type": "p", "text": "Trois heures de relecture valent moins que trente minutes de tests ciblés. Plutôt que de compter ton temps, regarde **ce qui progresse** : taux de réussite par matière, notions fragiles qui disparaissent de la liste des points faibles, série de jours qui s'allonge." },
+        { "type": "h2", "text": "La routine RelBrain en 20 minutes" },
+        { "type": "ol", "items": [
+          "**5 min** — révise tes flashcards dues.",
+          "**10 min** — un quiz sur le chapitre du jour ou sur tes points faibles.",
+          "**5 min** — une question au coach sur ce qui t'a fait trébucher."
+        ] },
+        { "type": "p", "text": "Répétée chaque jour, cette petite routine fait plus pour ta mémoire qu'un marathon de révision la veille de l'examen. Bonne révision !" }
+      ]
+    }
+  ]
+}

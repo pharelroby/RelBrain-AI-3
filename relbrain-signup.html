@@ -2,10 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.AI – Créer mon compte</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -645,6 +651,72 @@ function toast(msg, type){
   host.appendChild(el);
   setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);
 }
+</script>
+
+<!-- ═══ INTÉGRATION BACKEND — Supabase Auth (voir relbrain-app.js) ═══ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.RB || RB.demo) return; // mode démo : comportement d'origine
+  var params = new URLSearchParams(location.search);
+  function safeNext() {
+    var n = params.get('next') || '';
+    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n.replace(/^\//, '')) ? n.replace(/^\//, '') : 'relbrain-accueil.html';
+  }
+  function setLoading(btn, on, html) {
+    if (!btn) return;
+    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + (html || ''); btn.disabled = true; }
+    else { btn.innerHTML = btn.dataset.html || btn.innerHTML; btn.disabled = false; }
+  }
+  var card = document.querySelector('main .rounded-3xl');
+    var baseGoStep = window.goStep;
+  var creating = false;
+  window.goStep = async function (target) {
+    // Passage à l'écran final = création réelle du compte
+    if (target === 3 && currentStep === 2) {
+      if (!validateStep(2) || creating) return;
+      creating = true;
+      var btn = document.querySelector('#panel-2 .gradient-bg');
+      setLoading(btn, true, 'Création…');
+      var code = document.getElementById('selected-code').textContent.replace('+', '');
+      var phone = document.getElementById('phone').value.replace(/\D/g, '');
+      try {
+        var r = await RB.auth.signUp({
+          email: document.getElementById('email').value.trim().toLowerCase(),
+          password: document.getElementById('password').value,
+          profile: {
+            first_name: document.getElementById('prenom').value.trim(),
+            last_name: document.getElementById('nom').value.trim(),
+            phone: phone ? code + phone : undefined,
+            country: document.getElementById('pays').value,
+            institution: document.getElementById('universite').value.trim() || undefined,
+            school_level: selectedLevel,
+            field: document.getElementById('filiere').value.trim() || undefined,
+            language: selectedLang,
+            goals: Array.from(selectedGoals),
+          },
+        });
+        // Photo de profil : envoyée tout de suite si la session est déjà active
+        var avatar = document.getElementById('avatar-input').files[0];
+        if (r.session && avatar) RB.data.uploadAvatar(avatar).catch(function () {});
+        baseGoStep(3);
+        if (!r.needs_confirmation) {
+          var link = document.querySelector('#panel-3 a[href="relbrain-validation-email.html"]');
+          if (link) { link.href = 'relbrain-accueil.html'; link.innerHTML = '<i class="fa-solid fa-rocket"></i> Commencer à apprendre'; }
+        }
+      } catch (e) {
+        toast(e.message, 'error');
+        if (e.code === 'email_taken' || e.code === 'weak_password') baseGoStep(0);
+        RB.motion.shake(document.querySelector('main .rounded-3xl'));
+      } finally { creating = false; setLoading(btn, false); }
+      return;
+    }
+    baseGoStep(target);
+  };
+  window.socialLogin = function (provider) {
+    if (provider !== 'Google' || RB_CONFIG.GOOGLE_AUTH === false) return toast('Connexion ' + provider + ' — bientôt disponible !', 'info');
+    RB.auth.google('relbrain-accueil.html').catch(function (e) { toast(e.message, 'error'); });
+  };
+});
 </script>
 </body>
 </html>

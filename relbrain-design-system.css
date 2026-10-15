@@ -1,0 +1,953 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RELBRAIN — DESIGN SYSTEM « CAHIER VIVANT »
+   Version 2.0 · source de vérité unique pour toutes les pages
+   ───────────────────────────────────────────────────────────────────────────
+   L'idée : RelBrain ressemble à un cahier d'étudiant qui prend vie.
+   · Papier crème réglé, encre violette, surligneur rose et ambre.
+   · Titres éditoriaux en Fraunces, interface en Plus Jakarta Sans.
+   · Chaque animation raconte un geste d'apprentissage : surligner,
+     connecter des idées (synapses), retenir (courbe de l'oubli),
+     progresser (XP qui monte), réussir (éclat de savoir).
+
+   SOMMAIRE
+   00. Polices
+   01. Tokens — couleurs
+   02. Tokens — typographie
+   03. Tokens — espacements, rayons, ombres, z-index
+   04. Tokens — mouvement (durées, courbes)
+   05. Thème sombre
+   06. Base & harmonisation des pages existantes
+   07. Typographie éditoriale
+   08. Composants : boutons
+   09. Composants : cartes
+   10. Composants : badges, pastilles, kbd
+   11. Composants : champs de formulaire
+   12. Composants : toasts, modales, notifications
+   13. Composants : navigation site (header/footer marketing)
+   14. Signature 1 — Surligneur
+   15. Signature 2 — Synapse (IA qui réfléchit)
+   16. Signature 3 — Éclat de savoir (succès)
+   17. Signature 4 — Montée d'XP & passage de niveau
+   18. Signature 5 — Courbe de l'oubli
+   19. Signature 6 — Révélation à l'encre (scroll reveal)
+   20. Micro-interactions : check tracé, shake, ripple, squelettes
+   21. Mise en page éditoriale (grille, marges, numéros de section)
+   22. Prose (pages légales, docs, blog)
+   23. Utilitaires
+   24. Accessibilité & réduction des animations
+
+   RÈGLES D'USAGE
+   · Ne jamais écrire une couleur en dur dans une page : utiliser var(--rb-*).
+   · Toute animation passe par les tokens --rb-dur-* et --rb-ease-*.
+   · Toute animation doit avoir un sens pédagogique (voir chaque section).
+   · Les classes publiques sont préfixées « rb- ».
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ─── 00. POLICES ────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+
+/* ─── Reset minimal des pages du site vitrine ───────────────────────────────
+   Uniquement sur <body class="rb-site"> (pages sans Tailwind). Les pages de
+   l'application gardent le « preflight » de Tailwind et leurs utilitaires :
+   un reset global ici écraserait leurs marges et tailles de texte.        */
+body.rb-site{ margin:0; }
+.rb-site *, .rb-site *::before, .rb-site *::after{ box-sizing:border-box; }
+.rb-site :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, ul, ol){ margin:0; }
+.rb-site :where(ul, ol){ padding:0; list-style:none; }
+.rb-site :where(img, svg, video){ display:block; max-width:100%; }
+.rb-site :where(button){ font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; }
+.rb-site :where(a){ color:inherit; text-decoration:inherit; }
+.rb-site :where(input, select, textarea){ font:inherit; color:inherit; }
+.rb-site :where(mark){ background:none; color:inherit; }
+
+
+/* ─── 01. TOKENS — COULEURS ──────────────────────────────────────────────── */
+:root{
+  /* Palette de marque (inchangée) */
+  --rb-cream:        #fdf4e8;   /* papier */
+  --rb-cream-2:      #fbecda;   /* papier ombré */
+  --rb-cream-3:      #f5e3c9;   /* papier plié */
+  --rb-violet:       #7c3aed;   /* encre */
+  --rb-violet-600:   #6d28d9;
+  --rb-violet-400:   #a78bfa;
+  --rb-violet-300:   #c4b5fd;
+  --rb-violet-100:   #ede9fe;
+  --rb-violet-50:    #f5f3ff;
+  --rb-purple:       #a855f7;
+  --rb-pink:         #ec4899;   /* surligneur */
+  --rb-pink-100:     #fce7f3;
+  --rb-amber:        #f59e0b;   /* surligneur jaune / streaks */
+  --rb-amber-100:    #fef3c7;
+  --rb-emerald:      #10b981;   /* juste */
+  --rb-emerald-100:  #d1fae5;
+  --rb-rose:         #f43f5e;   /* faux */
+  --rb-rose-100:     #ffe4e6;
+  --rb-sky:          #0ea5e9;
+
+  /* Rôles sémantiques (à utiliser dans les pages) */
+  --rb-bg:           var(--rb-cream);
+  --rb-bg-alt:       #ffffff;
+  --rb-surface:      #ffffff;
+  --rb-surface-2:    #fffaf3;
+  --rb-surface-sunk: var(--rb-cream-2);
+  --rb-ink:          #1a1033;   /* texte principal : encre violette très sombre */
+  --rb-ink-2:        #3f3651;
+  --rb-muted:        #78716c;
+  --rb-faint:        #a8a29e;
+  --rb-line:         #e7d9c5;   /* filets de cahier */
+  --rb-line-soft:    #f0e6d8;
+  --rb-rule:         rgba(124,58,237,.07); /* lignes du papier réglé */
+  --rb-margin-line:  rgba(236,72,153,.28); /* marge rouge du cahier */
+  --rb-focus:        rgba(124,58,237,.35);
+
+  --rb-success:      var(--rb-emerald);
+  --rb-danger:       var(--rb-rose);
+  --rb-warning:      var(--rb-amber);
+  --rb-info:         var(--rb-violet);
+
+  /* Dégradés signature */
+  --rb-grad-ink:     linear-gradient(135deg,#7c3aed 0%,#a855f7 55%,#ec4899 100%);
+  --rb-grad-dawn:    linear-gradient(120deg,#fbbf24 0%,#ec4899 55%,#7c3aed 100%);
+  --rb-grad-paper:   linear-gradient(180deg,#fffaf3 0%,#fdf4e8 100%);
+  --rb-highlight-pink:  rgba(236,72,153,.22);
+  --rb-highlight-amber: rgba(251,191,36,.42);
+  --rb-highlight-violet:rgba(167,139,250,.32);
+}
+
+
+/* ─── 02. TOKENS — TYPOGRAPHIE ───────────────────────────────────────────── */
+:root{
+  --rb-font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --rb-font-ui:      'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --rb-font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* Échelle fluide (ratio ~1.25, bornée mobile → desktop) */
+  --rb-text-2xs: .6875rem;
+  --rb-text-xs:  .75rem;
+  --rb-text-sm:  .875rem;
+  --rb-text-md:  1rem;
+  --rb-text-lg:  1.125rem;
+  --rb-text-xl:  clamp(1.25rem, 1.1rem + .6vw, 1.5rem);
+  --rb-text-2xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --rb-text-3xl: clamp(1.875rem, 1.4rem + 2vw, 2.75rem);
+  --rb-text-4xl: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  --rb-text-5xl: clamp(2.75rem, 1.6rem + 5vw, 5.25rem);
+
+  --rb-leading-tight: 1.05;
+  --rb-leading-snug:  1.25;
+  --rb-leading-body:  1.6;
+  --rb-tracking-tight: -.025em;
+  --rb-tracking-caps:  .14em;
+}
+
+
+/* ─── 03. TOKENS — ESPACEMENTS, RAYONS, OMBRES, Z-INDEX ──────────────────── */
+:root{
+  --rb-space-1: .25rem;  --rb-space-2: .5rem;  --rb-space-3: .75rem;
+  --rb-space-4: 1rem;    --rb-space-5: 1.25rem; --rb-space-6: 1.5rem;
+  --rb-space-8: 2rem;    --rb-space-10: 2.5rem; --rb-space-12: 3rem;
+  --rb-space-16: 4rem;   --rb-space-20: 5rem;   --rb-space-24: 6rem;
+  --rb-gutter: clamp(1rem, .6rem + 2vw, 2rem);
+  --rb-section: clamp(4rem, 3rem + 5vw, 8rem);
+  --rb-container: 72rem;
+  --rb-container-narrow: 44rem;
+
+  --rb-radius-xs: .375rem;
+  --rb-radius-sm: .625rem;
+  --rb-radius-md: .875rem;
+  --rb-radius-lg: 1.25rem;
+  --rb-radius-xl: 1.75rem;
+  --rb-radius-pill: 999px;
+  /* rayon « feuille cornée » : un coin plus serré, signature des cartes RelBrain */
+  --rb-radius-sheet: 1.25rem 1.25rem 1.25rem .375rem;
+
+  --rb-shadow-xs: 0 1px 2px rgba(26,16,51,.05);
+  --rb-shadow-sm: 0 2px 8px rgba(26,16,51,.05), 0 1px 2px rgba(26,16,51,.04);
+  --rb-shadow-md: 0 10px 28px -8px rgba(26,16,51,.14), 0 2px 6px rgba(26,16,51,.04);
+  --rb-shadow-lg: 0 24px 60px -18px rgba(26,16,51,.22), 0 4px 12px rgba(26,16,51,.05);
+  --rb-shadow-ink: 0 18px 40px -12px rgba(124,58,237,.38);
+  --rb-shadow-pink: 0 18px 40px -12px rgba(236,72,153,.35);
+  /* ombre « papier posé » : décalée, sans flou — utilisée sur les éléments éditoriaux */
+  --rb-shadow-paper: 6px 6px 0 0 var(--rb-cream-3);
+  --rb-shadow-paper-ink: 6px 6px 0 0 var(--rb-violet);
+
+  --rb-z-base: 1; --rb-z-sticky: 30; --rb-z-nav: 50;
+  --rb-z-overlay: 200; --rb-z-toast: 9999; --rb-z-celebration: 10000;
+}
+
+
+/* ─── 04. TOKENS — MOUVEMENT ─────────────────────────────────────────────── */
+:root{
+  --rb-dur-instant: 90ms;
+  --rb-dur-fast:    160ms;
+  --rb-dur-base:    260ms;
+  --rb-dur-slow:    480ms;
+  --rb-dur-story:   900ms;   /* animations narratives (courbe, surligneur) */
+  --rb-dur-epic:    1600ms;  /* level up */
+
+  --rb-ease-out:    cubic-bezier(.22,1,.36,1);     /* entrée naturelle */
+  --rb-ease-in-out: cubic-bezier(.65,0,.35,1);
+  --rb-ease-spring: cubic-bezier(.34,1.56,.64,1);  /* rebond léger, « eurêka » */
+  --rb-ease-ink:    cubic-bezier(.77,0,.18,1);     /* trait d'encre / surligneur */
+
+  --rb-stagger: 70ms;
+}
+
+
+/* ─── 05. THÈME SOMBRE (« cahier à la lampe ») ───────────────────────────── */
+html.dark{
+  color-scheme: dark;
+  --rb-bg:           #120d1f;
+  --rb-bg-alt:       #17112a;
+  --rb-surface:      #1c1531;
+  --rb-surface-2:    #221a3a;
+  --rb-surface-sunk: #150f25;
+  --rb-ink:          #f4eefe;
+  --rb-ink-2:        #d6cce9;
+  --rb-muted:        #a89cc2;
+  --rb-faint:        #7d7299;
+  --rb-line:         #322750;
+  --rb-line-soft:    #2a2145;
+  --rb-rule:         rgba(167,139,250,.06);
+  --rb-margin-line:  rgba(236,72,153,.22);
+  --rb-cream-3:      #2a2145;
+  --rb-violet-50:    rgba(124,58,237,.16);
+  --rb-violet-100:   rgba(124,58,237,.26);
+  --rb-pink-100:     rgba(236,72,153,.16);
+  --rb-amber-100:    rgba(245,158,11,.16);
+  --rb-emerald-100:  rgba(16,185,129,.16);
+  --rb-rose-100:     rgba(244,63,94,.16);
+  --rb-shadow-paper: 6px 6px 0 0 #2a2145;
+  --rb-highlight-amber: rgba(251,191,36,.28);
+}
+
+
+/* ─── 06. BASE & HARMONISATION DES PAGES EXISTANTES ──────────────────────────
+   Les pages historiques déclarent *{font-family:Inter}. La règle ci-dessous
+   (spécificité supérieure) applique la police RelBrain partout, sans toucher
+   aux icônes Font Awesome (leurs classes restent prioritaires).            */
+html{ -webkit-text-size-adjust:100%; text-rendering:optimizeLegibility; }
+body{ background:var(--rb-bg); color:var(--rb-ink); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+body, body *{ font-family:var(--rb-font-ui); }
+body code, body pre, body kbd, body .rb-mono{ font-family:var(--rb-font-mono); }
+::selection{ background:var(--rb-highlight-amber); color:inherit; }
+
+:where(body) h1, :where(body) h2{
+  font-family:var(--rb-font-display);
+  font-variation-settings:'SOFT' 50, 'opsz' 96;
+  letter-spacing:var(--rb-tracking-tight);
+}
+:where(body) h1{ font-weight:700; }
+:where(body) h2{ font-weight:650; }
+
+/* Focus visible cohérent */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible{
+  outline:2.5px solid var(--rb-violet);
+  outline-offset:2px;
+  border-radius:var(--rb-radius-xs);
+}
+
+/* Scrollbar papier */
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--rb-line); border-radius:99px; border:2px solid var(--rb-bg); }
+::-webkit-scrollbar-thumb:hover{ background:var(--rb-violet-300); }
+
+/* Harmonisation des composants historiques (cartes, boutons, sidebar)
+   → ils héritent des tokens et des micro-interactions RelBrain.         */
+.rb-card{ transition:transform var(--rb-dur-base) var(--rb-ease-out), box-shadow var(--rb-dur-base) var(--rb-ease-out), border-color var(--rb-dur-fast); }
+.card-lift, .doc-card, .action-card, .mini-card, .source-card, .type-card{
+  transition:transform var(--rb-dur-base) var(--rb-ease-out), box-shadow var(--rb-dur-base) var(--rb-ease-out), border-color var(--rb-dur-fast) !important;
+}
+.card-lift:hover, .doc-card:hover, .action-card:hover, .mini-card:hover{
+  transform:translateY(-4px) scale(1.012) !important;
+  box-shadow:var(--rb-shadow-ink) !important;
+  border-color:var(--rb-violet-300) !important;
+}
+.gradient-bg, .upgrade-btn, .btn-primary{ transition:transform var(--rb-dur-fast) var(--rb-ease-out), box-shadow var(--rb-dur-base) var(--rb-ease-out), filter var(--rb-dur-fast); }
+.gradient-bg:active, .upgrade-btn:active, .btn-primary:active, .rb-btn:active{ transform:scale(.97) !important; }
+.gradient-bg, .upgrade-btn{ background:var(--rb-grad-ink); }
+.nav-item{ position:relative; }
+.nav-item.active::before{
+  content:''; position:absolute; left:-.5rem; top:22%; bottom:22%; width:3px;
+  border-radius:3px; background:var(--rb-grad-ink);
+  animation:rb-ink-grow var(--rb-dur-slow) var(--rb-ease-out) both;
+}
+@keyframes rb-ink-grow{ from{ transform:scaleY(0); } to{ transform:scaleY(1); } }
+
+/* Papier réglé discret derrière les zones principales de l'app */
+.main-content{ background-image:
+  linear-gradient(90deg, transparent 0 calc(2.75rem - 1px), var(--rb-margin-line) calc(2.75rem - 1px) 2.75rem, transparent 2.75rem),
+  repeating-linear-gradient(180deg, transparent 0 31px, var(--rb-rule) 31px 32px);
+  background-attachment:local;
+}
+@media (max-width:900px){ .main-content{ background-image:repeating-linear-gradient(180deg, transparent 0 31px, var(--rb-rule) 31px 32px); } }
+
+/* Mode sombre pour les pages historiques (classes Tailwind & composants) */
+html.dark body{ background:var(--rb-bg) !important; color:var(--rb-ink); }
+html.dark .bg-white, html.dark .rb-card, html.dark .sidebar, html.dark .modal-box,
+html.dark .avatar-menu, html.dark .review-card, html.dark .doc-card, html.dark .action-card,
+html.dark .mini-card, html.dark .source-card, html.dark .type-card, html.dark .count-btn,
+html.dark .diff-btn, html.dark .answer-option, html.dark .social-btn, html.dark .note-btn,
+html.dark .suggestion-chip, html.dark .filter-chip, html.dark .deck-pill, html.dark .leader-row,
+html.dark .level-btn, html.dark .goal-btn, html.dark .lang-btn, html.dark .ai-input-wrap{
+  background:var(--rb-surface) !important; border-color:var(--rb-line) !important; color:var(--rb-ink-2);
+}
+html.dark .app-header, html.dark nav.fixed{ background:rgba(18,13,31,.82) !important; border-color:var(--rb-line) !important; }
+html.dark .bg-\[\#fdf4e8\], html.dark .bg-\[var\(--rb-cream\)\], html.dark .rb-card-cream,
+html.dark .avatar-card, html.dark .bg-slate-50, html.dark .bg-\[\#faf5ff\]{ background:var(--rb-surface-sunk) !important; }
+html.dark .border-\[\#e7d9c5\], html.dark .border-\[\#f0e6d8\], html.dark .border-slate-100,
+html.dark .border-slate-200{ border-color:var(--rb-line) !important; }
+html.dark .text-slate-900, html.dark .text-slate-800{ color:var(--rb-ink) !important; }
+html.dark .text-slate-700, html.dark .text-slate-600{ color:var(--rb-ink-2) !important; }
+html.dark .text-slate-500, html.dark .text-slate-400{ color:var(--rb-muted) !important; }
+html.dark .rb-input, html.dark .rb-textarea, html.dark input.rb-input, html.dark select.rb-input{
+  background:var(--rb-surface-sunk) !important; border-color:var(--rb-line) !important; color:var(--rb-ink) !important;
+}
+html.dark .bg-violet-50, html.dark .bg-violet-100{ background:rgba(124,58,237,.16) !important; }
+html.dark .bg-emerald-50, html.dark .bg-emerald-100{ background:rgba(16,185,129,.14) !important; }
+html.dark .bg-rose-50, html.dark .bg-rose-100{ background:rgba(244,63,94,.14) !important; }
+html.dark .bg-amber-50, html.dark .bg-amber-100{ background:rgba(245,158,11,.14) !important; }
+html.dark .bg-slate-100, html.dark .bg-slate-200{ background:var(--rb-surface-2) !important; }
+html.dark .nav-item{ color:var(--rb-muted); }
+html.dark .nav-item:hover, html.dark .nav-item.active{ background:rgba(124,58,237,.16); color:#ddd6fe; }
+html.dark ::-webkit-scrollbar-thumb{ border-color:var(--rb-bg); }
+
+
+/* ─── 07. TYPOGRAPHIE ÉDITORIALE ─────────────────────────────────────────── */
+.rb-display{
+  font-family:var(--rb-font-display);
+  font-weight:650;
+  font-size:var(--rb-text-5xl);
+  line-height:var(--rb-leading-tight);
+  letter-spacing:-.035em;
+  font-variation-settings:'SOFT' 60, 'opsz' 144;
+  color:var(--rb-ink);
+}
+.rb-display em, .rb-h1 em, .rb-h2 em, .rb-h3 em{
+  font-style:italic; font-weight:500; color:var(--rb-violet);
+  font-variation-settings:'SOFT' 100, 'opsz' 144;
+}
+.rb-h1{ font-family:var(--rb-font-display); font-weight:650; font-size:var(--rb-text-4xl); line-height:1.08; letter-spacing:-.03em; font-variation-settings:'SOFT' 50,'opsz' 120; }
+.rb-h2{ font-family:var(--rb-font-display); font-weight:620; font-size:var(--rb-text-3xl); line-height:1.12; letter-spacing:-.025em; font-variation-settings:'SOFT' 50,'opsz' 96; }
+.rb-h3{ font-family:var(--rb-font-display); font-weight:600; font-size:var(--rb-text-xl); line-height:1.25; letter-spacing:-.015em; }
+.rb-lead{ font-size:clamp(1.05rem, .98rem + .35vw, 1.25rem); line-height:1.6; color:var(--rb-ink-2); font-weight:500; }
+.rb-body{ font-size:var(--rb-text-md); line-height:var(--rb-leading-body); color:var(--rb-ink-2); }
+.rb-caption{ font-size:var(--rb-text-xs); color:var(--rb-muted); font-weight:600; }
+.rb-eyebrow{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-size:var(--rb-text-2xs); font-weight:800; letter-spacing:var(--rb-tracking-caps);
+  text-transform:uppercase; color:var(--rb-violet);
+}
+.rb-eyebrow::before{ content:''; width:1.75rem; height:2px; background:currentColor; border-radius:2px; }
+/* Numéro de section éditorial : « 01 » en grand chiffre fin */
+.rb-section-num{
+  font-family:var(--rb-font-display); font-weight:300; font-style:italic;
+  font-size:clamp(3rem, 2rem + 4vw, 6rem); line-height:.8; color:transparent;
+  -webkit-text-stroke:1.2px var(--rb-violet-300); letter-spacing:-.04em;
+  font-variation-settings:'SOFT' 100,'opsz' 144;
+}
+.rb-text-ink{ color:var(--rb-violet); }
+.rb-text-gradient{ background:var(--rb-grad-ink); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+/* Note manuscrite dans la marge */
+.rb-annotation{
+  font-family:var(--rb-font-display); font-style:italic; font-weight:450;
+  font-size:var(--rb-text-sm); color:var(--rb-pink);
+  font-variation-settings:'SOFT' 100,'WONK' 1,'opsz' 14;
+  transform:rotate(-2deg); display:inline-block;
+}
+
+
+/* ─── 08. BOUTONS ────────────────────────────────────────────────────────── */
+.rb-btn{
+  --_bg:var(--rb-ink); --_fg:#fff; --_shadow:var(--rb-shadow-sm);
+  position:relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+  min-height:2.75rem; padding:.75rem 1.4rem;
+  font-weight:750; font-size:var(--rb-text-sm); line-height:1; letter-spacing:-.005em;
+  color:var(--_fg); background:var(--_bg);
+  border:1.5px solid transparent; border-radius:var(--rb-radius-pill);
+  box-shadow:var(--_shadow); cursor:pointer; text-decoration:none; white-space:nowrap;
+  transition:transform var(--rb-dur-fast) var(--rb-ease-out), box-shadow var(--rb-dur-base) var(--rb-ease-out), background-color var(--rb-dur-fast), color var(--rb-dur-fast), border-color var(--rb-dur-fast);
+  -webkit-tap-highlight-color:transparent;
+}
+.rb-btn:hover{ transform:translateY(-2px); }
+.rb-btn:active{ transform:translateY(0) scale(.97); transition-duration:var(--rb-dur-instant); }
+.rb-btn:disabled, .rb-btn[aria-disabled="true"]{ opacity:.55; cursor:not-allowed; transform:none; }
+.rb-btn i{ font-size:.85em; }
+/* Encre : action principale. Le dégradé glisse au survol (l'encre « coule »). */
+.rb-btn--ink{
+  --_fg:#fff; --_shadow:var(--rb-shadow-ink);
+  background:linear-gradient(110deg,#7c3aed 0%,#a855f7 45%,#ec4899 90%,#7c3aed 140%);
+  background-size:220% 100%; background-position:0% 0;
+  transition:background-position var(--rb-dur-slow) var(--rb-ease-out), transform var(--rb-dur-fast) var(--rb-ease-out), box-shadow var(--rb-dur-base);
+}
+.rb-btn--ink:hover{ background-position:60% 0; box-shadow:0 22px 44px -12px rgba(124,58,237,.5); }
+/* Papier : action secondaire, ombre décalée façon feuille posée */
+.rb-btn--paper{
+  --_bg:var(--rb-surface); --_fg:var(--rb-ink); --_shadow:4px 4px 0 0 var(--rb-ink);
+  border-color:var(--rb-ink);
+}
+.rb-btn--paper:hover{ --_shadow:6px 6px 0 0 var(--rb-violet); border-color:var(--rb-violet); color:var(--rb-violet); transform:translate(-2px,-2px); }
+.rb-btn--paper:active{ --_shadow:1px 1px 0 0 var(--rb-ink); transform:translate(2px,2px) scale(.99); }
+.rb-btn--ghost{ --_bg:transparent; --_fg:var(--rb-ink); --_shadow:none; border-color:var(--rb-line); }
+.rb-btn--ghost:hover{ border-color:var(--rb-violet-300); color:var(--rb-violet); background:var(--rb-violet-50); }
+html.dark .rb-btn--ghost:hover{ background:rgba(124,58,237,.14); }
+.rb-btn--danger{ --_bg:var(--rb-rose); --_fg:#fff; }
+.rb-btn--sm{ min-height:2.25rem; padding:.55rem 1rem; font-size:var(--rb-text-xs); }
+.rb-btn--lg{ min-height:3.25rem; padding:1rem 1.75rem; font-size:var(--rb-text-md); }
+.rb-btn--block{ width:100%; }
+/* État de chargement : le texte s'efface, la synapse apparaît */
+.rb-btn.is-loading{ color:transparent !important; pointer-events:none; }
+.rb-btn.is-loading::after{
+  content:''; position:absolute; inset:0; margin:auto; width:2.1rem; height:.5rem;
+  background:
+    radial-gradient(circle, #fff 45%, transparent 50%) 0 50%/.5rem .5rem no-repeat,
+    radial-gradient(circle, #fff 45%, transparent 50%) 50% 50%/.5rem .5rem no-repeat,
+    radial-gradient(circle, #fff 45%, transparent 50%) 100% 50%/.5rem .5rem no-repeat;
+  animation:rb-btn-dots 1s var(--rb-ease-in-out) infinite;
+}
+.rb-btn--paper.is-loading::after, .rb-btn--ghost.is-loading::after{ filter:invert(1) hue-rotate(180deg); }
+@keyframes rb-btn-dots{ 0%,100%{ opacity:.35; transform:scaleX(.8); } 50%{ opacity:1; transform:scaleX(1); } }
+/* État succès : le check se dessine (voir section 20) */
+.rb-btn.is-success{ --_bg:var(--rb-emerald) !important; background:var(--rb-emerald) !important; }
+
+/* Ripple (onde au point de clic) — injecté par relbrain-motion.js */
+.rb-ripple{
+  position:absolute; border-radius:50%; pointer-events:none; z-index:-1;
+  background:radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 70%);
+  transform:scale(0); animation:rb-ripple var(--rb-dur-slow) var(--rb-ease-out) forwards;
+}
+.rb-btn--paper .rb-ripple, .rb-btn--ghost .rb-ripple{ background:radial-gradient(circle, rgba(124,58,237,.22) 0%, transparent 70%); }
+@keyframes rb-ripple{ to{ transform:scale(1); opacity:0; } }
+
+
+/* ─── 09. CARTES ─────────────────────────────────────────────────────────── */
+.rb-sheet{
+  position:relative; background:var(--rb-surface); color:var(--rb-ink);
+  border:1px solid var(--rb-line); border-radius:var(--rb-radius-sheet);
+  box-shadow:var(--rb-shadow-sm);
+}
+/* Carte interactive : lift + ombre colorée + micro-scale */
+.rb-lift{
+  transition:transform var(--rb-dur-base) var(--rb-ease-out), box-shadow var(--rb-dur-base) var(--rb-ease-out), border-color var(--rb-dur-fast);
+  will-change:transform;
+}
+.rb-lift:hover{ transform:translateY(-5px) scale(1.015); box-shadow:var(--rb-shadow-ink); border-color:var(--rb-violet-300); }
+.rb-lift--pink:hover{ box-shadow:var(--rb-shadow-pink); border-color:#f9a8d4; }
+.rb-lift--amber:hover{ box-shadow:0 18px 40px -12px rgba(245,158,11,.4); border-color:#fcd34d; }
+/* Carte papier posé : ombre pleine décalée (éléments éditoriaux) */
+.rb-sheet--paper{ border-color:var(--rb-ink); box-shadow:var(--rb-shadow-paper); border-radius:var(--rb-radius-md); }
+html.dark .rb-sheet--paper{ border-color:var(--rb-line); }
+/* Coin corné : un triangle replié en haut à droite */
+.rb-dogear::after{
+  content:''; position:absolute; top:-1px; right:-1px; width:1.5rem; height:1.5rem;
+  background:linear-gradient(225deg, var(--rb-bg) 50%, var(--rb-cream-3) 50%);
+  border-bottom-left-radius:.4rem; box-shadow:-2px 2px 4px rgba(26,16,51,.06);
+}
+/* Carte papier réglé (lignes horizontales façon cahier) */
+.rb-ruled{
+  background-image:
+    linear-gradient(90deg, transparent 0 2.25rem, var(--rb-margin-line) 2.25rem calc(2.25rem + 1px), transparent calc(2.25rem + 1px)),
+    repeating-linear-gradient(180deg, transparent 0 27px, var(--rb-rule) 27px 28px);
+  background-color:var(--rb-surface);
+}
+.rb-card-pad{ padding:clamp(1.25rem, 1rem + 1vw, 2rem); }
+
+
+/* ─── 10. BADGES, PASTILLES, KBD ─────────────────────────────────────────── */
+.rb-tag{
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.35rem .75rem; border-radius:var(--rb-radius-pill);
+  font-size:var(--rb-text-2xs); font-weight:750; letter-spacing:.01em;
+  background:var(--rb-violet-50); color:var(--rb-violet-600); border:1px solid var(--rb-violet-100);
+}
+html.dark .rb-tag{ background:rgba(124,58,237,.16); color:#ddd6fe; border-color:rgba(124,58,237,.3); }
+.rb-tag--pink{ background:var(--rb-pink-100); color:#be185d; border-color:#fbcfe8; }
+.rb-tag--amber{ background:var(--rb-amber-100); color:#b45309; border-color:#fde68a; }
+.rb-tag--emerald{ background:var(--rb-emerald-100); color:#047857; border-color:#a7f3d0; }
+.rb-tag--outline{ background:transparent; color:var(--rb-ink-2); border-color:var(--rb-line); }
+html.dark .rb-tag--outline{ background:transparent; color:var(--rb-muted); border-color:var(--rb-line); }
+html.dark .rb-tag--pink{ background:rgba(236,72,153,.16); color:#f9a8d4; border-color:rgba(236,72,153,.32); }
+html.dark .rb-tag--amber{ background:rgba(245,158,11,.16); color:#fcd34d; border-color:rgba(245,158,11,.32); }
+html.dark .rb-tag--emerald{ background:rgba(16,185,129,.16); color:#6ee7b7; border-color:rgba(16,185,129,.32); }
+.rb-dot{ width:.5rem; height:.5rem; border-radius:50%; background:var(--rb-violet); display:inline-block; }
+.rb-dot--live{ background:var(--rb-emerald); box-shadow:0 0 0 0 rgba(16,185,129,.5); animation:rb-live 2s ease-out infinite; }
+@keyframes rb-live{ 70%{ box-shadow:0 0 0 .5rem rgba(16,185,129,0); } 100%{ box-shadow:0 0 0 0 rgba(16,185,129,0); } }
+.rb-kbd{
+  font-family:var(--rb-font-mono); font-size:.72em; padding:.15rem .45rem; border-radius:.35rem;
+  background:var(--rb-surface); border:1px solid var(--rb-line); border-bottom-width:3px; color:var(--rb-ink-2);
+}
+/* Tampon « VALIDÉ » façon correction de copie */
+.rb-stamp{
+  display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .7rem;
+  font-family:var(--rb-font-display); font-weight:800; font-size:var(--rb-text-xs);
+  text-transform:uppercase; letter-spacing:.12em; color:var(--rb-emerald);
+  border:2px solid currentColor; border-radius:.4rem; transform:rotate(-6deg);
+  animation:rb-stamp var(--rb-dur-slow) var(--rb-ease-spring) both;
+}
+@keyframes rb-stamp{ from{ transform:rotate(-6deg) scale(1.9); opacity:0; } to{ transform:rotate(-6deg) scale(1); opacity:1; } }
+
+
+/* ─── 11. CHAMPS DE FORMULAIRE ───────────────────────────────────────────── */
+.rb-field{ display:flex; flex-direction:column; gap:.4rem; }
+.rb-field-label{ font-size:var(--rb-text-xs); font-weight:750; color:var(--rb-ink-2); }
+.rb-field-hint{ font-size:var(--rb-text-2xs); color:var(--rb-muted); font-weight:600; }
+.rb-field-error{ font-size:var(--rb-text-2xs); color:var(--rb-rose); font-weight:700; display:none; }
+.rb-field.has-error .rb-field-error{ display:block; animation:rb-fade-up var(--rb-dur-base) var(--rb-ease-out); }
+.rb-control{
+  width:100%; padding:.8rem 1rem; font-size:var(--rb-text-sm); font-weight:550; color:var(--rb-ink);
+  background:var(--rb-surface); border:1.5px solid var(--rb-line); border-radius:var(--rb-radius-md);
+  outline:none; transition:border-color var(--rb-dur-fast), box-shadow var(--rb-dur-fast), background var(--rb-dur-fast);
+}
+.rb-control::placeholder{ color:var(--rb-faint); font-weight:500; }
+.rb-control:hover{ border-color:var(--rb-violet-300); }
+.rb-control:focus{ border-color:var(--rb-violet); box-shadow:0 0 0 4px var(--rb-focus); }
+textarea.rb-control{ resize:vertical; min-height:7rem; line-height:1.55; }
+.rb-field.has-error .rb-control{ border-color:var(--rb-rose); box-shadow:0 0 0 4px rgba(244,63,94,.12); }
+.rb-field.is-valid .rb-control{ border-color:var(--rb-emerald); }
+select.rb-control{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 1rem center; padding-right:2.5rem; }
+.rb-check{ display:flex; align-items:flex-start; gap:.6rem; font-size:var(--rb-text-xs); color:var(--rb-ink-2); font-weight:600; cursor:pointer; }
+.rb-check input{ accent-color:var(--rb-violet); width:1.05rem; height:1.05rem; margin-top:.05rem; }
+/* Interrupteur */
+.rb-toggle{ position:relative; width:2.6rem; height:1.5rem; flex-shrink:0; }
+.rb-toggle input{ position:absolute; inset:0; opacity:0; cursor:pointer; z-index:1; margin:0; }
+.rb-toggle span{ position:absolute; inset:0; border-radius:99px; background:var(--rb-line); transition:background var(--rb-dur-base); }
+.rb-toggle span::after{ content:''; position:absolute; top:.2rem; left:.2rem; width:1.1rem; height:1.1rem; border-radius:50%; background:#fff; box-shadow:var(--rb-shadow-sm); transition:transform var(--rb-dur-base) var(--rb-ease-spring); }
+.rb-toggle input:checked + span{ background:var(--rb-violet); }
+.rb-toggle input:checked + span::after{ transform:translateX(1.1rem); }
+
+
+/* ─── 12. TOASTS, MODALES, CENTRE DE NOTIFICATIONS ───────────────────────── */
+#rb-toast-host{ position:fixed; bottom:1rem; right:1rem; z-index:var(--rb-z-toast); display:flex; flex-direction:column; gap:.5rem; pointer-events:none; max-width:calc(100vw - 2rem); }
+.rb-toast{
+  display:flex; align-items:center; gap:.65rem; padding:.75rem 1rem .75rem .85rem;
+  border-radius:var(--rb-radius-md); font-size:var(--rb-text-xs); font-weight:700;
+  box-shadow:var(--rb-shadow-lg); pointer-events:all;
+  animation:rb-toast-in var(--rb-dur-base) var(--rb-ease-spring) both;
+  transition:opacity var(--rb-dur-base), transform var(--rb-dur-base) var(--rb-ease-out);
+}
+.rb-toast.rb-toast--leaving{ opacity:0; transform:translateX(16px); }
+.rb-toast--error{ animation:rb-toast-in var(--rb-dur-base) var(--rb-ease-spring) both, rb-shake 420ms var(--rb-ease-out) 120ms; }
+@keyframes rb-toast-in{ from{ opacity:0; transform:translateY(10px) scale(.96); } to{ opacity:1; transform:none; } }
+
+.rb-overlay{ position:fixed; inset:0; z-index:var(--rb-z-overlay); background:rgba(26,16,51,.45); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:1rem; }
+.rb-overlay.open{ display:flex; animation:rb-fade var(--rb-dur-base) ease both; }
+.rb-modal{ width:100%; max-width:28rem; max-height:90vh; overflow:auto; background:var(--rb-surface); border:1px solid var(--rb-line); border-radius:var(--rb-radius-lg); box-shadow:var(--rb-shadow-lg); padding:1.5rem; animation:rb-modal-in var(--rb-dur-slow) var(--rb-ease-spring) both; }
+@keyframes rb-modal-in{ from{ opacity:0; transform:translateY(18px) scale(.97); } to{ opacity:1; transform:none; } }
+
+/* Centre de notifications (injecté par relbrain-app.js dans l'en-tête) */
+.rb-notif-panel{
+  position:absolute; top:calc(100% + .5rem); right:0; width:min(22rem, calc(100vw - 2rem));
+  background:var(--rb-surface); border:1px solid var(--rb-line); border-radius:var(--rb-radius-lg);
+  box-shadow:var(--rb-shadow-lg); z-index:120; overflow:hidden;
+  opacity:0; visibility:hidden; transform:translateY(-6px) scale(.98); transform-origin:top right;
+  transition:opacity var(--rb-dur-fast), transform var(--rb-dur-base) var(--rb-ease-out), visibility var(--rb-dur-fast);
+}
+.rb-notif-panel.open{ opacity:1; visibility:visible; transform:none; }
+.rb-notif-head{ display:flex; align-items:center; justify-content:space-between; padding:.85rem 1rem; border-bottom:1px solid var(--rb-line-soft); }
+.rb-notif-list{ max-height:22rem; overflow:auto; }
+.rb-notif-item{ display:flex; gap:.7rem; padding:.8rem 1rem; border-bottom:1px solid var(--rb-line-soft); cursor:pointer; transition:background var(--rb-dur-fast); }
+.rb-notif-item:hover{ background:var(--rb-surface-2); }
+.rb-notif-item.unread{ background:linear-gradient(90deg, rgba(124,58,237,.06), transparent 70%); }
+.rb-notif-item.unread .rb-notif-title::after{ content:''; display:inline-block; width:.45rem; height:.45rem; border-radius:50%; background:var(--rb-pink); margin-left:.4rem; vertical-align:middle; }
+.rb-notif-icon{ width:2rem; height:2rem; border-radius:.6rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--rb-violet-50); color:var(--rb-violet); font-size:.8rem; }
+.rb-notif-title{ font-size:var(--rb-text-xs); font-weight:750; color:var(--rb-ink); }
+.rb-notif-body{ font-size:var(--rb-text-2xs); color:var(--rb-muted); font-weight:550; margin-top:.15rem; line-height:1.45; }
+.rb-notif-badge{ position:absolute; top:.2rem; right:.2rem; min-width:1rem; height:1rem; padding:0 .25rem; border-radius:99px; background:var(--rb-pink); color:#fff; font-size:.6rem; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--rb-bg); animation:rb-pop var(--rb-dur-base) var(--rb-ease-spring); }
+
+
+/* ─── 13. NAVIGATION SITE (pages publiques) ──────────────────────────────── */
+.rb-site-nav{
+  position:sticky; top:0; z-index:var(--rb-z-nav);
+  background:color-mix(in srgb, var(--rb-bg) 86%, transparent);
+  backdrop-filter:saturate(1.4) blur(14px);
+  border-bottom:1px solid transparent; transition:border-color var(--rb-dur-base), box-shadow var(--rb-dur-base);
+}
+.rb-site-nav.is-scrolled{ border-color:var(--rb-line); box-shadow:0 1px 0 rgba(26,16,51,.03); }
+.rb-site-nav__inner{ max-width:var(--rb-container); margin:0 auto; padding:.85rem var(--rb-gutter); display:flex; align-items:center; gap:1.5rem; }
+.rb-logo{ display:inline-flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--rb-ink); }
+.rb-logo__mark{ position:relative; width:2.25rem; height:2.25rem; border-radius:.7rem .7rem .7rem .25rem; background:var(--rb-violet); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:3px 3px 0 0 var(--rb-pink); transition:transform var(--rb-dur-base) var(--rb-ease-spring), box-shadow var(--rb-dur-base); }
+.rb-logo:hover .rb-logo__mark{ transform:rotate(-6deg); box-shadow:4px 4px 0 0 var(--rb-amber); }
+.rb-logo__word{ font-family:var(--rb-font-display); font-weight:700; font-size:1.3rem; letter-spacing:-.03em; font-variation-settings:'SOFT' 80,'opsz' 48; }
+.rb-logo__word b{ color:var(--rb-violet); font-weight:700; font-style:italic; }
+.rb-site-links{ display:flex; align-items:center; gap:.25rem; margin-left:auto; }
+.rb-site-link{ position:relative; padding:.5rem .8rem; font-size:var(--rb-text-sm); font-weight:650; color:var(--rb-ink-2); text-decoration:none; border-radius:.6rem; transition:color var(--rb-dur-fast); }
+.rb-site-link::after{ content:''; position:absolute; left:.8rem; right:.8rem; bottom:.3rem; height:.45rem; background:var(--rb-highlight-amber); border-radius:2px; transform:scaleX(0); transform-origin:left; transition:transform var(--rb-dur-base) var(--rb-ease-ink); z-index:-1; }
+.rb-site-link:hover, .rb-site-link[aria-current="page"]{ color:var(--rb-ink); }
+.rb-site-link:hover::after, .rb-site-link[aria-current="page"]::after{ transform:scaleX(1); }
+.rb-site-burger{ display:none; margin-left:auto; width:2.5rem; height:2.5rem; border-radius:.7rem; border:1.5px solid var(--rb-line); background:var(--rb-surface); color:var(--rb-ink); cursor:pointer; }
+@media (max-width:900px){
+  .rb-site-links{ display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; align-items:stretch; gap:.25rem; padding:.75rem var(--rb-gutter) 1.25rem; background:var(--rb-bg); border-bottom:1px solid var(--rb-line); box-shadow:var(--rb-shadow-md); }
+  .rb-site-links.open{ display:flex; animation:rb-fade-up var(--rb-dur-base) var(--rb-ease-out); }
+  .rb-site-links .rb-btn{ margin-top:.5rem; }
+  .rb-site-burger{ display:inline-flex; align-items:center; justify-content:center; }
+}
+.rb-site-footer{ background:#160f29; color:#cfc6e4; padding:var(--rb-section) var(--rb-gutter) 2rem; position:relative; overflow:hidden; }
+.rb-site-footer a{ color:#cfc6e4; text-decoration:none; transition:color var(--rb-dur-fast); }
+.rb-site-footer a:hover{ color:#fff; }
+.rb-site-footer__grid{ max-width:var(--rb-container); margin:0 auto; display:grid; grid-template-columns:1.6fr repeat(4, 1fr); gap:2.5rem; }
+@media (max-width:900px){ .rb-site-footer__grid{ grid-template-columns:1fr 1fr; } .rb-site-footer__grid > :first-child{ grid-column:1 / -1; } }
+.rb-site-footer h4{ font-size:var(--rb-text-2xs); text-transform:uppercase; letter-spacing:var(--rb-tracking-caps); color:#8f84ad; font-weight:800; margin-bottom:1rem; }
+.rb-site-footer li{ margin-bottom:.6rem; font-size:var(--rb-text-sm); }
+.rb-site-footer__big{ font-family:var(--rb-font-display); font-weight:300; font-style:italic; font-size:clamp(3rem, 1rem + 9vw, 9rem); line-height:.9; letter-spacing:-.05em; color:transparent; -webkit-text-stroke:1px rgba(196,181,253,.25); text-align:center; margin-top:4rem; user-select:none; }
+.rb-site-footer__bottom{ max-width:var(--rb-container); margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; font-size:var(--rb-text-xs); color:#8f84ad; }
+
+
+/* ─── 14. SIGNATURE 1 — SURLIGNEUR ───────────────────────────────────────────
+   Sens pédagogique : surligner = repérer l'essentiel. Les notions clés
+   reçoivent un trait de surligneur qui se pose de gauche à droite quand
+   elles entrent dans le champ de vision. Usage : <mark class="rb-mark">…</mark>
+   Variantes : --pink, --violet. Ajouter .is-on (fait par relbrain-motion.js). */
+.rb-mark{
+  --_c:var(--rb-highlight-amber);
+  background:linear-gradient(100deg, transparent .2em, var(--_c) .3em, var(--_c) calc(100% - .2em), transparent calc(100% - .1em)) no-repeat 0 82% / 0% .62em;
+  color:inherit; padding:0 .08em; border-radius:.15em;
+  -webkit-box-decoration-break:clone; box-decoration-break:clone;
+  transition:background-size var(--rb-dur-story) var(--rb-ease-ink);
+}
+.rb-mark.is-on{ background-size:100% .62em; }
+.rb-mark--pink{ --_c:var(--rb-highlight-pink); }
+.rb-mark--violet{ --_c:var(--rb-highlight-violet); }
+.rb-mark--full{ background-position:0 50%; }
+.rb-mark--full.is-on{ background-size:100% 1.1em; }
+/* Trait souligné à la main (SVG) — pour les titres */
+.rb-scribble{ position:relative; display:inline-block; white-space:nowrap; }
+.rb-scribble svg{ position:absolute; left:-2%; bottom:-.18em; width:104%; height:.42em; overflow:visible; pointer-events:none; }
+.rb-scribble path{ fill:none; stroke:var(--rb-pink); stroke-width:3.2; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:1; }
+.rb-scribble.is-on path{ animation:rb-draw var(--rb-dur-story) var(--rb-ease-ink) forwards .15s; }
+@keyframes rb-draw{ to{ stroke-dashoffset:0; } }
+
+
+/* ─── 15. SIGNATURE 2 — SYNAPSE (L'IA RÉFLÉCHIT) ─────────────────────────────
+   Sens pédagogique : apprendre = connecter des idées. Pendant que l'IA
+   analyse, trois neurones s'allument tour à tour et un influx parcourt les
+   liaisons. Remplace tous les spinners génériques.
+   Usage : <span class="rb-synapse" role="status" aria-label="Analyse en cours"><i></i><i></i><i></i></span>
+   Taille : --rb-synapse-size (défaut 2.5rem).                                 */
+.rb-synapse{
+  --s:var(--rb-synapse-size, 2.5rem);
+  position:relative; display:inline-block; width:var(--s); height:calc(var(--s) * .866);
+  vertical-align:middle;
+}
+.rb-synapse::before{ /* liaisons du triangle */
+  content:''; position:absolute; inset:12%;
+  clip-path:polygon(50% 0, 100% 100%, 0 100%, 50% 0, 50% 6%, 5% 96%, 95% 96%, 50% 6%);
+  background:linear-gradient(90deg, var(--rb-violet-300), var(--rb-pink), var(--rb-violet-300));
+  background-size:300% 100%; animation:rb-synapse-flow 1.4s linear infinite; opacity:.75;
+}
+.rb-synapse i{
+  position:absolute; width:calc(var(--s) * .26); height:calc(var(--s) * .26); border-radius:50%;
+  background:var(--rb-violet); box-shadow:0 0 0 0 rgba(124,58,237,.45);
+  animation:rb-neuron 1.4s var(--rb-ease-in-out) infinite;
+}
+.rb-synapse i:nth-child(1){ top:0; left:50%; translate:-50% 0; }
+.rb-synapse i:nth-child(2){ bottom:0; right:0; animation-delay:.46s; background:var(--rb-purple); }
+.rb-synapse i:nth-child(3){ bottom:0; left:0; animation-delay:.93s; background:var(--rb-pink); }
+@keyframes rb-neuron{
+  0%,100%{ transform:scale(.8); box-shadow:0 0 0 0 rgba(124,58,237,0); }
+  30%{ transform:scale(1.25); box-shadow:0 0 0 calc(var(--s) * .14) rgba(124,58,237,.16); }
+}
+@keyframes rb-synapse-flow{ to{ background-position:-300% 0; } }
+.rb-synapse--light i{ background:#fff !important; }
+.rb-synapse--light::before{ background:linear-gradient(90deg, rgba(255,255,255,.4), #fff, rgba(255,255,255,.4)); background-size:300% 100%; }
+/* Panneau « l'IA réfléchit » : texte qui change + vague d'ondes */
+.rb-thinking{ display:flex; align-items:center; gap:.85rem; padding:.85rem 1rem; border-radius:var(--rb-radius-md); background:var(--rb-surface); border:1px dashed var(--rb-violet-300); }
+.rb-thinking__text{ font-size:var(--rb-text-xs); font-weight:700; color:var(--rb-violet-600); }
+.rb-thinking__text::after{ content:''; animation:rb-ellipsis 1.2s steps(4) infinite; }
+@keyframes rb-ellipsis{ 0%{ content:''; } 25%{ content:'.'; } 50%{ content:'..'; } 75%{ content:'...'; } }
+/* Onde de pensée (anneaux concentriques) */
+.rb-thought-wave{ position:relative; }
+.rb-thought-wave::before, .rb-thought-wave::after{
+  content:''; position:absolute; inset:-.5rem; border-radius:inherit; border:2px solid var(--rb-violet-300);
+  animation:rb-wave 2.4s var(--rb-ease-out) infinite; pointer-events:none;
+}
+.rb-thought-wave::after{ animation-delay:1.2s; border-color:#f9a8d4; }
+@keyframes rb-wave{ from{ transform:scale(.9); opacity:.9; } to{ transform:scale(1.35); opacity:0; } }
+
+
+/* ─── 16. SIGNATURE 3 — ÉCLAT DE SAVOIR ──────────────────────────────────────
+   Sens pédagogique : une bonne réponse « fait tilt ». Des glyphes de savoir
+   (✦ π √ ∑ A+ ★ livre) jaillissent du point de réussite puis retombent.
+   Volontairement bref (≈900 ms) et peu nombreux : récompense, pas distraction.
+   Déclenché par RB.motion.burst(el|{x,y}, options).                          */
+.rb-burst-layer{ position:fixed; inset:0; pointer-events:none; z-index:var(--rb-z-celebration); overflow:hidden; }
+.rb-glyph{
+  position:absolute; left:0; top:0; font-family:var(--rb-font-display); font-weight:700; line-height:1;
+  will-change:transform, opacity;
+  animation:rb-glyph var(--_d, 900ms) var(--rb-ease-out) forwards;
+}
+@keyframes rb-glyph{
+  0%{ opacity:0; transform:translate(var(--x0), var(--y0)) scale(.3) rotate(0deg); }
+  15%{ opacity:1; }
+  70%{ opacity:1; }
+  100%{ opacity:0; transform:translate(var(--x1), var(--y1)) scale(var(--sc, 1)) rotate(var(--r, 90deg)); }
+}
+
+
+/* ─── 17. SIGNATURE 4 — MONTÉE D'XP & PASSAGE DE NIVEAU ──────────────────────
+   Sens pédagogique : rendre l'effort visible. Le gain d'XP s'envole du point
+   d'action vers la jauge, le compteur défile, la jauge se remplit.
+   RB.motion.xp(amount, fromEl) · RB.motion.levelUp(level, opts)            */
+.rb-xp-float{
+  position:fixed; z-index:var(--rb-z-celebration); pointer-events:none;
+  font-family:var(--rb-font-display); font-weight:800; font-size:1.35rem; color:var(--rb-violet);
+  text-shadow:0 2px 0 #fff, 0 6px 18px rgba(124,58,237,.35);
+  animation:rb-xp-float 1.2s var(--rb-ease-out) forwards;
+}
+@keyframes rb-xp-float{
+  0%{ opacity:0; transform:translate(-50%, 0) scale(.6); }
+  20%{ opacity:1; transform:translate(-50%, -18px) scale(1.15); }
+  100%{ opacity:0; transform:translate(-50%, -90px) scale(1); }
+}
+.rb-xp-bar{ position:relative; height:.6rem; border-radius:99px; background:var(--rb-line-soft); overflow:hidden; }
+.rb-xp-bar__fill{ position:absolute; inset:0 auto 0 0; width:var(--p, 0%); border-radius:inherit; background:var(--rb-grad-ink); transition:width var(--rb-dur-story) var(--rb-ease-out); }
+.rb-xp-bar__fill::after{ /* reflet qui court sur la jauge */
+  content:''; position:absolute; inset:0; background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+  background-size:200% 100%; animation:rb-shine 2.4s linear infinite;
+}
+@keyframes rb-shine{ from{ background-position:200% 0; } to{ background-position:-200% 0; } }
+.rb-xp-bar.is-gaining{ animation:rb-pulse-ring 700ms var(--rb-ease-out); }
+@keyframes rb-pulse-ring{ 0%{ box-shadow:0 0 0 0 rgba(124,58,237,.45); } 100%{ box-shadow:0 0 0 10px rgba(124,58,237,0); } }
+/* Anneau de progression (SVG) :
+   <svg class="rb-ring" viewBox="0 0 100 100" style="--p:72">
+     <circle class="rb-ring__track" cx="50" cy="50" r="42"/>
+     <circle class="rb-ring__fill"  cx="50" cy="50" r="42" pathLength="100"/>
+   </svg>                                                                   */
+.rb-ring{ --p:0; --size:4rem; width:var(--size); height:var(--size); transform:rotate(-90deg); }
+.rb-ring circle{ fill:none; stroke-width:10; }
+.rb-ring__track{ stroke:var(--rb-line-soft); }
+.rb-ring__fill{ stroke:var(--rb-violet); stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:calc(100 - var(--p)); transition:stroke-dashoffset var(--rb-dur-story) var(--rb-ease-out); }
+
+/* Écran plein « Niveau supérieur » */
+.rb-levelup{
+  position:fixed; inset:0; z-index:var(--rb-z-celebration); display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  background:radial-gradient(ellipse at center, rgba(42,21,92,.88) 0%, rgba(18,10,40,.94) 70%);
+  animation:rb-fade 300ms ease both;
+}
+.rb-levelup.is-leaving{ animation:rb-fade 300ms ease reverse forwards; }
+.rb-levelup__rays{
+  position:absolute; width:140vmax; height:140vmax; left:50%; top:50%; translate:-50% -50%;
+  background:repeating-conic-gradient(from 0deg, rgba(251,191,36,.10) 0deg 6deg, transparent 6deg 18deg);
+  animation:rb-spin 24s linear infinite; mask:radial-gradient(circle, #000 0%, transparent 55%);
+  -webkit-mask:radial-gradient(circle, #000 0%, transparent 55%);
+}
+.rb-levelup__card{
+  position:relative; text-align:center; color:#fff; width:min(24rem, 100%);
+  padding:2.5rem 2rem 2rem; border-radius:var(--rb-radius-xl);
+  background:linear-gradient(160deg, rgba(124,58,237,.95), rgba(168,85,247,.92) 50%, rgba(236,72,153,.92));
+  box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 40px 120px -20px rgba(236,72,153,.6);
+  animation:rb-levelup-card 900ms var(--rb-ease-spring) both 120ms;
+}
+.rb-levelup__eyebrow{ font-size:var(--rb-text-2xs); font-weight:800; letter-spacing:.3em; text-transform:uppercase; opacity:.85; }
+.rb-levelup__num{
+  font-family:var(--rb-font-display); font-weight:800; font-size:7rem; line-height:1; margin:.5rem 0 .25rem;
+  font-variation-settings:'SOFT' 100,'opsz' 144; text-shadow:0 10px 40px rgba(251,191,36,.55);
+  animation:rb-level-num 1100ms var(--rb-ease-spring) both 350ms;
+}
+.rb-levelup__title{ font-family:var(--rb-font-display); font-style:italic; font-size:1.5rem; font-weight:500; }
+.rb-levelup__perks{ margin:1.25rem 0 1.5rem; display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; }
+.rb-levelup__perks span{ font-size:var(--rb-text-2xs); font-weight:750; padding:.35rem .7rem; border-radius:99px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.22); }
+@keyframes rb-levelup-card{ from{ opacity:0; transform:translateY(40px) scale(.85) rotate(-3deg); } to{ opacity:1; transform:none; } }
+@keyframes rb-level-num{ 0%{ opacity:0; transform:scale(.4) rotateX(90deg); } 60%{ opacity:1; transform:scale(1.15) rotateX(0); } 100%{ transform:scale(1); } }
+@keyframes rb-spin{ to{ rotate:360deg; } }
+
+
+/* ─── 18. SIGNATURE 5 — COURBE DE L'OUBLI ────────────────────────────────────
+   Sens pédagogique : montre pourquoi on révise. La courbe d'Ebbinghaus chute,
+   chaque révision la relève et l'aplatit. Composant SVG piloté par
+   RB.motion.forgettingCurve(svgEl) ; s'anime quand il devient visible.      */
+.rb-curve{ width:100%; height:auto; overflow:visible; }
+.rb-curve__grid line{ stroke:var(--rb-line); stroke-width:1; stroke-dasharray:3 5; }
+.rb-curve__axis{ font-family:var(--rb-font-ui); font-size:11px; font-weight:700; fill:var(--rb-muted); }
+.rb-curve__forget{ fill:none; stroke:var(--rb-faint); stroke-width:2.5; stroke-dasharray:6 6; opacity:.8; }
+.rb-curve__learn{ fill:none; stroke:var(--rb-violet); stroke-width:3.5; stroke-linecap:round; stroke-linejoin:round; }
+.rb-curve__area{ fill:url(#rb-curve-grad); opacity:0; transition:opacity var(--rb-dur-slow) ease 1.2s; }
+.rb-curve.is-on .rb-curve__area{ opacity:1; }
+.rb-curve__dot{ fill:var(--rb-surface); stroke:var(--rb-pink); stroke-width:3; transform-box:fill-box; transform-origin:center; transform:scale(0); }
+.rb-curve.is-on .rb-curve__dot{ animation:rb-pop var(--rb-dur-slow) var(--rb-ease-spring) forwards; animation-delay:var(--d, 0s); }
+.rb-curve__label{ font-family:var(--rb-font-display); font-style:italic; font-size:13px; fill:var(--rb-pink); opacity:0; }
+.rb-curve.is-on .rb-curve__label{ animation:rb-fade var(--rb-dur-slow) ease forwards; animation-delay:var(--d, 0s); }
+.rb-curve [data-draw]{ stroke-dasharray:var(--len, 1200); stroke-dashoffset:var(--len, 1200); }
+.rb-curve.is-on [data-draw]{ animation:rb-draw-len var(--_dur, 2.2s) var(--rb-ease-in-out) forwards; animation-delay:var(--d, 0s); }
+@keyframes rb-draw-len{ to{ stroke-dashoffset:0; } }
+
+
+/* ─── 19. SIGNATURE 6 — RÉVÉLATION À L'ENCRE ─────────────────────────────────
+   Sens pédagogique : l'information arrive par étapes, dans l'ordre de lecture
+   (pas tout à la fois). Les blocs montent et se découvrent comme de l'encre
+   qui sèche ; les groupes [data-rb-stagger] révèlent leurs enfants en cascade.
+   Classes : .rb-reveal, .rb-reveal--clip, [data-rb-stagger]                 */
+.rb-reveal{ opacity:0; transform:translateY(22px); transition:opacity var(--rb-dur-slow) var(--rb-ease-out), transform var(--rb-dur-slow) var(--rb-ease-out); transition-delay:var(--rb-delay, 0ms); }
+.rb-reveal.is-in{ opacity:1; transform:none; }
+.rb-reveal--clip{ opacity:1; transform:none; clip-path:inset(0 0 100% 0); transition:clip-path var(--rb-dur-story) var(--rb-ease-ink); transition-delay:var(--rb-delay, 0ms); }
+.rb-reveal--clip.is-in{ clip-path:inset(0 0 0 0); }
+.rb-reveal--scale{ opacity:0; transform:scale(.94) translateY(12px); transition:opacity var(--rb-dur-slow) var(--rb-ease-out), transform var(--rb-dur-slow) var(--rb-ease-spring); transition-delay:var(--rb-delay, 0ms); }
+.rb-reveal--scale.is-in{ opacity:1; transform:none; }
+/* Compatibilité avec les classes historiques (.reveal / .reveal-scale + .in) */
+.reveal, .reveal-scale{ transition-timing-function:var(--rb-ease-out) !important; }
+
+
+/* ─── 20. MICRO-INTERACTIONS ─────────────────────────────────────────────── */
+/* Check qui se dessine (succès) : <svg class="rb-check-draw" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg> */
+.rb-check-draw{ width:3.5rem; height:3.5rem; }
+.rb-check-draw circle{ fill:none; stroke:var(--rb-emerald); stroke-width:3; stroke-dasharray:151; stroke-dashoffset:151; animation:rb-dash 600ms var(--rb-ease-ink) forwards; }
+.rb-check-draw path{ fill:none; stroke:var(--rb-emerald); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:36; stroke-dashoffset:36; animation:rb-dash 420ms var(--rb-ease-out) forwards 520ms; }
+@keyframes rb-dash{ to{ stroke-dashoffset:0; } }
+/* Shake doux (erreur) — amplitude faible, pas punitif */
+.rb-shake{ animation:rb-shake 420ms var(--rb-ease-out); }
+@keyframes rb-shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-6px); } 40%{ transform:translateX(5px); } 60%{ transform:translateX(-3px); } 80%{ transform:translateX(2px); } }
+/* Pop (apparition d'un élément gagné) */
+.rb-pop{ animation:rb-pop var(--rb-dur-slow) var(--rb-ease-spring) both; }
+@keyframes rb-pop{ from{ transform:scale(0); opacity:0; } to{ transform:scale(1); opacity:1; } }
+@keyframes rb-fade{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes rb-fade-up{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+/* Bonne / mauvaise réponse (quiz) */
+.rb-answer-right{ animation:rb-right 600ms var(--rb-ease-spring); }
+@keyframes rb-right{ 0%{ transform:scale(1); } 40%{ transform:scale(1.025); box-shadow:0 0 0 6px rgba(16,185,129,.18); } 100%{ transform:scale(1); } }
+/* Squelette de chargement « papier » */
+.rb-skeleton{
+  position:relative; overflow:hidden; border-radius:var(--rb-radius-sm);
+  background:var(--rb-line-soft); color:transparent !important; min-height:.85em;
+}
+.rb-skeleton::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.65) 50%, transparent 80%);
+  background-size:220% 100%; animation:rb-skeleton 1.3s ease-in-out infinite;
+}
+html.dark .rb-skeleton::after{ background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.06) 50%, transparent 80%); background-size:220% 100%; }
+@keyframes rb-skeleton{ from{ background-position:180% 0; } to{ background-position:-40% 0; } }
+.rb-skeleton-line{ height:.75rem; margin:.5rem 0; }
+.rb-skeleton-line:nth-child(2n){ width:82%; }
+.rb-skeleton-line:last-child{ width:56%; }
+/* Compteur qui défile (chiffres tabulaires pour éviter les sauts) */
+.rb-counter{ font-variant-numeric:tabular-nums; }
+/* Flamme de série */
+.rb-flame{ display:inline-block; transform-origin:50% 90%; animation:rb-flame 1.6s ease-in-out infinite; }
+@keyframes rb-flame{ 0%,100%{ transform:scale(1) rotate(-2deg); } 50%{ transform:scale(1.12) rotate(3deg); } }
+/* Retournement de carte (flashcards) */
+.rb-flip{ perspective:1200px; }
+.rb-flip__inner{ position:relative; transform-style:preserve-3d; transition:transform 700ms var(--rb-ease-spring); }
+.rb-flip.is-flipped .rb-flip__inner{ transform:rotateY(180deg); }
+.rb-flip__face{ backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.rb-flip__face--back{ position:absolute; inset:0; transform:rotateY(180deg); }
+
+
+/* ─── 21. MISE EN PAGE ÉDITORIALE ────────────────────────────────────────── */
+.rb-container{ max-width:var(--rb-container); margin-inline:auto; padding-inline:var(--rb-gutter); }
+.rb-container--narrow{ max-width:var(--rb-container-narrow); }
+.rb-section{ padding-block:var(--rb-section); position:relative; }
+.rb-section--sunk{ background:var(--rb-surface-sunk); }
+.rb-section--white{ background:var(--rb-bg-alt); }
+.rb-section--ink{ background:#160f29; color:#ece6fb; }
+.rb-section--ink .rb-h2, .rb-section--ink .rb-h1{ color:#fff; }
+/* Grille éditoriale 12 colonnes (asymétrie maîtrisée) */
+.rb-grid{ display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:clamp(1rem, .5rem + 2vw, 2.5rem); }
+.rb-col-4{ grid-column:span 4; } .rb-col-5{ grid-column:span 5; } .rb-col-6{ grid-column:span 6; }
+.rb-col-7{ grid-column:span 7; } .rb-col-8{ grid-column:span 8; } .rb-col-12{ grid-column:1 / -1; }
+@media (max-width:900px){ .rb-grid > [class*="rb-col-"]{ grid-column:1 / -1; } }
+/* En-tête de section éditorial : numéro + filet + titre */
+.rb-section-head{ display:grid; grid-template-columns:auto 1fr; gap:1rem 1.5rem; align-items:end; margin-bottom:clamp(2rem, 1.5rem + 2vw, 3.5rem); }
+.rb-section-head__rule{ grid-column:1 / -1; height:1px; background:var(--rb-line); position:relative; }
+.rb-section-head__rule::after{ content:''; position:absolute; left:0; top:-1px; height:3px; width:4rem; background:var(--rb-violet); border-radius:2px; }
+@media (max-width:640px){ .rb-section-head{ grid-template-columns:1fr; } }
+/* Fond papier réglé pour sections */
+.rb-paper-bg{ background-color:var(--rb-bg); background-image:repeating-linear-gradient(180deg, transparent 0 39px, var(--rb-rule) 39px 40px); }
+/* Barre latérale de documentation */
+.rb-docs-layout{ display:grid; grid-template-columns:15rem minmax(0,1fr); gap:3rem; align-items:start; }
+.rb-docs-nav{ position:sticky; top:5.5rem; max-height:calc(100vh - 7rem); overflow:auto; padding-right:.5rem; }
+.rb-docs-nav a{ display:block; padding:.4rem .75rem; margin-left:-.75rem; font-size:var(--rb-text-sm); font-weight:600; color:var(--rb-muted); text-decoration:none; border-left:2px solid transparent; transition:color var(--rb-dur-fast), border-color var(--rb-dur-fast), background var(--rb-dur-fast); }
+.rb-docs-nav a:hover{ color:var(--rb-ink); }
+.rb-docs-nav a.is-active{ color:var(--rb-violet); border-left-color:var(--rb-violet); background:linear-gradient(90deg, var(--rb-violet-50), transparent); }
+html.dark .rb-docs-nav a.is-active{ background:linear-gradient(90deg, rgba(124,58,237,.14), transparent); }
+.rb-docs-nav h5{ font-size:var(--rb-text-2xs); text-transform:uppercase; letter-spacing:var(--rb-tracking-caps); color:var(--rb-faint); font-weight:800; margin:1.25rem 0 .4rem; }
+@media (max-width:900px){ .rb-docs-layout{ grid-template-columns:1fr; } .rb-docs-nav{ position:static; max-height:none; display:flex; flex-wrap:wrap; gap:.25rem; } .rb-docs-nav h5{ width:100%; } .rb-docs-nav a{ margin:0; border:1px solid var(--rb-line); border-radius:99px; padding:.3rem .75rem; font-size:var(--rb-text-xs); } }
+
+
+/* En-tête de page éditorial (pages intérieures du site) */
+.rb-page-hero{ position:relative; padding:clamp(2.5rem,1.5rem + 4vw,5rem) 0 clamp(2rem,1rem + 3vw,3.5rem); border-bottom:1px solid var(--rb-line); overflow:hidden; }
+.rb-page-hero::after{ content:''; position:absolute; right:-6rem; top:-6rem; width:22rem; height:22rem; border-radius:50%; background:radial-gradient(circle, rgba(236,72,153,.12), transparent 65%); pointer-events:none; }
+.rb-page-hero .rb-h1{ margin:.75rem 0 1rem; max-width:48rem; }
+.rb-page-hero .rb-lead{ max-width:40rem; }
+.rb-page-meta{ display:flex; flex-wrap:wrap; gap:.5rem 1.25rem; margin-top:1.5rem; font-size:var(--rb-text-xs); font-weight:650; color:var(--rb-muted); }
+.rb-page-meta i{ color:var(--rb-violet); margin-right:.35rem; }
+.rb-page-body{ padding-block:clamp(2.5rem,1.5rem + 3vw,4.5rem) var(--rb-section); }
+/* Champ à compléter (modèles juridiques) */
+.rb-fill{ background:var(--rb-highlight-amber); padding:0 .25em; border-radius:.2em; font-weight:700; color:var(--rb-ink); }
+/* Carte lien (liste de ressources) */
+.rb-link-card{ display:flex; gap:1rem; align-items:flex-start; padding:1.25rem; text-decoration:none; }
+.rb-link-card h3{ font-weight:750; font-size:1rem; color:var(--rb-ink); margin-bottom:.2rem; }
+.rb-link-card p{ font-size:.88rem; color:var(--rb-muted); line-height:1.55; font-weight:550; }
+.rb-link-card .rb-arrow{ margin-left:auto; color:var(--rb-faint); transition:transform var(--rb-dur-base) var(--rb-ease-spring), color var(--rb-dur-fast); }
+.rb-link-card:hover .rb-arrow{ transform:translateX(4px); color:var(--rb-violet); }
+.rb-icon-tile{ width:2.75rem; height:2.75rem; flex-shrink:0; border-radius:.8rem .8rem .8rem .3rem; display:flex; align-items:center; justify-content:center; font-size:1.05rem; background:var(--rb-violet-50); color:var(--rb-violet); }
+html.dark .rb-icon-tile{ background:rgba(124,58,237,.16); color:#ddd6fe; }
+.rb-cards{ display:grid; grid-template-columns:repeat(auto-fill, minmax(17rem, 1fr)); gap:1rem; }
+
+
+/* ─── 22. PROSE (légal, documentation, blog) ─────────────────────────────── */
+.rb-prose{ font-size:1.0625rem; line-height:1.75; color:var(--rb-ink-2); max-width:68ch; }
+.rb-prose > * + *{ margin-top:1.1em; }
+.rb-prose h2{ font-family:var(--rb-font-display); font-size:var(--rb-text-2xl); font-weight:650; color:var(--rb-ink); line-height:1.2; margin-top:2.4em; scroll-margin-top:6rem; letter-spacing:-.02em; }
+.rb-prose h3{ font-family:var(--rb-font-display); font-size:var(--rb-text-xl); font-weight:600; color:var(--rb-ink); margin-top:1.8em; scroll-margin-top:6rem; }
+.rb-prose h4{ font-size:var(--rb-text-md); font-weight:800; color:var(--rb-ink); margin-top:1.5em; }
+.rb-prose a{ color:var(--rb-violet); font-weight:650; text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:3px; text-decoration-color:var(--rb-violet-300); transition:text-decoration-color var(--rb-dur-fast); }
+.rb-prose a:hover{ text-decoration-color:var(--rb-violet); }
+.rb-prose strong{ color:var(--rb-ink); font-weight:750; }
+.rb-prose ul, .rb-prose ol{ padding-left:1.4em; }
+.rb-prose ul{ list-style:none; }
+.rb-prose ul > li{ position:relative; }
+.rb-prose ul > li::before{ content:'✦'; position:absolute; left:-1.3em; top:.05em; color:var(--rb-pink); font-size:.8em; }
+.rb-prose ol{ list-style:decimal; }
+.rb-prose ol > li::marker{ font-family:var(--rb-font-display); font-weight:700; color:var(--rb-violet); }
+.rb-prose li + li{ margin-top:.45em; }
+.rb-prose blockquote{ border-left:3px solid var(--rb-pink); padding:.25em 0 .25em 1.25em; font-family:var(--rb-font-display); font-style:italic; font-size:1.2em; color:var(--rb-ink); }
+.rb-prose code{ font-size:.86em; padding:.15em .4em; border-radius:.35em; background:var(--rb-surface-sunk); border:1px solid var(--rb-line); color:var(--rb-violet-600); }
+html.dark .rb-prose code{ color:#ddd6fe; }
+.rb-prose pre{ background:#160f29; color:#ece6fb; padding:1.1rem 1.25rem; border-radius:var(--rb-radius-md); overflow:auto; font-size:.85rem; line-height:1.6; box-shadow:var(--rb-shadow-paper-ink); }
+.rb-prose pre code{ background:none; border:0; padding:0; color:inherit; font-size:inherit; }
+.rb-prose table{ width:100%; border-collapse:collapse; font-size:.92em; }
+.rb-prose th, .rb-prose td{ text-align:left; padding:.6rem .75rem; border-bottom:1px solid var(--rb-line); vertical-align:top; }
+.rb-prose th{ font-size:var(--rb-text-2xs); text-transform:uppercase; letter-spacing:.08em; color:var(--rb-muted); font-weight:800; }
+.rb-prose hr{ border:0; height:1px; background:var(--rb-line); margin:2.5em 0; }
+.rb-callout{ display:flex; gap:.85rem; padding:1rem 1.15rem; border-radius:var(--rb-radius-md); background:var(--rb-surface); border:1px solid var(--rb-line); border-left:4px solid var(--rb-violet); font-size:.95rem; line-height:1.6; }
+.rb-callout--warn{ border-left-color:var(--rb-amber); }
+.rb-callout--tip{ border-left-color:var(--rb-emerald); }
+.rb-callout > i{ color:var(--rb-violet); margin-top:.25rem; }
+.rb-callout--warn > i{ color:var(--rb-amber); }
+.rb-callout--tip > i{ color:var(--rb-emerald); }
+/* Accordéon (FAQ) */
+.rb-accordion{ border-top:1px solid var(--rb-line); }
+.rb-accordion details{ border-bottom:1px solid var(--rb-line); }
+.rb-accordion summary{ list-style:none; cursor:pointer; padding:1.15rem 0; display:flex; align-items:center; justify-content:space-between; gap:1rem; font-weight:700; color:var(--rb-ink); font-size:1rem; }
+.rb-accordion summary::-webkit-details-marker{ display:none; }
+.rb-accordion summary::after{ content:'+'; font-family:var(--rb-font-display); font-size:1.6rem; font-weight:300; color:var(--rb-violet); transition:transform var(--rb-dur-base) var(--rb-ease-spring); line-height:1; }
+.rb-accordion details[open] summary::after{ transform:rotate(45deg); }
+.rb-accordion details > div{ padding:0 0 1.25rem; color:var(--rb-ink-2); line-height:1.7; animation:rb-fade-up var(--rb-dur-base) var(--rb-ease-out); }
+
+
+/* ─── 23. UTILITAIRES ────────────────────────────────────────────────────── */
+.rb-sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.rb-stack{ display:flex; flex-direction:column; gap:var(--rb-gap, 1rem); }
+.rb-row{ display:flex; align-items:center; gap:var(--rb-gap, .75rem); flex-wrap:wrap; }
+.rb-divider{ height:1px; background:var(--rb-line); border:0; }
+.rb-muted{ color:var(--rb-muted); }
+.rb-tabular{ font-variant-numeric:tabular-nums; }
+.rb-float{ animation:rb-float 5s var(--rb-ease-in-out) infinite; }
+@keyframes rb-float{ 0%,100%{ transform:translateY(0) rotate(var(--rot, 0deg)); } 50%{ transform:translateY(-10px) rotate(var(--rot, 0deg)); } }
+
+
+/* ─── 24. ACCESSIBILITÉ & RÉDUCTION DES ANIMATIONS ───────────────────────────
+   Respect de prefers-reduced-motion : on garde les changements d'état
+   (couleurs, opacité) mais on supprime déplacements, rebonds et boucles.   */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  .rb-reveal, .rb-reveal--scale{ opacity:1; transform:none; }
+  .rb-reveal--clip{ clip-path:none; }
+  .rb-mark{ background-size:100% .62em; }
+  .rb-curve [data-draw]{ stroke-dashoffset:0; }
+  .rb-curve__dot{ transform:scale(1); }
+}
+html.rb-reduce-motion *, html.rb-reduce-motion *::before, html.rb-reduce-motion *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }

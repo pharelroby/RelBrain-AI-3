@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Contact — RelBrain</title>
+<meta name="description" content="Contacte l'équipe RelBrain : question, aide sur ton compte, bug, idée ou partenariat école."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Contact</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">Une question ? <em>Écris-nous.</em></h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Une vraie personne de l'équipe te répond sous 24 à 48 h ouvrées. Pour une réponse immédiate, le Centre d'aide et la communauté Discord sont là aussi.</p>
+    
+  </div>
+</section>
+<section class="rb-page-body">
+  <div class="rb-container rb-grid" style="align-items:start">
+    <div class="rb-col-7">
+      <form class="rb-sheet rb-sheet--paper" id="contact-form" style="padding:clamp(1.25rem,1rem + 1.5vw,2.25rem)" novalidate>
+        <div class="rb-row" style="--rb-gap:.4rem;margin-bottom:1.25rem" role="radiogroup" aria-label="Sujet" id="topics">
+          <button type="button" class="rb-tag" data-topic="contact">💬 Question</button>
+          <button type="button" class="rb-tag rb-tag--outline" data-topic="support">🛟 Aide sur mon compte</button>
+          <button type="button" class="rb-tag rb-tag--outline" data-topic="bug">🐞 Bug</button>
+          <button type="button" class="rb-tag rb-tag--outline" data-topic="feature">💡 Idée</button>
+          <button type="button" class="rb-tag rb-tag--outline" data-topic="partnership">🏫 École / partenariat</button>
+          <button type="button" class="rb-tag rb-tag--outline" data-topic="privacy">🔐 Données perso</button>
+        </div>
+        <div class="rb-grid" style="gap:1rem">
+          <div class="rb-field rb-col-6"><label class="rb-field-label" for="c-name">Ton nom</label><input class="rb-control" id="c-name" name="name" autocomplete="name" required maxlength="120"/><span class="rb-field-error">Indique ton nom.</span></div>
+          <div class="rb-field rb-col-6"><label class="rb-field-label" for="c-email">Ton email</label><input class="rb-control" id="c-email" name="email" type="email" autocomplete="email" required maxlength="254"/><span class="rb-field-error">Adresse email invalide.</span></div>
+          <div class="rb-field rb-col-12"><label class="rb-field-label" for="c-subject">Sujet <span class="rb-field-hint">(facultatif)</span></label><input class="rb-control" id="c-subject" name="subject" maxlength="200"/></div>
+          <div class="rb-field rb-col-12"><label class="rb-field-label" for="c-message">Message</label><textarea class="rb-control" id="c-message" name="message" rows="6" required minlength="10" maxlength="5000"></textarea><span class="rb-field-hint" id="c-hint">Décris ta demande le plus précisément possible.</span><span class="rb-field-error">10 caractères minimum.</span></div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="rb-sr-only" aria-hidden="true"/>
+        </div>
+        <label class="rb-check" style="margin:1.1rem 0 1.4rem"><input type="checkbox" id="c-consent" required/> J'accepte que RelBrain utilise ces informations pour répondre à ma demande (<a href="relbrain-confidentialite.html" style="color:var(--rb-violet);font-weight:700">confidentialité</a>).</label>
+        <button class="rb-btn rb-btn--ink rb-btn--lg" type="submit" id="c-submit"><i class="fa-solid fa-paper-plane"></i> Envoyer</button>
+        <div id="c-done" hidden style="text-align:center;padding:1rem 0"></div>
+      </form>
+    </div>
+    <aside class="rb-col-5 rb-stack" style="--rb-gap:1rem" data-rb-stagger="80">
+      <a class="rb-sheet rb-link-card rb-lift" href="mailto:support@relbrain.ai"><span class="rb-icon-tile"><i class="fa-solid fa-envelope"></i></span><span><h3>support@relbrain.ai</h3><p>Pour tout ce qui touche à ton compte ou à un paiement.</p></span><i class="fa-solid fa-arrow-right rb-arrow"></i></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-communautes.html" ><span class="rb-icon-tile" style="background:#eef2ff;color:#5865f2"><i class="fa-brands fa-discord"></i></span><span><h3>Discord de la communauté</h3><p>Entraide entre élèves, réponses rapides de l'équipe, annonces.</p></span><i class="fa-solid fa-arrow-right rb-arrow"></i></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-communautes.html#whatsapp"><span class="rb-icon-tile" style="background:#dcfce7;color:#16a34a"><i class="fa-brands fa-whatsapp"></i></span><span><h3>WhatsApp</h3><p>La chaîne officielle pour les annonces et astuces de révision.</p></span><i class="fa-solid fa-arrow-right rb-arrow"></i></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-support.html"><span class="rb-icon-tile" style="background:var(--rb-amber-100);color:#b45309"><i class="fa-solid fa-life-ring"></i></span><span><h3>Centre d'aide</h3><p>Les réponses aux problèmes les plus fréquents, tout de suite.</p></span><i class="fa-solid fa-arrow-right rb-arrow"></i></a>
+      <div class="rb-sheet rb-ruled" style="padding:1.25rem 1.25rem 1.25rem 2.9rem">
+        <p class="rb-eyebrow">Adresse</p>
+        <p style="margin-top:.5rem;font-weight:650;color:var(--rb-ink-2)">RelBrain · Douala, Cameroun</p>
+        <p class="rb-caption" style="margin-top:.35rem">Lun–ven, 8 h – 18 h (heure de Douala)</p>
+      </div>
+    </aside>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('contact-form'), topic = 'contact';
+  var hints = { contact: 'Décris ta demande le plus précisément possible.', support: 'Indique l\'email de ton compte et ce que tu essayais de faire.', bug: 'Décris les étapes pour reproduire le bug, ce que tu attendais et ce qui s\'est passé (appareil, navigateur).', feature: 'Quel problème cette idée résoudrait-elle pour toi ?', partnership: 'Présente ton établissement, le nombre d\'élèves et ton besoin.', privacy: 'Précise le droit que tu souhaites exercer (accès, rectification, effacement…).' };
+  function setTopic(t) {
+    topic = t;
+    document.querySelectorAll('#topics [data-topic]').forEach(function (b) { b.className = 'rb-tag' + (b.dataset.topic === t ? '' : ' rb-tag--outline'); b.setAttribute('aria-checked', b.dataset.topic === t); b.setAttribute('role', 'radio'); });
+    document.getElementById('c-hint').textContent = hints[t] || hints.contact;
+  }
+  document.querySelectorAll('#topics [data-topic]').forEach(function (b) { b.addEventListener('click', function () { setTopic(b.dataset.topic); }); });
+  var map = { bug: 'bug', feature: 'feature', partnership: 'partnership', support: 'support', privacy: 'privacy' };
+  setTopic(map[new URLSearchParams(location.search).get('sujet')] || 'contact');
+
+  // Pré-remplissage si l'élève est connecté
+  if (window.RB && RB.ready) RB.ready.then(function (sb) { if (!sb) return; sb.auth.getUser().then(function (r) { if (r.data.user && !form.email.value) form.email.value = r.data.user.email; }); });
+
+  function check(field, ok) { field.closest('.rb-field').classList.toggle('has-error', !ok); field.closest('.rb-field').classList.toggle('is-valid', ok); return ok; }
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var ok = check(form.name, form.name.value.trim().length > 0) & check(form.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())) & check(form.message, form.message.value.trim().length >= 10);
+    if (!ok) { RB.motion.shake(form); return; }
+    if (!document.getElementById('c-consent').checked) { RB.motion.shake(document.getElementById('c-consent').parentElement); RB.toast('Coche la case de consentement pour envoyer.', 'error'); return; }
+    var btn = document.getElementById('c-submit'); btn.classList.add('is-loading');
+    try {
+      if (RB.demo) throw new RB.ApiError(0, 'demo', 'Formulaire en mode démo : configure Supabase (relbrain-config.js) pour l\'activer. En attendant, écris à support@relbrain.ai.');
+      var r = await RB.data.contact({ name: form.name.value.trim(), email: form.email.value.trim(), topic: topic, subject: form.subject.value.trim() || undefined, message: form.message.value.trim(), page_url: location.href, website: form.website.value });
+      Array.prototype.forEach.call(form.querySelectorAll('.rb-field, .rb-check, #topics, #c-submit'), function (el) { el.hidden = true; el.style.display = 'none'; });
+      var done = document.getElementById('c-done'); done.hidden = false;
+      done.innerHTML = '<div id="c-check" style="display:flex;justify-content:center;margin-bottom:.75rem"></div><p style="font-family:var(--rb-font-display);font-size:1.4rem;font-weight:650">Message bien reçu !</p><p class="rb-caption" style="margin-top:.35rem">' + RB.escape(r.message || 'On te répond très vite.') + '</p>';
+      RB.motion.success(document.getElementById('c-check'), { stamp: 'Envoyé' });
+    } catch (err) { RB.toast(err.message || 'Envoi impossible, réessaie.', 'error'); RB.motion.shake(form); }
+    finally { btn.classList.remove('is-loading'); }
+  });
+});
+</script>
+</body>
+</html>

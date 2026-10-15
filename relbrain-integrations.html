@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>API & intégrations — RelBrain</title>
+<meta name="description" content="Documentation de l'API publique RelBrain : authentification par clé, quiz, erreurs et limites, webhooks, widgets embarquables et SDK."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Développeurs</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">API & <em>intégrations</em></h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Génère des quiz depuis tes propres outils, connecte RelBrain à ton ENT ou à ton site d'école.</p>
+    <div class="rb-page-meta rb-reveal" style="--rb-delay:220ms"><span><i class="fa-solid fa-code"></i>REST · JSON</span><span><i class="fa-solid fa-gauge-high"></i>60 requêtes / minute / clé</span></div>
+  </div>
+</section><section class="rb-page-body">
+  <div class="rb-container rb-docs-layout">
+    <aside><nav class="rb-docs-nav" data-rb-toc aria-label="Sommaire"></nav></aside>
+    <article class="rb-prose">
+
+<div class="rb-callout"><i class="fa-solid fa-key"></i><div>L'API publique est incluse dans les forfaits <strong>Pro</strong> et <strong>Premium</strong>. Base URL : <code>https://relbrain.ai/api/v1</code></div></div>
+
+<h2 id="auth">Authentification</h2>
+<p>Crée une clé dans ton espace (<code>POST /api/keys</code> depuis l'application, ou bientôt depuis Paramètres → API). La clé, au format <code>rb_live_…</code>, n'est affichée <strong>qu'une seule fois</strong> : seule son empreinte SHA-256 est conservée. Envoie-la dans l'en-tête <code>Authorization</code> :</p>
+<pre><code>curl https://relbrain.ai/api/v1/quizzes \
+  -H "Authorization: Bearer rb_live_xxxxxxxxxxxxxxxxxxxx"</code></pre>
+<p>Chaque clé a des permissions (<code>read</code>, <code>write</code>) et peut être révoquée à tout moment. Maximum 5 clés actives par compte.</p>
+
+<h2 id="quizzes">Quiz</h2>
+<h3>Lister tes quiz</h3>
+<pre><code>GET /api/v1/quizzes?limit=20
+
+{
+  "data": [
+    { "id": "6f1c…", "title": "Algorithmes de tri", "subject": "Informatique",
+      "difficulty": "moyen", "question_type": "qcm", "question_count": 10,
+      "created_at": "2026-10-12T18:04:11Z" }
+  ]
+}</code></pre>
+<h3>Récupérer un quiz</h3>
+<pre><code>GET /api/v1/quizzes?id=6f1c…</code></pre>
+<p>Renvoie le quiz et ses questions <strong>sans les bonnes réponses</strong> (la correction se fait dans RelBrain).</p>
+<h3>Générer un quiz depuis un texte <span class="rb-tag">scope write</span></h3>
+<pre><code>POST /api/v1/quizzes
+Content-Type: application/json
+
+{
+  "text": "La photosynthèse est le processus par lequel…",   // 100 à 200 000 caractères
+  "count": 10,                 // 1 à 50, selon ton forfait
+  "type": "qcm",               // qcm · vf · court · calcul · texte · mixte
+  "difficulty": "moyen",       // facile · moyen · difficile · expert
+  "title": "SVT — Photosynthèse"
+}</code></pre>
+<p>La génération consomme une requête IA de ton quota quotidien et un quiz de ton quota mensuel.</p>
+
+<h2 id="erreurs">Erreurs et limites</h2>
+<p>Toutes les erreurs suivent le même format :</p>
+<pre><code>{ "error": { "code": "rate_limited", "message": "Limite de 60 requêtes par minute atteinte." } }</code></pre>
+<table>
+<thead><tr><th>HTTP</th><th>Code</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td>400</td><td><code>invalid_input</code></td><td>Paramètre manquant ou invalide (le message précise lequel)</td></tr>
+<tr><td>401</td><td><code>invalid_api_key</code></td><td>Clé absente, invalide ou révoquée</td></tr>
+<tr><td>402</td><td><code>quota_exceeded</code></td><td>Limite du forfait atteinte</td></tr>
+<tr><td>403</td><td><code>insufficient_scope</code></td><td>La clé n'a pas la permission requise</td></tr>
+<tr><td>429</td><td><code>rate_limited</code></td><td>Plus de 60 requêtes par minute pour cette clé</td></tr>
+<tr><td>502/503</td><td><code>ai_unavailable</code></td><td>Service d'IA momentanément indisponible : réessaie avec un délai croissant</td></tr>
+</tbody>
+</table>
+
+<h2 id="webhooks">Webhooks <span class="rb-tag rb-tag--amber">bientôt</span></h2>
+<p>L'architecture est prête côté serveur ; l'abonnement aux webhooks ouvrira prochainement. Événements prévus, envoyés en <code>POST</code> JSON signé (en-tête <code>RelBrain-Signature</code>, HMAC-SHA256) :</p>
+<ul>
+<li><code>document.ready</code> — un document a fini d'être analysé ;</li>
+<li><code>quiz.completed</code> — un quiz a été terminé (score, durée) ;</li>
+<li><code>achievement.unlocked</code> — un badge a été débloqué.</li>
+</ul>
+
+<h2 id="widgets">Widgets embarquables <span class="rb-tag rb-tag--amber">bientôt</span></h2>
+<p>Pour les enseignants et les blogs éducatifs : intégrer un quiz RelBrain dans une page web en une ligne.</p>
+<pre><code>&lt;iframe src="https://relbrain.ai/embed/quiz/QUIZ_ID"
+        width="100%" height="520" loading="lazy"
+        title="Quiz RelBrain"&gt;&lt;/iframe&gt;</code></pre>
+
+<h2 id="sdk">SDK JavaScript <span class="rb-tag rb-tag--amber">en préparation</span></h2>
+<p>Un client officiel (<code>@relbrain/sdk</code>) encapsulera l'authentification, la pagination et les nouvelles tentatives automatiques. En attendant, l'API REST s'utilise avec n'importe quel client HTTP :</p>
+<pre><code>const res = await fetch('https://relbrain.ai/api/v1/quizzes', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.RELBRAIN_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ text: cours, count: 10, type: 'qcm', difficulty: 'moyen' }),
+});
+const { data: quiz } = await res.json();</code></pre>
+<div class="rb-callout rb-callout--warn"><i class="fa-solid fa-shield-halved"></i><div>Ne mets jamais ta clé API dans du code exécuté par un navigateur ou une application mobile publiée : appelle l'API depuis ton serveur.</div></div>
+
+    </article>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+
+</body>
+</html>

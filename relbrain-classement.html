@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.ai – Classement</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -103,7 +107,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -139,29 +143,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
-      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item active"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -176,20 +181,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -404,9 +409,11 @@ function renderLeaderRow(u){
     </div>`;
 }
 
+if (!(window.RB_CONFIG && RB_CONFIG.SUPABASE_URL)) {
 document.getElementById('promote-zone').innerHTML = users.filter(u => u.rank <= 5).map(renderLeaderRow).join('');
 document.getElementById('middle-zone').innerHTML = users.filter(u => u.rank > 5 && u.rank <= 25).map(renderLeaderRow).join('');
 document.getElementById('demote-zone').innerHTML = users.filter(u => u.rank > 25).map(renderLeaderRow).join('');
+}
 
 function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
 function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
@@ -417,5 +424,140 @@ function closeNote(){document.getElementById('note-modal').classList.remove('ope
 function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Classement (ligues hebdomadaires)
+     Groupes de 30 · top 7 promus · 5 derniers relégués · clôture dimanche
+     23:59 (heure de Douala). Données : get_league_leaderboard(),
+     get_global_leaderboard(), get_my_league_history().
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(async function () {
+    var TIERS = {
+      bronze: ['Bronze', '🥉', '#fed7aa'], argent: ['Argent', '🥈', '#f3f4f6'], or: ['Or', '🥇', '#fef3c7'],
+      platine: ['Platine', '💎', '#e0f2fe'], diamant: ['Diamant', '💠', '#ede9fe'], maitre: ['Maître', '👑', '#fce7f3'],
+    };
+    var ORDER = ['bronze', 'argent', 'or', 'platine', 'diamant', 'maitre'];
+    var GRADS = ['#7c3aed,#ec4899', '#3b82f6,#1d4ed8', '#10b981,#047857', '#f59e0b,#b45309', '#06b6d4,#0e7490', '#f43f5e,#be123c', '#84cc16,#4d7c0f', '#a855f7,#7c3aed'];
+    function grad(name) { var h = 0; for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0; return 'linear-gradient(135deg,' + GRADS[h % GRADS.length] + ')'; }
+    function countdown(end) {
+      var ms = new Date(end) - Date.now(); if (ms < 0) return 'Clôture…';
+      var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+      return d ? d + 'j ' + h + 'h' : h + 'h ' + m + 'min';
+    }
+    function isoWeek(date) { var d = new Date(date); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7); var w1 = new Date(d.getFullYear(), 0, 4); return 1 + Math.round(((d - w1) / 864e5 - 3 + (w1.getDay() + 6) % 7) / 7); }
+
+    var hero = document.querySelector('.league-hero');
+    var board, mode = 'league';
+
+    function toRow(m) {
+      return { rank: m.rank, name: RB.escape(m.name), level: m.level, xp: m.xp, me: m.me, avatar: RB.escape((m.name || '?').charAt(0).toUpperCase()), gradient: m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name || '') };
+    }
+
+    function renderLeague(b) {
+      var t = TIERS[b.tier] || TIERS.bronze, next = ORDER[ORDER.indexOf(b.tier) + 1];
+      var me = b.members.find(function (m) { return m.me; }) || { rank: b.size, xp: 0 };
+      var left = countdown(b.ends_at);
+      hero.querySelector('.league-crest').textContent = t[1];
+      hero.querySelector('h2').textContent = 'Ligue ' + t[0];
+      hero.querySelector('p.text-xs').textContent = next ? 'Le top 7 monte en ligue ' + TIERS[next][0] + '. Chaque XP gagnée cette semaine compte.' : 'Tu es au sommet : défends ta place parmi les Maîtres.';
+      var chips = hero.querySelectorAll('.flex-wrap span');
+      chips[0].innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + left;
+      chips[1].textContent = '👥 ' + b.size + ' participant' + (b.size > 1 ? 's' : '');
+      chips[2].textContent = '⭐ Semaine ' + isoWeek(new Date());
+      var rankBox = hero.querySelector('.bg-white\\/15');
+      rankBox.querySelector('.text-3xl').textContent = '#' + me.rank;
+      rankBox.querySelector('p:last-child').textContent = RB.formatNumber(me.xp) + ' XP';
+
+      // Podium
+      var top = b.members.slice(0, 3);
+      var slot = function (m, cls, crown, big) {
+        if (!m) return '<div class="podium-user ' + cls + '" style="opacity:.4"><span class="podium-crown">' + crown + '</span><div class="podium-avatar">?</div><p class="text-xs font-black text-slate-800">—</p></div>';
+        return '<div class="podium-user ' + cls + '"' + (m.me ? ' style="border-color:#c4b5fd;"' : '') + '><span class="podium-crown">' + crown + '</span>' +
+          '<div class="podium-avatar" style="background:' + (m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name)) + '">' + RB.escape(m.name.charAt(0).toUpperCase()) + '</div>' +
+          '<p class="text-xs font-black text-slate-800 truncate">' + (m.me ? 'Toi' : RB.escape(m.name)) + '</p><p class="text-[9px] text-slate-500 font-semibold mb-0.5">Niveau ' + m.level + '</p>' +
+          '<p class="' + (big ? 'text-lg font-black text-amber-600' : 'text-base font-black text-slate-700') + '">' + RB.formatNumber(m.xp) + '</p><p class="text-[8px] text-slate-400 font-bold">XP</p></div>';
+      };
+      document.querySelector('.podium').innerHTML = slot(top[1], 'second', '🥈') + slot(top[0], 'first', '👑', true) + slot(top[2], 'third', '🥉');
+
+      // Ta zone
+      var zoneCard = document.querySelector('.grid.md\\:grid-cols-2 .rb-card');
+      var promote = me.rank <= b.promote_until && next, demote = b.demote_from && me.rank >= b.demote_from;
+      var target = b.members[Math.max(0, (promote ? b.promote_until : b.promote_until) - 1)];
+      var gap = promote ? (me.xp - ((b.members[b.promote_until] || {}).xp || 0)) : ((target ? target.xp : 0) - me.xp + 1);
+      zoneCard.querySelector('span').outerHTML = promote ? '<span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">✓ Promotion</span>'
+        : demote ? '<span class="text-[9px] font-black text-rose-700 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-full">⚠ Relégation</span>'
+        : '<span class="text-[9px] font-black text-slate-600 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">Maintien</span>';
+      zoneCard.querySelector('p.text-\\[11px\\]').textContent = promote ? 'Tu es dans le top ' + b.promote_until + '. Continue pour sécuriser ta place !'
+        : demote ? 'Attention : tu es en zone de relégation. Un quiz suffit pour remonter.' : 'Encore un effort pour entrer dans le top ' + b.promote_until + '.';
+      zoneCard.querySelector('.prog-fill').style.width = Math.max(5, Math.round((1 - (me.rank - 1) / Math.max(b.size, 1)) * 100)) + '%';
+      var foot = zoneCard.querySelectorAll('.flex.items-center.justify-between span');
+      foot[0].textContent = 'Position ' + me.rank + '/' + b.size;
+      foot[1].textContent = promote ? '+' + RB.formatNumber(Math.max(gap, 0)) + ' XP d\'avance' : RB.formatNumber(Math.max(gap, 1)) + ' XP pour le top ' + b.promote_until;
+      var nextCard = document.querySelectorAll('.grid.md\\:grid-cols-2 .rb-card')[1];
+      nextCard.querySelector('span').textContent = next ? TIERS[next][1] + ' ' + TIERS[next][0] : '👑 Sommet atteint';
+      nextCard.querySelector('p.text-\\[11px\\]').textContent = next ? 'La ligue ' + TIERS[next][0] + ' débloque :' : 'Tu as atteint la plus haute ligue :';
+      nextCard.querySelector('ul').innerHTML = ['Un badge de ligue exclusif', 'Des adversaires de ton niveau', 'Ton nom dans le classement général'].map(function (x) { return '<li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> ' + x + '</li>'; }).join('');
+
+      // Tableau complet
+      var rows = b.members.map(toRow);
+      document.querySelector('#promote-zone').previousElementSibling.querySelector('p.text-\\[10px\\]').textContent = b.size + ' participants · Semaine ' + isoWeek(new Date());
+      document.querySelector('#promote-zone').previousElementSibling.querySelector('span').innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + left;
+      document.getElementById('promote-zone').innerHTML = rows.filter(function (u) { return u.rank <= b.promote_until; }).map(renderLeaderRow).join('');
+      document.getElementById('middle-zone').innerHTML = rows.filter(function (u) { return u.rank > b.promote_until && (!b.demote_from || u.rank < b.demote_from); }).map(renderLeaderRow).join('');
+      document.getElementById('demote-zone').innerHTML = rows.filter(function (u) { return b.demote_from && u.rank >= b.demote_from; }).map(renderLeaderRow).join('');
+      if (b.size < 2) document.getElementById('middle-zone').innerHTML = '<p class="text-center text-xs text-slate-500 font-semibold py-4">Tu es le premier de ta ligue cette semaine ! D\'autres élèves te rejoindront dès leur première activité.</p>';
+    }
+
+    async function renderGlobal() {
+      var list = await RB.data.leagues.global(50);
+      document.getElementById('promote-zone').innerHTML = list.slice(0, 3).map(toRow).map(renderLeaderRow).join('');
+      document.getElementById('middle-zone').innerHTML = list.slice(3).map(toRow).map(renderLeaderRow).join('');
+      document.getElementById('demote-zone').innerHTML = '';
+    }
+
+    // Bascule Ligue / Général
+    var head = document.querySelector('#promote-zone').previousElementSibling;
+    head.insertAdjacentHTML('afterend', '<div class="px-4 pt-3 flex gap-1.5"><button class="rb-tag" data-mode="league" style="cursor:pointer">Ma ligue</button><button class="rb-tag rb-tag--outline" data-mode="global" style="cursor:pointer">Classement général</button></div>');
+    head.nextElementSibling.querySelectorAll('[data-mode]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        mode = b.getAttribute('data-mode');
+        head.nextElementSibling.querySelectorAll('[data-mode]').forEach(function (x) { x.className = 'rb-tag' + (x === b ? '' : ' rb-tag--outline'); });
+        (mode === 'global' ? renderGlobal() : Promise.resolve(renderLeague(board))).catch(function (e) { RB.handleError(e); });
+      });
+    });
+
+    // Barème réel
+    var guide = document.querySelectorAll('.grid.grid-cols-2.md\\:grid-cols-4 > div');
+    var scale = [['Bonne réponse', '+6 à +20 XP'], ['Flashcard révisée', '+2 XP'], ['Série de 7 jours', 'XP ×1,05'], ['Défi hebdo', '+150 à +250 XP']];
+    guide.forEach(function (g, i) { if (!scale[i]) return; var ps = g.querySelectorAll('p'); ps[0].textContent = scale[i][0]; ps[1].textContent = scale[i][1]; });
+
+    // Historique des ligues
+    async function renderHistory() {
+      var hist = await RB.ready.then(function (sb) { return sb.rpc('get_my_league_history'); }).then(function (r) { return r.data || []; });
+      var box = document.querySelectorAll('.rb-card')[document.querySelectorAll('.rb-card').length - 1].querySelector('.space-y-1\\.5');
+      if (!box) return;
+      if (!hist.length) { box.innerHTML = '<p class="text-xs text-slate-500 font-semibold">Ton historique apparaîtra après ta première semaine de compétition.</p>'; return; }
+      box.innerHTML = hist.map(function (h, i) {
+        var t = TIERS[h.tier] || TIERS.bronze;
+        var label = !h.finished ? 'Semaine actuelle · en cours' : 'Semaine du ' + new Date(h.week_start).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + (h.outcome === 'promoted' ? ' · promotion' : h.outcome === 'demoted' ? ' · relégation' : '');
+        var badge = h.final_rank ? '#' + h.final_rank + (h.outcome === 'promoted' ? ' ⬆' : h.outcome === 'demoted' ? ' ⬇' : '') : RB.formatNumber(h.weekly_xp) + ' XP';
+        var cls = h.outcome === 'promoted' ? 'text-emerald-700 bg-emerald-50' : h.outcome === 'demoted' ? 'text-rose-700 bg-rose-50' : 'text-violet-700 bg-violet-50';
+        return '<div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]"><div class="league-badge" style="background:' + t[2] + ';">' + t[1] + '</div>' +
+          '<div class="flex-1"><p class="text-xs font-black text-slate-800">Ligue ' + t[0] + '</p><p class="text-[10px] text-slate-500 font-semibold">' + label + '</p></div>' +
+          '<span class="text-[10px] font-black ' + cls + ' px-2 py-0.5 rounded-full">' + badge + '</span></div>';
+      }).join('');
+    }
+
+    try {
+      board = await RB.data.leagues.mine();
+      renderLeague(board);
+      renderHistory();
+      setInterval(function () { if (mode === 'league') { var c = hero.querySelector('.flex-wrap span'); if (c) c.innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + countdown(board.ends_at); } }, 60000);
+    } catch (e) { RB.handleError(e, 'Classement indisponible.'); }
+  });
+});
+</script>
+
 </body>
 </html>

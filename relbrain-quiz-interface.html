@@ -2,10 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.AI – Quiz en cours</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -37,7 +43,7 @@ body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
 .rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -122,7 +128,7 @@ body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
 
       <div class="flex flex-col sm:flex-row gap-3">
         <a href="relbrain-quiz-setup.html" class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3 rounded-xl text-sm">Nouveau quiz</a>
-        <a href="Dashboard.html" class="flex-1 gradient-bg text-white font-black py-3 rounded-xl text-sm shadow-lg shadow-violet-200 text-center">Retour au Dashboard</a>
+        <a href="dashboard.html" class="flex-1 gradient-bg text-white font-black py-3 rounded-xl text-sm shadow-lg shadow-violet-200 text-center">Retour au Dashboard</a>
       </div>
     </div>
 
@@ -281,15 +287,16 @@ function showResults(){
   }).join('');
 }
 
-// Timer
-setInterval(() => {
+var RB_LIVE = !!(window.RB_CONFIG && RB_CONFIG.SUPABASE_URL);
+// Timer (mode démo ; en mode connecté, le chronomètre est géré par l'intégration)
+if (!RB_LIVE) setInterval(() => {
   timeLeft--;
   const m = Math.floor(timeLeft / 60).toString().padStart(2,'0');
   const s = (timeLeft % 60).toString().padStart(2,'0');
   document.getElementById('timer').textContent = m + ':' + s;
 }, 1000);
 
-renderQuestion();
+if (!RB_LIVE) renderQuestion();
 
 function toast(msg, type){
   const host = document.getElementById('rb-toast-host');
@@ -302,5 +309,232 @@ function toast(msg, type){
   setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);
 }
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Quiz en cours  (?quiz=<id>)
+     Chaque réponse est corrigée côté serveur (RPC check_answer) : les bonnes
+     réponses ne sont jamais envoyées au navigateur avant d'avoir répondu.
+     Fin de quiz : finish_quiz_attempt → score, XP (bonus vitesse/perfection),
+     série, défis, badges, points faibles.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(async function () {
+    var quizId = new URLSearchParams(location.search).get('quiz');
+    if (!quizId) { location.replace('relbrain-quiz-setup.html'); return; }
+
+    var quiz, attemptId, results = [], startedAt = Date.now(), shownAt = Date.now(), finished = false;
+    var TYPE_LABEL = { qcm: 'QCM', vf: 'Vrai / Faux', court: 'Réponse courte', calcul: 'Calcul', texte: 'Rédaction' };
+    var DIFF_LABEL = { facile: 'Facile', moyen: 'Moyen', difficile: 'Difficile', expert: 'Expert' };
+    var letters = ['A', 'B', 'C', 'D', 'E'];
+    var titleEl = document.querySelector('header p.text-xs');
+
+    // Écran de chargement
+    document.getElementById('question-text').innerHTML = '<span class="rb-skeleton rb-skeleton-line" style="display:block;width:90%"></span><span class="rb-skeleton rb-skeleton-line" style="display:block;width:60%"></span>';
+    document.getElementById('answers-container').innerHTML = [1, 2, 3, 4].map(function () { return '<div class="rb-skeleton" style="height:3.4rem;border-radius:1rem"></div>'; }).join('');
+
+    try {
+      var cached = sessionStorage.getItem('rb_quiz_' + quizId);
+      quiz = cached ? JSON.parse(cached) : await RB.data.quiz.get(quizId);
+      attemptId = await RB.data.quiz.start(quizId);
+    } catch (e) { RB.handleError(e, 'Quiz introuvable.'); setTimeout(function () { location.href = 'relbrain-quiz-setup.html'; }, 1500); return; }
+
+    var settings = quiz.settings || {};
+    titleEl.textContent = quiz.title;
+    document.title = 'RelBrain.AI – ' + quiz.title;
+    questions.length = 0;
+    quiz.questions.forEach(function (q) { questions.push({ id: q.id, type: q.type, q: q.prompt, options: q.options || [], points: q.points, concept: q.concept, correct: -1, explanation: '' }); });
+    answers = new Array(questions.length).fill(null);
+    validated = new Array(questions.length).fill(false);
+    current = 0;
+
+    // Chronomètre (temps écoulé)
+    var timerEl = document.getElementById('timer');
+    if (settings.timer === false) timerEl.parentElement.style.display = 'none';
+    setInterval(function () {
+      if (finished) return;
+      var s = Math.floor((Date.now() - startedAt) / 1000);
+      timerEl.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    }, 1000);
+
+    window.addEventListener('beforeunload', function (e) { if (!finished && results.filter(Boolean).length) { e.preventDefault(); e.returnValue = ''; } });
+
+    function payloadFor(q, idx) {
+      if (q.type === 'qcm' || q.type === 'vf') return { index: answers[idx] };
+      if (q.type === 'court') return { value: answers[idx] };
+      if (q.type === 'calcul') return { number: answers[idx] };
+      return { self_grade: answers[idx] };
+    }
+
+    window.renderQuestion = function () {
+      var q = questions[current], r = results[current];
+      shownAt = Date.now();
+      document.getElementById('question-text').textContent = q.q;
+      document.getElementById('q-badge').textContent = TYPE_LABEL[q.type] + ' · ' + (DIFF_LABEL[quiz.difficulty] || '');
+      document.getElementById('q-points').textContent = q.points + ' point' + (q.points > 1 ? 's' : '') + (q.concept ? ' · ' + q.concept : '');
+      document.getElementById('progress-text').textContent = (current + 1) + '/' + questions.length;
+      document.getElementById('progress-bar').style.width = ((current + 1) / questions.length * 100) + '%';
+      var box = document.getElementById('answers-container');
+
+      if (q.type === 'qcm' || q.type === 'vf') {
+        box.innerHTML = q.options.map(function (opt, i) {
+          return '<button class="answer-option ' + (answers[current] === i ? 'selected' : '') + '" onclick="selectAnswer(' + i + ')" ' + (r ? 'disabled' : '') + '>' +
+            '<span class="opt-letter">' + letters[i] + '</span><span>' + RB.escape(opt) + '</span></button>';
+        }).join('');
+      } else if (q.type === 'court' || q.type === 'calcul') {
+        box.innerHTML = '<input id="free-answer" class="rb-control" style="font-size:1rem;padding:1rem 1.1rem" autocomplete="off" ' +
+          (q.type === 'calcul' ? 'inputmode="decimal" placeholder="Ta réponse (nombre)"' : 'placeholder="Ta réponse"') + (r ? ' disabled' : '') + '/>';
+        var inp = document.getElementById('free-answer');
+        inp.value = answers[current] == null ? '' : answers[current];
+        inp.addEventListener('input', function () { answers[current] = inp.value; });
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') nextQuestion(); });
+        if (!r) setTimeout(function () { inp.focus(); }, 50);
+      } else {
+        box.innerHTML = '<textarea id="free-answer" class="rb-control" rows="6" placeholder="Rédige ta réponse comme à l\'examen…"' + (r ? ' disabled' : '') + '></textarea>';
+        var ta = document.getElementById('free-answer');
+        ta.value = answers['t' + current] || '';
+        ta.addEventListener('input', function () { answers['t' + current] = ta.value; });
+      }
+
+      var fb = document.getElementById('feedback-box');
+      if (r) {
+        var ok = r.correct === true;
+        var corr = r.correct_answer || {};
+        var right = corr.index != null ? q.options[corr.index] : corr.value != null ? corr.value : corr.number != null ? corr.number : null;
+        fb.className = 'mt-5 p-4 rounded-xl border-2 ' + (ok ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200');
+        fb.innerHTML = '<p class="text-sm font-black ' + (ok ? 'text-emerald-700' : 'text-rose-700') + ' mb-1"><i class="fa-solid ' + (ok ? 'fa-circle-check' : 'fa-circle-xmark') + ' mr-1.5"></i>' +
+          (ok ? 'Correct !' : 'Pas tout à fait…') + '</p>' +
+          (!ok && right != null && corr.index == null ? '<p class="text-xs font-bold text-slate-700 mb-1">Réponse attendue : <mark class="rb-mark rb-mark--full is-on">' + RB.escape(right) + '</mark></p>' : '') +
+          (settings.explain !== false && r.explanation ? '<p class="text-xs text-slate-600 leading-relaxed font-semibold">' + RB.escape(r.explanation) + '</p>' : '');
+        fb.classList.remove('hidden');
+        if (corr.index != null) document.querySelectorAll('.answer-option').forEach(function (el, i) {
+          el.disabled = true;
+          if (i === corr.index) el.classList.add('correct');
+          else if (i === answers[current] && !ok) el.classList.add('wrong');
+        });
+      } else if (q.type === 'texte' && answers['m' + current]) {
+        fb.className = 'mt-5 p-4 rounded-xl border-2 bg-violet-50 border-violet-200';
+        fb.innerHTML = '<p class="text-xs font-black text-violet-700 mb-1">Corrigé modèle — compare avec ta réponse</p>' +
+          '<p class="text-xs text-slate-700 leading-relaxed font-semibold mb-3">' + RB.escape(answers['m' + current]) + '</p>' +
+          '<div class="flex gap-2"><button class="rb-btn rb-btn--sm" style="--_bg:var(--rb-emerald)" onclick="selfGrade(true)">J\'avais l\'essentiel ✓</button>' +
+          '<button class="rb-btn rb-btn--ghost rb-btn--sm" onclick="selfGrade(false)">À revoir</button></div>';
+        fb.classList.remove('hidden');
+      } else fb.classList.add('hidden');
+
+      document.getElementById('prev-btn').disabled = current === 0;
+      document.getElementById('next-label').textContent = r ? (current === questions.length - 1 ? 'Voir les résultats' : 'Suivant') : (q.type === 'texte' ? 'Voir le corrigé' : 'Valider');
+    };
+
+    window.selectAnswer = function (i) {
+      if (results[current]) return;
+      answers[current] = i;
+      document.querySelectorAll('.answer-option').forEach(function (el, idx) { el.classList.toggle('selected', idx === i); });
+    };
+
+    var busy = false;
+    async function submit(payload) {
+      var q = questions[current], btn = document.getElementById('next-btn');
+      busy = true; btn.classList.add('rb-btn', 'is-loading');
+      try {
+        var r = await RB.data.quiz.check(attemptId, q.id, payload, Date.now() - shownAt);
+        results[current] = r; validated[current] = true;
+        renderQuestion();
+        var card = document.querySelector('.rb-card');
+        if (r.correct === true) {
+          var right = document.querySelector('.answer-option.correct') || document.getElementById('free-answer') || card;
+          right.classList.add('rb-answer-right');
+          RB.motion.burst(right, { count: 9, spread: 90 });
+        } else if (r.correct === false) {
+          RB.motion.shake(document.querySelector('.answer-option.wrong') || document.getElementById('free-answer') || card);
+        }
+      } catch (e) { RB.handleError(e); }
+      finally { busy = false; btn.classList.remove('is-loading'); }
+    }
+
+    window.selfGrade = function (ok) { answers[current] = ok; submit({ self_grade: ok }); };
+
+    window.nextQuestion = async function () {
+      if (busy) return;
+      var q = questions[current];
+      if (!results[current]) {
+        if (q.type === 'texte') {
+          if (!answers['m' + current]) {
+            if (!(answers['t' + current] || '').trim()) { toast('Rédige au moins quelques mots', 'error'); return; }
+            // Le corrigé modèle n'est révélé qu'après une tentative : on l'obtient via une
+            // vérification « en attente » (self_grade absent → résultat neutre), puis l'élève s'auto-évalue.
+            busy = true;
+            try {
+              var r = await RB.data.quiz.check(attemptId, q.id, { text: answers['t' + current] }, Date.now() - shownAt);
+              answers['m' + current] = (r.correct_answer && r.correct_answer.model) || r.explanation || '';
+              results[current] = null;
+              renderQuestion();
+            } catch (e) { RB.handleError(e); }
+            busy = false;
+          }
+          return;
+        }
+        if (answers[current] === null || answers[current] === '') { RB.motion.shake(document.getElementById('answers-container')); toast('Choisis ou écris une réponse', 'error'); return; }
+        return submit(payloadFor(q, current));
+      }
+      if (current === questions.length - 1) return showResults();
+      current++; renderQuestion();
+    };
+
+    window.showResults = async function () {
+      if (finished) return;
+      var btn = document.getElementById('next-btn');
+      btn.classList.add('rb-btn', 'is-loading');
+      var res;
+      try { res = await RB.data.quiz.finish(attemptId, (Date.now() - startedAt) / 1000); }
+      catch (e) { btn.classList.remove('is-loading'); RB.handleError(e); return; }
+      finished = true;
+      var total = res.total || questions.length, correct = res.correct || 0;
+      var pct = Math.round(correct / Math.max(total, 1) * 100);
+
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('result-screen').classList.add('active');
+      document.getElementById('score-display').textContent = pct + ' %';
+      RB.motion.countUp(document.getElementById('correct-display'), correct, { from: 0 });
+      RB.motion.countUp(document.getElementById('wrong-display'), total - correct, { from: 0 });
+      document.getElementById('result-title').textContent = res.perfect ? 'Sans faute ! 💯' : pct >= 80 ? 'Excellent ! 🎉' : pct >= 60 ? 'Bien joué ! 👍' : pct >= 40 ? 'Peut mieux faire 📚' : 'Continue tes efforts 💪';
+      document.getElementById('result-subtitle').textContent = res.fast ? 'Rapide et précis : bonus de vitesse débloqué ⚡' : pct >= 60 ? 'Tes révisions paient.' : 'On a repéré tes points faibles : un quiz ciblé va t\'aider.';
+      var iconWrap = document.getElementById('result-icon-wrap');
+      iconWrap.style.background = pct >= 60 ? 'linear-gradient(135deg,#10b981,#14b8a6)' : 'linear-gradient(135deg,#f59e0b,#f97316)';
+      document.getElementById('result-icon').className = 'fa-solid ' + (pct >= 60 ? 'fa-trophy' : 'fa-book') + ' text-white text-4xl';
+
+      var xp = (res.xp && res.xp.awarded) || 0;
+      var banner = document.querySelector('#result-screen .gradient-bg');
+      var xpText = banner.querySelector('p');
+      xpText.innerHTML = '+<span id="xp-gain">0</span> XP gagnés !' + (res.xp && res.xp.multiplier > 1 ? ' <span style="opacity:.8">(×' + Number(res.xp.multiplier).toFixed(2).replace('.', ',') + ')</span>' : '');
+      setTimeout(function () { RB.motion.countUp(document.getElementById('xp-gain'), xp, { from: 0, duration: 1200 }); RB.celebrate(res, banner); }, 450);
+      if (pct >= 80) setTimeout(function () { RB.motion.burst(iconWrap, { count: 20, spread: 180 }); }, 300);
+
+      document.getElementById('review-list').innerHTML = questions.map(function (q, i) {
+        var r = results[i], ok = r && r.correct === true;
+        var corr = (r && r.correct_answer) || {};
+        var right = corr.index != null ? q.options[corr.index] : corr.value != null ? corr.value : corr.number;
+        return '<div class="flex items-start gap-3 p-3 rounded-xl ' + (ok ? 'bg-emerald-50' : 'bg-rose-50') + '">' +
+          '<div class="w-7 h-7 rounded-lg ' + (ok ? 'bg-emerald-500' : 'bg-rose-500') + ' flex items-center justify-center shrink-0"><i class="fa-solid ' + (ok ? 'fa-check' : 'fa-xmark') + ' text-white text-xs"></i></div>' +
+          '<div class="flex-1"><p class="text-sm font-bold text-slate-800 mb-0.5">' + (i + 1) + '. ' + RB.escape(q.q) + '</p>' +
+          (!ok && right != null ? '<p class="text-xs text-slate-600 font-semibold">Bonne réponse : <span class="text-emerald-700">' + RB.escape(right) + '</span></p>' : '') +
+          (!r ? '<p class="text-xs text-slate-500 font-semibold">Non répondue</p>' : '') + '</div></div>';
+      }).join('');
+
+      if (res.weak_concepts && res.weak_concepts.length) {
+        var weak = document.createElement('div');
+        weak.className = 'rb-sheet rb-ruled mt-5';
+        weak.style.padding = '1.25rem 1.25rem 1.25rem 2.75rem';
+        weak.innerHTML = '<p class="rb-eyebrow mb-2">Points à renforcer</p><div class="flex flex-wrap gap-2 mb-3">' +
+          res.weak_concepts.map(function (c) { return '<span class="rb-tag rb-tag--pink">' + RB.escape(c) + '</span>'; }).join('') + '</div>' +
+          '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-quiz-setup.html?' + (quiz.document_id ? 'doc=' + quiz.document_id + '&' : '') + 'focus=' + encodeURIComponent(res.weak_concepts[0]) + '"><i class="fa-solid fa-bullseye"></i> Quiz ciblé sur ces notions</a>';
+        document.getElementById('result-screen').appendChild(weak);
+      }
+      try { sessionStorage.removeItem('rb_quiz_' + quizId); } catch (e) {}
+    };
+
+    renderQuestion();
+  });
+});
+</script>
+
 </body>
 </html>

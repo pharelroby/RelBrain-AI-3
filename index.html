@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<meta charset="UTF-8"/>
 <script>
 (function(){try{
   var u=new URLSearchParams(window.location.search).get('rb-theme');
@@ -10,875 +11,624 @@
   if(d)document.documentElement.classList.add('dark');
 }catch(e){}})();
 </script>
-<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.AI – Transforme tes cours en Quiz et Flashcards grâce à l'IA</title>
-<meta name="description" content="Importe tes PDF, résumés, liens YouTube ou notes de cours. RelBrain AI génère instantanément des paquets de révision interactifs."/>
+<title>RelBrain.AI – Transforme tes cours en quiz, flashcards et révisions</title>
+<meta name="description" content="Importe tes PDF, notes ou photos de cours. RelBrain AI génère quiz, flashcards et résumés, puis te fait réviser au bon moment. Pensé pour le Bac, le GCE, les concours et l'université."/>
+<meta name="theme-color" content="#7c3aed"/>
+<meta property="og:title" content="RelBrain — Ton cerveau. Tes cours. Ton apprentissage."/>
+<meta property="og:description" content="Le coach d'étude IA qui transforme tes cours en quiz, flashcards et révisions espacées."/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<link rel="stylesheet" href="relbrain-theme.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
 <script src="relbrain-theme.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-*{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+/* ═══ Page d'accueil — compléments au design system (aucune couleur en dur) ═══ */
+.hero{position:relative;padding:clamp(2.5rem,1rem + 5vw,5.5rem) 0 clamp(3rem,2rem + 4vw,6rem);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 40% 50% at 85% 20%,rgba(236,72,153,.10),transparent 60%),
+  radial-gradient(ellipse 45% 50% at 10% 90%,rgba(124,58,237,.10),transparent 60%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,1rem + 4vw,4.5rem);align-items:center;position:relative}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{margin:1.25rem 0 1.25rem}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.85rem;margin:2rem 0 1.5rem}
+.proof{display:flex;align-items:center;gap:.85rem;flex-wrap:wrap}
+.proof-faces{display:flex}
+.proof-faces span{width:2.1rem;height:2.1rem;border-radius:50%;border:2.5px solid var(--rb-bg);margin-left:-.55rem;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:#fff}
+.proof-faces span:first-child{margin-left:0}
 
-/* ═══ PALETTE D'ORIGINE ═══ */
-:root{
-  --rb-cream:#fdf4e8;
-  --rb-cream-2:#fbecda;
-  --rb-ink:#0f172a;
-  --rb-muted:#78716c;
-  --rb-violet:#7c3aed;
-  --rb-pink:#ec4899;
-}
+/* Scène signature : le cahier qui devient quiz */
+.scene{position:relative;min-height:30rem}
+.scene .sheet{position:relative;z-index:2;padding:1.6rem 1.5rem 1.4rem 3.4rem;transform:rotate(-1.6deg);max-width:27rem}
+.scene .sheet-title{font-family:var(--rb-font-display);font-weight:650;font-size:1.25rem;margin-bottom:.6rem;color:var(--rb-ink)}
+.scene .sheet p{font-size:.92rem;line-height:28px;color:var(--rb-ink-2);font-weight:500}
+.scene .sheet .rb-annotation{position:absolute;right:-.5rem;top:-1.4rem}
+.quiz-pop{position:absolute;z-index:3;right:0;bottom:1.25rem;width:min(19rem,82%);padding:1.1rem;transform:translateY(24px) rotate(2deg);opacity:0;transition:opacity var(--rb-dur-slow) var(--rb-ease-out),transform var(--rb-dur-slow) var(--rb-ease-spring)}
+.quiz-pop.is-on{opacity:1;transform:translateY(0) rotate(2deg)}
+.quiz-pop .q{font-weight:750;font-size:.85rem;margin:.6rem 0 .7rem;color:var(--rb-ink)}
+.quiz-pop .opt{display:flex;align-items:center;gap:.55rem;padding:.5rem .65rem;border:1.5px solid var(--rb-line);border-radius:.65rem;font-size:.78rem;font-weight:650;margin-bottom:.4rem;color:var(--rb-ink-2);transition:all var(--rb-dur-base) var(--rb-ease-out)}
+.quiz-pop .opt b{width:1.35rem;height:1.35rem;border-radius:.4rem;background:var(--rb-violet-50);color:var(--rb-violet);display:inline-flex;align-items:center;justify-content:center;font-size:.7rem}
+.quiz-pop .opt.is-right{border-color:var(--rb-emerald);background:var(--rb-emerald-100);color:#047857}
+.quiz-pop .opt.is-right b{background:var(--rb-emerald);color:#fff}
+html.dark .quiz-pop .opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
+.links-svg{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible}
+.links-svg path{fill:none;stroke:var(--rb-violet-300);stroke-width:1.5;stroke-dasharray:4 6;opacity:0;transition:opacity var(--rb-dur-slow)}
+.links-svg.is-on path{opacity:1;animation:rb-synapse-dash 1.2s linear infinite}
+@keyframes rb-synapse-dash{to{stroke-dashoffset:-20}}
+.scene-xp{position:absolute;z-index:4;left:1rem;bottom:0;display:flex;align-items:center;gap:.6rem;padding:.6rem .85rem;width:15rem}
+.scene-xp .rb-xp-bar{flex:1}
+.student{position:absolute;z-index:1;left:-1.5rem;bottom:2.5rem;width:9.5rem}
+@media(max-width:960px){.scene{min-height:34rem}.student{left:auto;right:0;bottom:auto;top:-1rem;width:7rem}}
+@media(max-width:560px){.scene .sheet{padding-left:2.6rem}.quiz-pop{right:-.25rem}.student{display:none}}
 
-body{background:var(--rb-cream);color:var(--rb-ink);overflow-x:hidden;}
+/* Bandeau institutions */
+.marquee{overflow:hidden;border-block:1px solid var(--rb-line);background:var(--rb-bg-alt);padding:1.1rem 0;mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marquee__track{display:flex;gap:2.5rem;width:max-content;animation:marquee 38s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__item{font-family:var(--rb-font-display);font-style:italic;font-size:1.15rem;color:var(--rb-ink-2);white-space:nowrap;display:flex;align-items:center;gap:2.5rem}
+.marquee__item::after{content:'✦';font-style:normal;color:var(--rb-pink);font-size:.8rem}
+@keyframes marquee{to{transform:translateX(-50%)}}
 
-/* ═══ Animations ═══ */
-@keyframes scroll-right{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@keyframes scroll-left{from{transform:translateX(-50%);}to{transform:translateX(0);}}
-.animate-scroll-right{animation:scroll-right 40s linear infinite;}
-.animate-scroll-left{animation:scroll-left 44s linear infinite;}
+/* Chiffres */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:1.25rem 0;border-top:2px solid var(--rb-ink)}
+.stat strong{display:block;font-family:var(--rb-font-display);font-weight:650;font-size:clamp(2.2rem,1.5rem + 2.5vw,3.5rem);letter-spacing:-.04em;line-height:1;color:var(--rb-ink)}
+.stat span{font-size:.85rem;font-weight:650;color:var(--rb-muted)}
 
-@keyframes float-y{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-@keyframes float-y2{0%,100%{transform:translateY(0) rotate(var(--rot,0deg));}50%{transform:translateY(-20px) rotate(var(--rot,0deg));}}
-@keyframes sparkle-float{0%,100%{transform:rotate(-12deg) translateY(0) scale(1);}50%{transform:rotate(-12deg) translateY(-10px) scale(1.15);}}
-@keyframes sparkle-float2{0%,100%{transform:rotate(15deg) translateY(0) scale(1);}50%{transform:rotate(15deg) translateY(-8px) scale(1.2);}}
-.sparkle1{animation:sparkle-float 2.4s ease-in-out infinite;}
-.sparkle2{animation:sparkle-float2 2.8s ease-in-out .5s infinite;}
-@keyframes wiggle{0%,100%{transform:rotate(-4deg) scale(1);}50%{transform:rotate(4deg) scale(1.1);}}
-.gamepad-wiggle{animation:wiggle 1.8s ease-in-out infinite;}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.5);}50%{box-shadow:0 0 0 8px rgba(124,58,237,0);}}
-.pulse-dot{animation:pulse-dot 2s ease-in-out infinite;}
+/* Problème */
+.pain-list{counter-reset:pain;display:grid;gap:0}
+.pain{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:1.15rem 0;border-bottom:1px solid var(--rb-line)}
+.pain::before{counter-increment:pain;content:counter(pain,decimal-leading-zero);font-family:var(--rb-font-display);font-style:italic;font-weight:400;font-size:1.4rem;color:var(--rb-pink);line-height:1.2}
+.pain h3{font-weight:750;font-size:1rem;color:var(--rb-ink);margin-bottom:.15rem}
+.pain p{font-size:.9rem;color:var(--rb-muted);line-height:1.55;font-weight:550}
+.curve-card{padding:1.5rem 1.5rem 1rem}
 
-/* ═══ Mesh gradient chaleureux ═══ */
-.hero-mesh{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;
-  background:
-    radial-gradient(ellipse 55% 45% at 15% 5%, rgba(251,191,36,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 45% at 85% 15%, rgba(236,72,153,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 40% at 50% 85%, rgba(124,58,237,.08) 0%, transparent 60%);
-  animation:meshMove 20s ease-in-out infinite alternate;
-}
-@keyframes meshMove{0%{transform:scale(1) translate(0,0);}100%{transform:scale(1.12) translate(-1.5%,-1.5%);}}
+/* Étapes */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;position:relative}
+@media(max-width:860px){.steps{grid-template-columns:1fr}}
+.step{padding:1.5rem;position:relative}
+.step-n{font-family:var(--rb-font-display);font-weight:300;font-style:italic;font-size:3.5rem;line-height:1;color:var(--rb-violet-300)}
+.step h3{font-family:var(--rb-font-display);font-weight:650;font-size:1.35rem;margin:.75rem 0 .4rem;color:var(--rb-ink)}
+.step p{font-size:.9rem;color:var(--rb-muted);line-height:1.6;font-weight:550}
+.step-visual{height:6.5rem;border-radius:var(--rb-radius-md);background:var(--rb-surface-2);border:1px dashed var(--rb-line);margin-top:1.25rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
+.chip-file{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .65rem;border-radius:.55rem;background:var(--rb-surface);border:1px solid var(--rb-line);font-size:.72rem;font-weight:700;color:var(--rb-ink-2);animation:rb-float 4s var(--rb-ease-in-out) infinite}
+.chip-file:nth-child(2){animation-delay:.6s}.chip-file:nth-child(3){animation-delay:1.2s}
 
-/* ═══ Scroll reveal ═══ */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
-.reveal.in{opacity:1;transform:translateY(0);}
-.reveal-scale{opacity:0;transform:scale(.94);transition:opacity .7s ease,transform .7s cubic-bezier(.4,0,.2,1);}
-.reveal-scale.in{opacity:1;transform:scale(1);}
-.delay-1{transition-delay:.1s;}.delay-2{transition-delay:.2s;}.delay-3{transition-delay:.3s;}.delay-4{transition-delay:.4s;}
+/* Bento fonctionnalités */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+.bento > *{padding:1.6rem}
+.b-a{grid-column:span 4}.b-b{grid-column:span 2}.b-c{grid-column:span 2}.b-d{grid-column:span 2}.b-e{grid-column:span 2}.b-f{grid-column:span 6}
+@media(max-width:900px){.bento > *{grid-column:1/-1 !important}}
+.bento h3{font-family:var(--rb-font-display);font-weight:650;font-size:1.3rem;margin:.9rem 0 .4rem;color:var(--rb-ink)}
+.bento p{font-size:.9rem;line-height:1.6;color:var(--rb-muted);font-weight:550}
+.b-ico{width:2.75rem;height:2.75rem;border-radius:.8rem .8rem .8rem .3rem;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.ink-card{background:var(--rb-grad-ink);color:#fff;border:0}
+.ink-card h3,.ink-card p{color:#fff}.ink-card p{opacity:.92}
+.night-card{background:#160f29;color:#ece6fb;border:0}
+.night-card h3{color:#fff}.night-card p{color:#cfc6e4}
+.demo-flip{height:9rem;margin-top:1rem;cursor:pointer}
+.demo-flip .rb-flip__inner{height:100%}
+.demo-flip .rb-flip__face{height:100%;border-radius:var(--rb-radius-md);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;font-weight:750;font-size:.95rem}
+.demo-flip .front{background:var(--rb-surface-2);border:1.5px solid var(--rb-line);color:var(--rb-ink)}
+.demo-flip .back{background:var(--rb-grad-ink);color:#fff}
+.demo-flip small{font-size:.7rem;font-weight:650;opacity:.65;margin-top:.5rem}
 
-/* ═══ FAQ ═══ */
-.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
-.faq-item.open .faq-answer{max-height:400px;}
-.faq-item.open .faq-icon{transform:rotate(45deg);}
-.faq-icon{transition:transform .3s ease;}
+/* Gamification */
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,1rem + 3vw,4rem);align-items:center}
+@media(max-width:900px){.game-grid{grid-template-columns:1fr}}
+.leagues{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem}
+.league{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.65rem .7rem;border-radius:.8rem;background:var(--rb-surface);border:1px solid var(--rb-line);min-width:4.4rem;font-size:.7rem;font-weight:750;color:var(--rb-ink-2);transition:transform var(--rb-dur-base) var(--rb-ease-spring)}
+.league:hover{transform:translateY(-4px) rotate(-2deg)}
+.league span{font-size:1.4rem}
+.try-card{padding:1.5rem}
+.try-opt{width:100%;text-align:left;display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;border:1.5px solid var(--rb-line);border-radius:.8rem;background:var(--rb-surface);font-weight:650;font-size:.9rem;color:var(--rb-ink-2);margin-bottom:.5rem;cursor:pointer;transition:all var(--rb-dur-fast)}
+.try-opt:hover{border-color:var(--rb-violet-300);transform:translateX(3px)}
+.try-opt.is-right{border-color:var(--rb-emerald);background:var(--rb-emerald-100);color:#047857}
+.try-opt.is-wrong{border-color:var(--rb-rose);background:var(--rb-rose-100);color:#be123c}
+html.dark .try-opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
+html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 
-/* ═══ Card lift ═══ */
-.card-lift{transition:transform .25s ease,box-shadow .25s ease;}
-.card-lift:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(124,58,237,.12);}
+/* Témoignages : notes collées */
+.notes-row{display:flex;gap:1.25rem;width:max-content;animation:marquee 60s linear infinite;padding:1rem 0}
+.notes-row--rev{animation-direction:reverse;animation-duration:70s}
+.notes-wrap:hover .notes-row{animation-play-state:paused}
+.note{width:17rem;padding:1.15rem 1.2rem;background:var(--rb-surface);border:1px solid var(--rb-line);border-radius:var(--rb-radius-sheet);box-shadow:var(--rb-shadow-sm);transform:rotate(var(--r,-1deg));transition:transform var(--rb-dur-base) var(--rb-ease-spring)}
+.note:hover{transform:rotate(0) translateY(-4px) scale(1.02);box-shadow:var(--rb-shadow-md)}
+.note p{font-family:var(--rb-font-display);font-size:1.02rem;line-height:1.45;color:var(--rb-ink);font-weight:450}
+.note footer{display:flex;align-items:center;gap:.55rem;margin-top:.85rem;font-size:.75rem;font-weight:700;color:var(--rb-muted)}
+.note footer i{width:1.7rem;height:1.7rem;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;color:#fff;font-size:.7rem}
 
-/* ═══ Navbar scroll ═══ */
-.nav-scrolled{background:rgba(253,244,232,.88)!important;backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(15,23,42,.06);}
+/* Matières */
+.subjects{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center}
+.subject{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1rem;border-radius:var(--rb-radius-pill);background:var(--rb-surface);border:1.5px solid var(--rb-line);font-weight:700;font-size:.85rem;color:var(--rb-ink-2);transition:all var(--rb-dur-base) var(--rb-ease-spring);text-decoration:none}
+.subject:hover{border-color:var(--rb-ink);transform:translateY(-3px) rotate(-1.5deg);box-shadow:3px 3px 0 0 var(--rb-ink);color:var(--rb-ink)}
 
-/* ═══ Gradient texte signature ═══ */
-.gradient-text{
-  background:linear-gradient(135deg,#7c3aed 0%,#a855f7 40%,#ec4899 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+/* Tarifs */
+.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:stretch}
+@media(max-width:900px){.pricing{grid-template-columns:1fr}}
+.price{padding:1.75rem;display:flex;flex-direction:column}
+.price .tier{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rb-muted)}
+.price .amount{font-family:var(--rb-font-display);font-weight:650;font-size:3rem;letter-spacing:-.04em;line-height:1;margin:.75rem 0 .25rem;color:var(--rb-ink)}
+.price .amount small{font-family:var(--rb-font-ui);font-size:.85rem;font-weight:650;color:var(--rb-muted);letter-spacing:0}
+.price .xaf{font-size:.8rem;font-weight:700;color:var(--rb-violet)}
+.price ul{margin:1.25rem 0 1.5rem;display:grid;gap:.55rem;font-size:.88rem;font-weight:600;color:var(--rb-ink-2);flex:1}
+.price li{display:flex;gap:.55rem;align-items:flex-start}
+.price li i{margin-top:.2rem;color:var(--rb-emerald)}
+.price li.off{opacity:.45}.price li.off i{color:var(--rb-faint)}
+.price--featured{background:var(--rb-grad-ink);border:0;color:#fff;transform:translateY(-.75rem);box-shadow:var(--rb-shadow-ink)}
+.price--featured .tier,.price--featured .amount,.price--featured .amount small,.price--featured ul,.price--featured .xaf{color:#fff}
+.price--featured li i{color:#fde68a}
+.pay-logos{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:2rem}
 
-/* ═══ Bouton principal signature ═══ */
-.btn-primary{
-  background:#7c3aed;color:white;font-weight:800;
-  padding:.9rem 1.75rem;border-radius:9999px;font-size:.9375rem;
-  display:inline-flex;align-items:center;gap:.625rem;
-  transition:all .2s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 8px 24px rgba(124,58,237,.28);
-}
-.btn-primary:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 12px 28px rgba(124,58,237,.35);}
-.btn-primary:active{transform:translateY(0);}
-
-.btn-secondary{
-  background:white;color:#0f172a;font-weight:700;
-  padding:.9rem 1.75rem;border-radius:9999px;font-size:.9375rem;
-  border:1.5px solid rgba(15,23,42,.08);
-  display:inline-flex;align-items:center;gap:.625rem;
-  transition:all .2s;
-}
-.btn-secondary:hover{border-color:rgba(124,58,237,.4);background:#faf5ff;transform:translateY(-2px);}
-
-/* ═══ Badge pill (comme sur la photo) ═══ */
-.rb-badge{
-  display:inline-flex;align-items:center;gap:.5rem;
-  background:white;border:1px solid rgba(15,23,42,.06);
-  padding:.5rem 1rem;border-radius:9999px;
-  font-size:.75rem;font-weight:600;color:#44403c;
-  box-shadow:0 2px 8px rgba(15,23,42,.04);
-}
-.rb-badge .dot{width:6px;height:6px;border-radius:50%;background:#7c3aed;}
-
-/* ═══ Timeline scan ═══ */
-.timeline-line{position:absolute;top:44px;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.25),transparent);overflow:hidden;}
-.timeline-line::after{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,#a855f7,transparent);animation:timeline-scan 3s ease-in-out infinite;}
-@keyframes timeline-scan{0%{left:-40%;}100%{left:100%;}}
-
-/* ═══ Trust logos ═══ */
-.trust-logo{filter:grayscale(1);opacity:.5;transition:all .3s;font-weight:800;color:#44403c;}
-.trust-logo:hover{filter:grayscale(0);opacity:1;color:#7c3aed;transform:scale(1.06);}
-
-/* ═══ Feature pill ═══ */
-.feature-pill{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06));border:1px solid rgba(124,58,237,.14);}
-
-/* ═══ Carte crème ═══ */
-.rb-card{background:white;border:1px solid rgba(15,23,42,.06);border-radius:1.25rem;box-shadow:0 2px 12px rgba(15,23,42,.04);}
-.rb-card-cream{background:#fdf4e8;border:1px solid rgba(15,23,42,.06);border-radius:1.25rem;}
-
-/* ═══ Streak ring ═══ */
-.streak-ring{width:56px;height:56px;border-radius:50%;background:conic-gradient(#f59e0b 72%, #fef3c7 0);display:flex;align-items:center;justify-content:center;position:relative;}
-.streak-ring::before{content:'';position:absolute;inset:5px;background:white;border-radius:50%;}
-.streak-ring span{position:relative;z-index:1;font-size:.8rem;font-weight:900;color:#0f172a;}
-
-/* ═══ Scrollbar ═══ */
-::-webkit-scrollbar{width:8px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
-::-webkit-scrollbar-thumb:hover{background:#c7b299;}
-
-/* ═══ Review card ═══ */
-.review-card{background:white;border:1px solid rgba(15,23,42,.06);border-radius:1rem;padding:1.25rem;box-shadow:0 2px 10px rgba(15,23,42,.04);}
-
-/* ═══ Step number (How it works) ═══ */
-.step-num{
-  width:88px;height:88px;border-radius:1.5rem;
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.25rem;font-weight:900;color:white;
-  position:relative;z-index:10;margin:0 auto 1.25rem;
-  box-shadow:0 12px 28px rgba(124,58,237,.2);
-}
+/* CTA final */
+.final{position:relative;overflow:hidden;padding:clamp(2.5rem,1.5rem + 4vw,5rem);text-align:center;background:#160f29;color:#fff;border-radius:var(--rb-radius-xl)}
+.final .rb-h1{color:#fff}
+.final::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 39px,rgba(255,255,255,.04) 39px 40px);pointer-events:none}
+.final .glyphs span{position:absolute;font-family:var(--rb-font-display);color:rgba(196,181,253,.35);font-size:2rem;animation:rb-float 6s var(--rb-ease-in-out) infinite}
 </style>
 </head>
-<body>
+<body class="rb-site">
 
-<!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
 
-    <!-- Logo d'origine -->
-    <a href="#" class="flex items-center gap-2.5">
-      <div class="bg-violet-600 text-white p-2 rounded-xl shadow-md shadow-violet-200 relative">
-        <i class="fa-solid fa-brain text-base"></i>
-        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white pulse-dot"></span>
-      </div>
-      <span class="text-xl font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
-    </a>
+<main id="contenu">
 
-    <!-- Nav desktop -->
-    <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-700">
-      <a href="#features" class="hover:text-violet-600 transition-colors">Fonctionnalités</a>
-      <a href="#how" class="hover:text-violet-600 transition-colors">Comment ça marche</a>
-      <a href="#pricing" class="hover:text-violet-600 transition-colors">Tarifs</a>
-      <a href="relbrain-login.html" class="hover:text-violet-600 transition-colors">Connexion</a>
-      <a href="relbrain-signup.html" class="btn-primary text-sm">
-        Essai gratuit
-        <i class="fa-solid fa-arrow-right text-xs"></i>
-      </a>
-    </div>
-
-    <button id="menu-btn" class="md:hidden p-2 rounded-xl border border-slate-200 bg-white" onclick="toggleMenu()">
-      <i class="fa-solid fa-bars text-slate-700"></i>
-    </button>
-  </div>
-
-  <div id="mobile-menu" class="hidden md:hidden bg-[var(--rb-cream)] border-t border-slate-100 px-4 py-4 space-y-1">
-    <a href="#features" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Fonctionnalités</a>
-    <a href="#how" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Comment ça marche</a>
-    <a href="#pricing" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl" onclick="toggleMenu()">Tarifs</a>
-    <a href="relbrain-login.html" class="block px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl">Connexion</a>
-    <a href="relbrain-signup.html" class="block text-center bg-violet-600 text-white py-3 rounded-xl text-sm font-bold mt-2">Essai gratuit</a>
-  </div>
-</nav>
-
-<!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
-<section class="relative pt-32 md:pt-40 pb-20 px-4 overflow-hidden">
-  <div class="hero-mesh"></div>
-
-  <!-- Déco flottante -->
-  <div class="hidden lg:block absolute left-8 xl:left-20 top-48 w-20 h-20 bg-amber-100 rounded-3xl rotate-12 opacity-70" style="animation:float-y2 4s ease-in-out infinite;--rot:12deg"></div>
-  <div class="hidden lg:block absolute right-10 xl:right-24 top-60 w-14 h-14 bg-pink-100 rounded-2xl -rotate-6 opacity-60" style="animation:float-y2 3.5s ease-in-out .5s infinite;--rot:-6deg"></div>
-  <div class="hidden lg:block absolute left-24 xl:left-48 bottom-32 w-10 h-10 bg-violet-200 rounded-xl rotate-45 opacity-50" style="animation:float-y2 4.5s ease-in-out 1s infinite;--rot:45deg"></div>
-  <div class="hidden lg:block absolute right-24 bottom-48 w-12 h-12 bg-violet-100 rounded-2xl rotate-12 opacity-50" style="animation:float-y2 5s ease-in-out 1.5s infinite;--rot:12deg"></div>
-
-  <div class="max-w-4xl mx-auto text-center relative z-10">
-
-    <!-- Badge d'origine -->
-    <div class="mb-7 flex justify-center">
-      <div class="rb-badge">
-        <span class="dot"></span>
-        La plateforme N°1 de préparation aux examens et concours
-      </div>
-    </div>
-
-    <!-- Titre d'origine -->
-    <div class="relative inline-block mb-6">
-      <svg class="absolute -top-8 -left-6 w-10 h-10 sparkle1 text-violet-400" viewBox="0 0 40 40" fill="none">
-        <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor" opacity=".6"/>
-      </svg>
-      <svg class="absolute -top-6 -right-4 w-8 h-8 sparkle2 text-pink-400" viewBox="0 0 40 40" fill="none">
-        <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor" opacity=".5"/>
-      </svg>
-
-      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight">
-        Transforme tes cours en<br class="hidden sm:block"/>
-        <span class="gradient-text">Quiz et Flashcards</span> grâce à l'IA
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero">
+  <div class="rb-container hero-grid">
+    <div>
+      <span class="rb-eyebrow rb-reveal">Coach d'étude IA · Bac, GCE, concours & université</span>
+      <h1 class="rb-display rb-reveal" style="--rb-delay:80ms">
+        Transforme tes cours en <mark class="rb-mark">quiz</mark>, en <mark class="rb-mark rb-mark--pink">flashcards</mark>
+        et en <span class="rb-scribble"><em>réflexes</em><svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 14 C 40 4, 90 18, 130 8 S 185 6, 197 12"/></svg></span>.
       </h1>
-    </div>
-
-    <!-- Sous-titre d'origine -->
-    <p class="text-base md:text-lg text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-      Importe tes PDF, résumés, liens YouTube ou notes de cours.<br class="hidden md:block"/>
-      RelBrain AI génère instantanément des paquets de révision interactifs.
-    </p>
-
-    <!-- CTA d'origine -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-5">
-      <a href="relbrain-signup.html" class="btn-primary text-base">
-        <i class="fa-solid fa-bolt gamepad-wiggle"></i>
-        Commencer gratuitement
-      </a>
-      <a href="#demo" class="btn-secondary text-base">
-        <i class="fa-solid fa-play text-violet-600 text-xs"></i>
-        Voir la démo interactive
-      </a>
-    </div>
-
-    <p class="text-xs text-slate-500">Sans carte bancaire · Plan gratuit disponible · Annulation à tout moment</p>
-
-    <!-- App mockup -->
-    <div id="demo" class="relative mt-16 max-w-3xl mx-auto reveal-scale">
-      <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden" style="box-shadow:0 30px 80px rgba(124,58,237,0.14), 0 0 0 1px rgba(124,58,237,0.06)">
-        <div class="bg-[#fdf4e8] border-b border-slate-100 px-4 py-3 flex items-center gap-2">
-          <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-rose-400"></div><div class="w-3 h-3 rounded-full bg-amber-400"></div><div class="w-3 h-3 rounded-full bg-emerald-400"></div></div>
-          <div class="flex-1 mx-4 bg-white border border-slate-200 rounded-full px-3 py-1 text-xs text-slate-400 text-center">app.relbrain.ai</div>
-          <i class="fa-solid fa-shield-halved text-emerald-500 text-xs"></i>
+      <p class="rb-lead rb-reveal" style="--rb-delay:160ms;max-width:34rem">
+        Importe tes PDF, résumés, photos de notes ou polycopiés. RelBrain AI repère l'essentiel, te fait réviser au bon moment
+        et te montre exactement où tu progresses.
+      </p>
+      <div class="hero-cta rb-reveal" style="--rb-delay:240ms">
+        <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-bolt"></i> Commencer gratuitement</a>
+        <a href="#how" class="rb-btn rb-btn--paper rb-btn--lg">Voir comment ça marche</a>
+      </div>
+      <div class="proof rb-reveal" style="--rb-delay:320ms">
+        <div class="proof-faces" aria-hidden="true">
+          <span style="background:#7c3aed">A</span><span style="background:#ec4899">M</span><span style="background:#f59e0b">I</span><span style="background:#10b981">F</span>
         </div>
-        <div class="grid grid-cols-3 h-72">
-          <div class="bg-white border-r border-slate-100 p-3 col-span-1">
-            <div class="flex items-center gap-2 mb-4 p-2 bg-violet-50 rounded-xl">
-              <div class="w-6 h-6 bg-violet-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-brain text-white text-xs"></i></div>
-              <span class="text-xs font-black text-violet-700">RelBrain</span>
-            </div>
-            <div class="space-y-1">
-              <div class="flex items-center gap-2 px-2 py-1.5 bg-violet-50 rounded-lg"><div class="w-3 h-3 bg-violet-500 rounded"></div><span class="text-[10px] font-bold text-violet-700">Dashboard</span></div>
-              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Mes Quiz</span></div>
-              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Flashcards</span></div>
-              <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg"><div class="w-3 h-3 bg-slate-300 rounded"></div><span class="text-[10px] text-slate-500">Importer</span></div>
-            </div>
-          </div>
-          <div class="col-span-2 p-4 bg-[#fdf4e8]">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold text-slate-700">Quiz Algorithmique S5</span>
-              <span class="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-bold">Intermédiaire</span>
-            </div>
-            <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 mb-2">
-              <p class="text-[10px] font-bold text-slate-700 mb-2">Quelle est la complexité de QuickSort en moyenne ?</p>
-              <div class="space-y-1.5">
-                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(n)</span></div>
-                <div class="flex items-center gap-2 p-1.5 bg-emerald-50 border border-emerald-300 rounded-lg"><div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div><span class="text-[9px] font-bold text-emerald-700">O(n log n) ✓</span></div>
-                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(n²)</span></div>
-                <div class="flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-lg"><div class="w-2.5 h-2.5 border border-slate-300 rounded-full"></div><span class="text-[9px] text-slate-600">O(log n)</span></div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="flex-1 bg-slate-200 h-1.5 rounded-full overflow-hidden"><div class="bg-violet-500 h-full rounded-full" style="width:60%"></div></div>
-              <span class="text-[9px] text-slate-500 font-bold">6/10</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Badges flottants -->
-      <div class="absolute -left-4 md:-left-12 top-8 bg-white rounded-2xl px-4 py-2.5 shadow-xl border border-slate-100 flex items-center gap-2.5" style="animation:float-y 3s ease-in-out infinite">
-        <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-bolt text-emerald-600 text-sm"></i></div>
-        <div><p class="text-[10px] text-slate-500 font-semibold">Quiz généré en</p><p class="text-xs font-black text-slate-900">28 secondes</p></div>
-      </div>
-      <div class="absolute -right-4 md:-right-12 bottom-10 bg-white rounded-2xl px-4 py-2.5 shadow-xl border border-slate-100 flex items-center gap-2.5" style="animation:float-y 3.4s ease-in-out .4s infinite">
-        <div class="w-8 h-8 bg-violet-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-star text-violet-600 text-sm"></i></div>
-        <div><p class="text-[10px] text-slate-500 font-semibold">Score obtenu</p><p class="text-xs font-black text-slate-900">+320 XP 🎉</p></div>
-      </div>
-      <div class="absolute -right-3 md:-right-10 top-6 bg-white rounded-2xl px-3 py-2 shadow-xl border border-slate-100" style="animation:float-y 3.2s ease-in-out .8s infinite">
-        <p class="text-[10px] font-bold text-slate-700">🔥 7 jours de suite !</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════ TRUST LOGOS (nouveau) ═══════════════════════════════════ -->
-<section class="py-10 px-4 bg-white border-y border-slate-100">
-  <div class="max-w-5xl mx-auto">
-    <p class="text-center text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Utilisé par les étudiants de</p>
-    <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-      <span class="trust-logo text-base">Université de Douala</span>
-      <span class="trust-logo text-base">Polytech Yaoundé</span>
-      <span class="trust-logo text-base">Lycée Leclerc</span>
-      <span class="trust-logo text-base">UCAC</span>
-      <span class="trust-logo text-base">ESSEC Douala</span>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════ STATS (améliorées : compteurs animés) ═══════════════════════════════════ -->
-<section class="py-16 px-4 bg-white">
-  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    <div class="reveal">
-      <p class="text-4xl md:text-5xl font-black text-slate-900 mb-1"><span data-count="500" data-suffix="K+">0</span></p>
-      <p class="text-sm text-slate-500 font-semibold">Étudiants actifs</p>
-    </div>
-    <div class="reveal delay-1">
-      <p class="text-4xl md:text-5xl font-black gradient-text mb-1"><span data-count="12" data-suffix="M+">0</span></p>
-      <p class="text-sm text-slate-500 font-semibold">Questions générées</p>
-    </div>
-    <div class="reveal delay-2">
-      <p class="text-4xl md:text-5xl font-black text-slate-900 mb-1"><span data-count="49" data-divide="10">0</span><span class="text-amber-400">★</span></p>
-      <p class="text-sm text-slate-500 font-semibold">Note moyenne</p>
-    </div>
-    <div class="reveal delay-3">
-      <p class="text-4xl md:text-5xl font-black gradient-text mb-1"><span data-count="3">0</span>×</p>
-      <p class="text-sm text-slate-500 font-semibold">Plus vite qu'avant</p>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════ PROBLÈME → SOLUTION (nouveau) ═══════════════════════════════════ -->
-<section class="py-20 px-4 bg-[var(--rb-cream)]">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-14 reveal">
-      <div class="rb-badge mb-5"><span class="dot"></span> Le problème</div>
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Étudier ne devrait pas<br/><span class="text-slate-400">être aussi frustrant</span></h2>
-    </div>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
-      <div class="reveal rb-card p-6 card-lift">
-        <div class="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-folder-open text-rose-500 text-xl"></i></div>
-        <h3 class="font-black text-slate-900 mb-2">Trop de documents</h3>
-        <p class="text-sm text-slate-500">Des dizaines de PDFs, notes, diapos… Impossible de tout organiser.</p>
-      </div>
-      <div class="reveal delay-1 rb-card p-6 card-lift">
-        <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-circle-question text-amber-500 text-xl"></i></div>
-        <h3 class="font-black text-slate-900 mb-2">Quoi réviser ?</h3>
-        <p class="text-sm text-slate-500">Difficile de savoir par où commencer et ce qui est vraiment important.</p>
-      </div>
-      <div class="reveal delay-2 rb-card p-6 card-lift">
-        <div class="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-brain text-violet-500 text-xl"></i></div>
-        <h3 class="font-black text-slate-900 mb-2">Oubli rapide</h3>
-        <p class="text-sm text-slate-500">Relire ne suffit pas. Après 48h, on a déjà tout oublié.</p>
-      </div>
-      <div class="reveal delay-3 rb-card p-6 card-lift">
-        <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-chart-simple text-slate-500 text-xl"></i></div>
-        <h3 class="font-black text-slate-900 mb-2">Aucun suivi</h3>
-        <p class="text-sm text-slate-500">Impossible de mesurer ses progrès ou de savoir où on en est.</p>
+        <p class="rb-caption" style="max-width:20rem">Sans carte bancaire · Plan gratuit pour toujours · Orange Money & MTN MoMo acceptés</p>
       </div>
     </div>
 
-    <div class="text-center reveal">
-      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-violet-600 text-white font-black shadow-xl shadow-violet-200">
-        <i class="fa-solid fa-arrow-down"></i> RelBrain AI change tout
+    <!-- Signature : le cahier se transforme en quiz -->
+    <div class="scene rb-reveal--scale" id="scene" aria-label="Démonstration : RelBrain surligne les notions clés d'un cours puis génère une question de quiz.">
+      <svg class="student" viewBox="0 0 160 190" aria-hidden="true">
+        <!-- Élève illustrée (style cartoon 2D, emplacement prévu pour les personnages RelBrain) -->
+        <ellipse cx="80" cy="182" rx="56" ry="6" fill="currentColor" opacity=".08"/>
+        <path d="M30 186c2-38 22-58 50-58s48 20 50 58z" fill="#7c3aed"/>
+        <path d="M62 132l18 22 18-22" fill="none" stroke="#fdf4e8" stroke-width="5" stroke-linecap="round"/>
+        <rect x="70" y="104" width="20" height="22" rx="8" fill="#8a5432"/>
+        <circle cx="52" cy="58" r="20" fill="#2a1a12"/><circle cx="108" cy="58" r="20" fill="#2a1a12"/>
+        <ellipse cx="80" cy="74" rx="30" ry="34" fill="#9b6139"/>
+        <path d="M50 66c4-26 56-30 60 0-10-12-50-12-60 0z" fill="#2a1a12"/>
+        <path d="M51 62c10-8 48-8 58 0" stroke="#ec4899" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <circle cx="69" cy="78" r="3.4" fill="#1a1033"/><circle cx="92" cy="78" r="3.4" fill="#1a1033"/>
+        <circle cx="70.2" cy="76.8" r="1" fill="#fff"/><circle cx="93.2" cy="76.8" r="1" fill="#fff"/>
+        <path d="M71 92c5 5 13 5 18 0" stroke="#1a1033" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="61" cy="88" r="4" fill="#ec4899" opacity=".28"/><circle cx="100" cy="88" r="4" fill="#ec4899" opacity=".28"/>
+        <circle cx="66" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><circle cx="94" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><path d="M76 78h8" stroke="#1a1033" stroke-width="2"/>
+        <path d="M118 150c14-6 22-20 18-34" stroke="#9b6139" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <g transform="rotate(-28 138 112)"><rect x="132" y="84" width="9" height="34" rx="2" fill="#f59e0b"/><path d="M132 118l4.5 9 4.5-9z" fill="#fde68a"/><rect x="132" y="84" width="9" height="6" fill="#ec4899"/></g>
+      </svg>
+
+      <article class="sheet rb-sheet rb-ruled rb-dogear">
+        <span class="rb-annotation">← à retenir pour le Bac !</span>
+        <p class="sheet-title">Chap. 4 — Algorithmes de tri</p>
+        <p>Le <mark class="rb-mark rb-mark--full" data-step="1">tri rapide (QuickSort)</mark> choisit un pivot puis partitionne le tableau.
+        Sa complexité moyenne est <mark class="rb-mark rb-mark--full" data-step="2">O(n log n)</mark>, mais elle devient
+        <mark class="rb-mark rb-mark--pink rb-mark--full" data-step="3">O(n²) dans le pire cas</mark>, lorsque le pivot est toujours extrême.
+        Le tri fusion garantit O(n log n) au prix d'une mémoire supplémentaire.</p>
+      </article>
+
+      <svg class="links-svg" id="scene-links" aria-hidden="true"></svg>
+
+      <div class="quiz-pop rb-sheet" id="scene-quiz">
+        <div class="rb-row" style="--rb-gap:.4rem"><span class="rb-tag">QCM · Moyen</span><span class="rb-tag rb-tag--outline">Généré en 28 s</span></div>
+        <p class="q">Quelle est la complexité moyenne du tri rapide ?</p>
+        <div class="opt"><b>A</b> O(n)</div>
+        <div class="opt" id="scene-right"><b>B</b> O(n log n)</div>
+        <div class="opt"><b>C</b> O(n²)</div>
+      </div>
+
+      <div class="scene-xp rb-sheet" style="border-radius:var(--rb-radius-pill)">
+        <span class="rb-flame" aria-hidden="true">🔥</span>
+        <div class="rb-xp-bar"><div class="rb-xp-bar__fill" id="scene-bar" style="--p:62%"></div></div>
+        <strong class="rb-tabular" style="font-size:.8rem" id="scene-xp">2 340 XP</strong>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ REVIEWS CARROUSEL ═══════════════════════════════════ -->
-<section class="py-14 px-0 bg-white overflow-hidden">
-  <h2 class="text-center text-3xl md:text-4xl font-black text-slate-900 mb-10 reveal">Ce que disent les étudiants <span class="text-slate-300">💬</span></h2>
-  <div class="relative overflow-hidden mb-4">
-    <div class="flex gap-4 w-fit animate-scroll-right" id="review-row-1"></div>
+<!-- ═══════════════════════════════ INSTITUTIONS ═══════════════════════════════ -->
+<div class="marquee" aria-label="Établissements de nos étudiants">
+  <div class="marquee__track">
+    <span class="marquee__item">Université de Douala</span><span class="marquee__item">Polytech Yaoundé</span><span class="marquee__item">Lycée Leclerc</span><span class="marquee__item">UCAC</span><span class="marquee__item">ESSEC Douala</span><span class="marquee__item">Université de Dschang</span><span class="marquee__item">Lycée Joss</span><span class="marquee__item">Université de Buea</span>
+    <span class="marquee__item" aria-hidden="true">Université de Douala</span><span class="marquee__item" aria-hidden="true">Polytech Yaoundé</span><span class="marquee__item" aria-hidden="true">Lycée Leclerc</span><span class="marquee__item" aria-hidden="true">UCAC</span><span class="marquee__item" aria-hidden="true">ESSEC Douala</span><span class="marquee__item" aria-hidden="true">Université de Dschang</span><span class="marquee__item" aria-hidden="true">Lycée Joss</span><span class="marquee__item" aria-hidden="true">Université de Buea</span>
   </div>
-  <div class="relative overflow-hidden">
-    <div class="flex gap-4 w-fit animate-scroll-left" id="review-row-2"></div>
-  </div>
-</section>
+</div>
 
-<!-- ═══════════════════════════════════ HOW IT WORKS (amélioré : timeline scan) ═══════════════════════════════════ -->
-<section id="how" class="py-24 px-4 bg-[var(--rb-cream)] relative overflow-hidden">
-  <div class="max-w-4xl mx-auto relative">
-    <div class="text-center mb-16 reveal">
-      <div class="rb-badge mb-5"><span class="dot"></span> Comment ça marche</div>
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Simple comme<br/><span class="gradient-text">1 — 2 — 3</span></h2>
-      <p class="text-slate-600 max-w-xl mx-auto">De ton document au savoir maîtrisé en moins de 30 secondes.</p>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-6 relative">
-      <div class="timeline-line hidden md:block"></div>
-
-      <div class="text-center relative reveal-scale">
-        <div class="step-num bg-violet-600">1</div>
-        <h3 class="text-lg font-black text-slate-900 mb-2">Importe</h3>
-        <p class="text-sm text-slate-500">Glisse-dépose ton cours (PDF, DOCX, image...) ou colle du texte directement.</p>
-      </div>
-      <div class="text-center relative reveal-scale delay-1">
-        <div class="step-num" style="background:#a855f7">2</div>
-        <h3 class="text-lg font-black text-slate-900 mb-2">L'IA génère</h3>
-        <p class="text-sm text-slate-500">En 30 secondes, quiz, flashcards et résumé sont prêts. Niveau adapté à ton choix.</p>
-      </div>
-      <div class="text-center relative reveal-scale delay-2">
-        <div class="step-num bg-emerald-600">3</div>
-        <h3 class="text-lg font-black text-slate-900 mb-2">Apprends & monte</h3>
-        <p class="text-sm text-slate-500">Révise, gagne des XP, monte dans le classement. L'IA affine en continu.</p>
-      </div>
-    </div>
+<!-- ═══════════════════════════════ CHIFFRES ═══════════════════════════════ -->
+<section class="rb-container" style="padding-block:clamp(2.5rem,2rem + 3vw,4.5rem)">
+  <div class="stats" data-rb-stagger="90">
+    <div class="stat"><strong data-rb-count="500" data-rb-suffix="K+">0</strong><span>étudiants actifs</span></div>
+    <div class="stat"><strong data-rb-count="12" data-rb-suffix="M+">0</strong><span>questions générées</span></div>
+    <div class="stat"><strong>4,9<span style="color:var(--rb-amber);font-size:.6em">★</span></strong><span>note moyenne</span></div>
+    <div class="stat"><strong data-rb-count="3" data-rb-suffix="×">0</strong><span>plus rapide qu'en relisant</span></div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ FEATURES (UI d'origine conservée) ═══════════════════════════════════ -->
-<section id="features" class="py-24 px-4 bg-white">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-16 reveal">
-      <div class="rb-badge mb-5"><span class="dot"></span> Fonctionnalités</div>
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Tout ce dont tu as besoin<br/><span class="gradient-text">pour apprendre plus vite</span></h2>
-      <p class="text-lg text-slate-600 max-w-xl mx-auto">Du document aux résultats d'examen. RelBrain gère tout.</p>
+<!-- ═══════════════════════════════ 01 · LE PROBLÈME ═══════════════════════════════ -->
+<section class="rb-section rb-section--sunk">
+  <div class="rb-container">
+    <div class="rb-section-head rb-reveal">
+      <span class="rb-section-num">01</span>
+      <div><span class="rb-eyebrow">Le problème</span><h2 class="rb-h1" style="margin-top:.5rem">Relire n'est pas <em>réviser</em>.</h2></div>
+      <div class="rb-section-head__rule"></div>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-
-      <!-- Feature 1 large -->
-      <div class="lg:col-span-2 reveal rb-card p-7 card-lift relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-violet-50 to-transparent rounded-bl-3xl"></div>
-        <div class="relative z-10">
-          <div class="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-bolt text-violet-600 text-xl"></i></div>
-          <h3 class="text-xl font-black text-slate-900 mb-2">Upload → Quiz en 30 secondes</h3>
-          <p class="text-sm text-slate-500 leading-relaxed mb-5">Importe un PDF, DOCX, PPTX ou une image. L'IA extrait le contenu, identifie les concepts clés et génère un quiz complet, des flashcards et un résumé. Automatiquement.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">PDF</span>
-            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">DOCX</span>
-            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">PPTX</span>
-            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">TXT</span>
-            <span class="feature-pill text-xs font-bold text-violet-700 px-3 py-1 rounded-full">Images OCR</span>
-          </div>
+    <div class="rb-grid" style="align-items:center">
+      <div class="rb-col-6">
+        <div class="pain-list" data-rb-stagger="90">
+          <div class="pain"><div><h3>Trop de documents</h3><p>Des dizaines de PDF, notes, diapos… impossible de savoir par où commencer.</p></div></div>
+          <div class="pain"><div><h3>Quoi réviser ?</h3><p>Difficile de distinguer l'essentiel de l'accessoire la veille de l'examen.</p></div></div>
+          <div class="pain"><div><h3>L'oubli, inévitable</h3><p>Sans rappel actif, la mémoire d'un cours s'effondre en quelques jours.</p></div></div>
+          <div class="pain"><div><h3>Aucun suivi</h3><p>Impossible de mesurer ses progrès ou de cibler ses vraies lacunes.</p></div></div>
         </div>
       </div>
-
-      <div class="reveal delay-1 rounded-3xl p-7 card-lift text-white" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">
-        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-brain text-white text-xl"></i></div>
-        <h3 class="text-xl font-black mb-2">IA Adaptative</h3>
-        <p class="text-sm opacity-95 leading-relaxed">L'IA mémorise tes résultats et génère automatiquement plus de questions sur tes points faibles.</p>
+      <div class="rb-col-6">
+        <figure class="rb-sheet rb-sheet--paper curve-card rb-reveal--scale">
+          <figcaption style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:.5rem">
+            <span><span class="rb-eyebrow">La courbe de l'oubli</span><br/><strong style="font-family:var(--rb-font-display);font-size:1.25rem;font-weight:650">Ce que RelBrain change</strong></span>
+            <span class="rb-tag rb-tag--pink">Ebbinghaus × SM-2</span>
+          </figcaption>
+          <svg class="rb-curve" data-reviews="1,3,7,16"></svg>
+          <p class="rb-caption" style="margin-top:.5rem">Chaque révision, programmée <mark class="rb-mark">juste avant l'oubli</mark>, remonte la mémoire et l'ancre plus longtemps. RelBrain calcule ce moment pour chaque notion.</p>
+        </figure>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="reveal rb-card p-7 card-lift">
-        <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-layer-group text-amber-600 text-xl"></i></div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">Flashcards interactives</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Cartes retournables avec révision espacée. Basées sur l'algorithme SM-2.</p>
-      </div>
+<!-- ═══════════════════════════════ 02 · COMMENT ÇA MARCHE ═══════════════════════════════ -->
+<section class="rb-section" id="how">
+  <div class="rb-container">
+    <div class="rb-section-head rb-reveal">
+      <span class="rb-section-num">02</span>
+      <div><span class="rb-eyebrow">Comment ça marche</span><h2 class="rb-h1" style="margin-top:.5rem">Du polycopié au <em>réflexe</em>, en trois gestes.</h2></div>
+      <div class="rb-section-head__rule"></div>
+    </div>
+    <div class="steps" data-rb-stagger="120">
+      <article class="step rb-sheet rb-lift">
+        <span class="step-n">1</span>
+        <h3>Importe</h3>
+        <p>Glisse ton cours : PDF, Word, PowerPoint, texte, ou simple photo de tes notes manuscrites (lecture OCR).</p>
+        <div class="step-visual"><span class="chip-file"><i class="fa-solid fa-file-pdf" style="color:var(--rb-rose)"></i> SVT_Ch3.pdf</span><span class="chip-file"><i class="fa-solid fa-camera" style="color:var(--rb-amber)"></i> notes.jpg</span></div>
+      </article>
+      <article class="step rb-sheet rb-lift rb-lift--pink">
+        <span class="step-n">2</span>
+        <h3>L'IA connecte</h3>
+        <p>Elle repère les notions clés, les relie entre elles et prépare quiz, flashcards et fiche de révision en ~30 secondes.</p>
+        <div class="step-visual"><span class="rb-synapse" style="--rb-synapse-size:3rem"><i></i><i></i><i></i></span></div>
+      </article>
+      <article class="step rb-sheet rb-lift rb-lift--amber">
+        <span class="step-n">3</span>
+        <h3>Apprends & monte</h3>
+        <p>Révise au bon moment, gagne de l'XP, garde ta série et grimpe de la ligue Bronze jusqu'à Maître.</p>
+        <div class="step-visual" style="padding:0 1.25rem"><div class="rb-xp-bar" style="flex:1"><div class="rb-xp-bar__fill" style="--p:74%"></div></div><strong style="font-size:.8rem">Niv. 8</strong></div>
+      </article>
+    </div>
+  </div>
+</section>
 
-      <div class="reveal delay-1 rb-card p-7 card-lift">
-        <div class="w-12 h-12 bg-rose-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-trophy text-rose-500 text-xl"></i></div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">Gamification complète</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">XP, niveaux, badges, séries quotidiennes, classement mondial.</p>
-      </div>
-
-      <div class="reveal delay-2 rb-card p-7 card-lift">
-        <div class="w-12 h-12 bg-sky-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-file-pen text-sky-600 text-xl"></i></div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">Mode Examen blanc</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Chronomètre, sans aide, sans indication. Conditions d'examen réelles.</p>
-      </div>
-
-      <div class="reveal delay-3 rb-card p-7 card-lift">
-        <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-chart-line text-emerald-600 text-xl"></i></div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">Tableau de bord précis</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Score global, progression, matières faibles. Graphiques interactifs.</p>
-      </div>
-
-      <!-- Résumés IA -->
-      <div class="lg:col-span-3 reveal rounded-3xl p-8 card-lift relative overflow-hidden" style="background:#1e1b4b">
-        <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(124,58,237,.3),rgba(236,72,153,.2))"></div>
-        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
-          <div class="flex-1">
-            <div class="w-12 h-12 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-4"><i class="fa-solid fa-wand-magic-sparkles text-violet-300 text-xl"></i></div>
-            <h3 class="text-xl font-black text-white mb-2">Résumés IA ultra-précis</h3>
-            <p class="text-sm text-slate-300 leading-relaxed max-w-lg">Résumé court, détaillé, points clés, concepts avec définitions. Généré en quelques secondes.</p>
+<!-- ═══════════════════════════════ 03 · FONCTIONNALITÉS ═══════════════════════════════ -->
+<section class="rb-section rb-section--white" id="features">
+  <div class="rb-container">
+    <div class="rb-section-head rb-reveal">
+      <span class="rb-section-num">03</span>
+      <div><span class="rb-eyebrow">Fonctionnalités</span><h2 class="rb-h1" style="margin-top:.5rem">Tout pour apprendre <em>plus vite</em>, rien pour te distraire.</h2></div>
+      <div class="rb-section-head__rule"></div>
+    </div>
+    <div class="bento" data-rb-stagger="70">
+      <article class="b-a rb-sheet rb-lift">
+        <div class="b-ico" style="background:var(--rb-violet-50);color:var(--rb-violet)"><i class="fa-solid fa-bolt"></i></div>
+        <h3>Ton cours devient un quiz en 30 secondes</h3>
+        <p>QCM, vrai/faux, réponses courtes, calculs ou rédaction type examen. Chaque question vient de <strong>ton</strong> cours, avec une explication qui dit pourquoi la bonne réponse est juste — et pourquoi le piège est faux.</p>
+        <div class="rb-row" style="margin-top:1rem;--rb-gap:.4rem"><span class="rb-tag">PDF</span><span class="rb-tag">DOCX</span><span class="rb-tag">PPTX</span><span class="rb-tag">TXT</span><span class="rb-tag rb-tag--amber">Photos de notes (OCR)</span></div>
+      </article>
+      <article class="b-b rb-sheet ink-card rb-lift">
+        <div class="b-ico" style="background:rgba(255,255,255,.18)"><i class="fa-solid fa-bullseye"></i></div>
+        <h3>IA adaptative</h3>
+        <p>RelBrain détecte tes points faibles et génère plus de questions là où tu te trompes.</p>
+      </article>
+      <article class="b-c rb-sheet rb-lift rb-lift--amber">
+        <div class="b-ico" style="background:var(--rb-amber-100);color:#b45309"><i class="fa-solid fa-layer-group"></i></div>
+        <h3>Flashcards SM-2</h3>
+        <div class="demo-flip rb-flip" id="demo-flip" role="button" tabindex="0" aria-label="Retourner la carte">
+          <div class="rb-flip__inner">
+            <div class="rb-flip__face front">Que signifie LIFO ?<small>Clique pour retourner</small></div>
+            <div class="rb-flip__face rb-flip__face--back back">Last In, First Out — le principe de la pile.<small>Prochaine révision : dans 6 jours</small></div>
           </div>
-          <div class="md:w-64 bg-white/5 border border-white/10 rounded-2xl p-4">
-            <p class="text-xs font-bold text-violet-300 uppercase tracking-widest mb-3">Résumé court · IA</p>
-            <p class="text-sm text-slate-200 leading-relaxed">"La pile (Stack) suit le principe LIFO. La file suit FIFO. QuickSort a une complexité moyenne de O(n log n)..."</p>
-            <div class="flex items-center gap-2 mt-3">
-              <div class="h-1.5 flex-1 bg-violet-500/30 rounded-full overflow-hidden"><div class="h-full bg-violet-400 rounded-full" style="width:85%"></div></div>
-              <span class="text-[10px] text-slate-400">85% pertinence</span>
+        </div>
+      </article>
+      <article class="b-d rb-sheet rb-lift">
+        <div class="b-ico" style="background:var(--rb-emerald-100);color:#047857"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Tableau de bord honnête</h3>
+        <p>Maîtrise par matière, minutes d'étude, score moyen, et la liste précise de tes notions fragiles.</p>
+      </article>
+      <article class="b-e rb-sheet rb-lift rb-lift--pink">
+        <div class="b-ico" style="background:var(--rb-pink-100);color:#be185d"><i class="fa-solid fa-comments"></i></div>
+        <h3>Un coach qui fait réfléchir</h3>
+        <p>Pose tes questions sur ton cours : l'assistant guide par indices avant de donner la réponse.</p>
+      </article>
+      <article class="b-f rb-sheet night-card">
+        <div class="rb-grid" style="align-items:center">
+          <div class="rb-col-7">
+            <div class="b-ico" style="background:rgba(255,255,255,.08);color:#c4b5fd"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3>Des fiches de révision qui vont à l'essentiel</h3>
+            <p>Résumé court, fiche détaillée ou points clés à connaître par cœur la veille — avec les pièges classiques d'examen signalés dans la marge.</p>
+          </div>
+          <div class="rb-col-5">
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--rb-radius-md);padding:1.1rem">
+              <p class="rb-eyebrow" style="color:#c4b5fd">Points clés · IA</p>
+              <p style="margin-top:.5rem;color:#ece6fb;font-size:.92rem">La pile suit le principe <strong style="color:#fff">LIFO</strong>, la file suit <strong style="color:#fff">FIFO</strong>. QuickSort : O(n log n) en moyenne.</p>
+              <p class="rb-annotation" style="color:#f9a8d4;margin-top:.6rem">⚠ piège : le pire cas est O(n²)</p>
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ GAMIFICATION (nouveau) ═══════════════════════════════════ -->
-<section class="py-24 px-4 bg-white">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-14 reveal">
-      <div class="rb-badge mb-5"><span class="dot"></span> Gamification</div>
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Apprendre devient<br/><span class="gradient-text">addictif</span></h2>
-      <p class="text-slate-600 max-w-xl mx-auto">Un système complet de récompenses inspiré des jeux vidéo.</p>
+<!-- ═══════════════════════════════ 04 · GAMIFICATION ═══════════════════════════════ -->
+<section class="rb-section">
+  <div class="rb-container game-grid">
+    <div class="rb-reveal">
+      <span class="rb-section-num" style="display:block;margin-bottom:.5rem">04</span>
+      <span class="rb-eyebrow">Motivation</span>
+      <h2 class="rb-h1" style="margin:.5rem 0 1rem">Revenir chaque jour devient <em>naturel</em>.</h2>
+      <p class="rb-lead">XP à chaque effort, séries quotidiennes avec gel de secours, 45 badges, défis du jour et ligues hebdomadaires entre élèves de ton niveau. Le jeu sert l'apprentissage — jamais l'inverse.</p>
+      <div class="leagues" aria-label="Les six ligues">
+        <div class="league"><span>🥉</span>Bronze</div><div class="league"><span>🥈</span>Argent</div><div class="league"><span>🥇</span>Or</div>
+        <div class="league"><span>💎</span>Platine</div><div class="league"><span>💠</span>Diamant</div><div class="league"><span>👑</span>Maître</div>
+      </div>
     </div>
-
-    <div class="grid md:grid-cols-3 gap-5">
-      <div class="reveal rb-card p-7 card-lift">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl">🔥</div>
-          <div><p class="text-2xl font-black text-slate-900">12 jours</p><p class="text-xs text-slate-500 font-semibold">Série en cours</p></div>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed">Maintiens ta série quotidienne et débloque des bonus multipliés.</p>
+    <div class="try-card rb-sheet rb-sheet--paper rb-reveal--scale" id="try">
+      <div class="rb-row" style="justify-content:space-between;margin-bottom:.9rem">
+        <span class="rb-tag rb-tag--amber">🎯 Essaie maintenant</span>
+        <span class="rb-caption rb-tabular"><span data-rb-xp-total="1240">1 240</span> XP</span>
       </div>
-      <div class="reveal delay-1 rb-card p-7 card-lift">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-2xl">⚡</div>
-          <div><p class="text-2xl font-black text-slate-900">2 340 XP</p><p class="text-xs text-slate-500 font-semibold">Niveau 7</p></div>
-        </div>
-        <div class="h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
-          <div class="h-full rounded-full" style="background:linear-gradient(90deg,#7c3aed,#ec4899);width:68%"></div>
-        </div>
-        <p class="text-xs text-slate-500 font-semibold">660 XP avant le niveau 8</p>
-      </div>
-      <div class="reveal delay-2 rb-card p-7 card-lift">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center text-2xl">🏆</div>
-          <div><p class="text-2xl font-black text-slate-900">23 badges</p><p class="text-xs text-slate-500 font-semibold">Débloqués</p></div>
-        </div>
-        <div class="flex gap-1.5">
-          <div class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center text-sm">🥇</div>
-          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-sm">🎯</div>
-          <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center text-sm">💎</div>
-          <div class="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center text-sm">🔥</div>
-          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-[10px] font-bold">+19</div>
-        </div>
-      </div>
+      <p style="font-family:var(--rb-font-display);font-size:1.3rem;font-weight:650;line-height:1.3;margin-bottom:1rem">Quelle structure de données suit le principe « premier arrivé, premier servi » ?</p>
+      <button class="try-opt" data-ok="0"><b class="rb-kbd">A</b> La pile</button>
+      <button class="try-opt" data-ok="1"><b class="rb-kbd">B</b> La file</button>
+      <button class="try-opt" data-ok="0"><b class="rb-kbd">C</b> L'arbre binaire</button>
+      <div class="rb-xp-bar" style="margin-top:1rem"><div class="rb-xp-bar__fill" id="try-bar" style="--p:88%"></div></div>
+      <p class="rb-caption" style="margin-top:.4rem" id="try-hint">Encore 30 XP avant le niveau 8…</p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ MATIÈRES ═══════════════════════════════════ -->
-<section class="py-20 px-4 bg-[var(--rb-cream)]">
-  <div class="max-w-5xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3 reveal">Même sans document, commence maintenant</h2>
-    <p class="text-slate-600 mb-10 reveal font-semibold">Banque de +100 000 questions par matière. Prêtes à l'emploi.</p>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="subjects-grid"></div>
+<!-- ═══════════════════════════════ TÉMOIGNAGES ═══════════════════════════════ -->
+<section class="rb-section rb-section--sunk" style="overflow:hidden">
+  <div class="rb-container rb-section-head rb-reveal">
+    <span class="rb-section-num">05</span>
+    <div><span class="rb-eyebrow">Ils révisent avec RelBrain</span><h2 class="rb-h1" style="margin-top:.5rem">Des notes qui <em>remontent</em>.</h2></div>
+    <div class="rb-section-head__rule"></div>
+  </div>
+  <div class="notes-wrap">
+    <div class="notes-row" id="notes-1"></div>
+    <div class="notes-row notes-row--rev" id="notes-2"></div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ PRICING ═══════════════════════════════════ -->
-<section id="pricing" class="py-24 px-4 bg-white">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-14 reveal">
-      <div class="rb-badge mb-5"><span class="dot"></span> Tarifs</div>
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Simple et transparent</h2>
-      <p class="text-slate-600 text-lg mb-6">Commence gratuitement. Évolue quand tu es prêt.</p>
-      <div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-4 py-2 rounded-full">
-        <i class="fa-solid fa-gift"></i> -30% la première année avec le code <span class="bg-emerald-500 text-white px-2 py-0.5 rounded">BRAIN30</span>
-      </div>
+<!-- ═══════════════════════════════ MATIÈRES ═══════════════════════════════ -->
+<section class="rb-section">
+  <div class="rb-container rb-container--narrow" style="text-align:center">
+    <span class="rb-eyebrow">Même sans document</span>
+    <h2 class="rb-h2" style="margin:.5rem 0 .75rem">Commence tout de suite, par matière.</h2>
+    <p class="rb-lead" style="margin-bottom:2rem">Choisis une matière : l'IA s'appuie sur le programme de ton niveau.</p>
+    <div class="subjects" id="subjects" data-rb-stagger="40"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TARIFS ═══════════════════════════════ -->
+<section class="rb-section rb-section--white" id="pricing">
+  <div class="rb-container">
+    <div class="rb-section-head rb-reveal">
+      <span class="rb-section-num">06</span>
+      <div><span class="rb-eyebrow">Tarifs</span><h2 class="rb-h1" style="margin-top:.5rem">Simple, transparent, <em>payable en Mobile Money</em>.</h2></div>
+      <div class="rb-section-head__rule"></div>
     </div>
-
-    <div class="grid md:grid-cols-3 gap-6 items-start">
-      <!-- Free -->
-      <div class="reveal rb-card border-2 border-slate-200 p-7 card-lift">
-        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Gratuit</p>
-        <div class="mb-5">
-          <span class="text-5xl font-black text-slate-900">0€</span>
-          <span class="text-slate-500 text-sm font-semibold">/mois</span>
-        </div>
-        <p class="text-sm text-slate-500 mb-6 font-semibold">Parfait pour découvrir RelBrain et commencer à réviser.</p>
-        <ul class="space-y-2.5 mb-7 text-sm">
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">5 documents / mois</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Quiz jusqu'à 10 questions</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Flashcards basiques</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Résumé court</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-slate-300 w-4"></i><span class="text-slate-400">Mode examen</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-slate-300 w-4"></i><span class="text-slate-400">IA adaptative</span></li>
+    <div class="pricing" data-rb-stagger="100">
+      <article class="price rb-sheet">
+        <span class="tier">Gratuit</span>
+        <div class="amount">0 €<small> /mois</small></div><span class="xaf">0 FCFA · pour toujours</span>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 5 documents / mois</li>
+          <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 10 questions</li>
+          <li><i class="fa-solid fa-check"></i> Flashcards avec révision espacée</li>
+          <li><i class="fa-solid fa-check"></i> Résumé court & points clés</li>
+          <li class="off"><i class="fa-solid fa-xmark"></i> IA adaptative</li>
+          <li class="off"><i class="fa-solid fa-xmark"></i> Fiches détaillées</li>
         </ul>
-        <a href="relbrain-signup.html" class="block text-center border-2 border-slate-200 hover:border-violet-400 hover:bg-violet-50 text-slate-700 font-bold py-3 rounded-xl transition-all">Commencer</a>
-      </div>
-
-      <!-- Pro -->
-      <div class="reveal delay-1 rounded-3xl p-7 card-lift relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899)">
-        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-black px-4 py-1 rounded-full shadow-lg">⭐ POPULAIRE</div>
-        <p class="text-xs font-black uppercase tracking-widest text-violet-200 mb-3 mt-2">Pro</p>
-        <div class="mb-5">
-          <span class="text-5xl font-black text-white">9€</span>
-          <span class="text-violet-200 text-sm font-semibold">/mois</span>
-        </div>
-        <p class="text-sm text-violet-100 mb-6 font-semibold">Pour les étudiants sérieux qui veulent tout maîtriser.</p>
-        <ul class="space-y-2.5 mb-7 text-sm">
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Documents illimités</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Quiz jusqu'à 30 questions</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Flashcards + révision espacée</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Résumés détaillés</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">Mode examen blanc</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-300 w-4"></i><span class="text-white">IA adaptative</span></li>
+        <a href="relbrain-signup.html" class="rb-btn rb-btn--ghost rb-btn--block">Commencer</a>
+      </article>
+      <article class="price price--featured rb-sheet">
+        <span class="tier">Pro · le plus choisi</span>
+        <div class="amount">9 €<small> /mois</small></div><span class="xaf">ou 5 900 FCFA / mois · 2 mois offerts à l'année</span>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Documents illimités</li>
+          <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 30 questions</li>
+          <li><i class="fa-solid fa-check"></i> IA adaptative sur tes points faibles</li>
+          <li><i class="fa-solid fa-check"></i> Fiches de révision détaillées</li>
+          <li><i class="fa-solid fa-check"></i> 200 requêtes IA / jour</li>
+          <li><i class="fa-solid fa-check"></i> API pour tes propres outils</li>
         </ul>
-        <a href="relbrain-signup.html" class="block text-center bg-white hover:bg-amber-50 text-violet-700 font-black py-3 rounded-xl transition-all shadow-lg">Essai gratuit 7 jours</a>
-      </div>
-
-      <!-- Équipe -->
-      <div class="reveal delay-2 rb-card border-2 border-slate-200 p-7 card-lift">
-        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Équipe / Lycée</p>
-        <div class="mb-5">
-          <span class="text-5xl font-black text-slate-900">19€</span>
-          <span class="text-slate-500 text-sm font-semibold">/mois</span>
-        </div>
-        <p class="text-sm text-slate-500 mb-6 font-semibold">Pour les profs, tuteurs et groupes d'étudiants.</p>
-        <ul class="space-y-2.5 mb-7 text-sm">
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Tout du plan Pro</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Jusqu'à 10 membres</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Quiz partagés en classe</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Tableau de bord prof</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Classement de groupe</span></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 w-4"></i><span class="text-slate-700">Support prioritaire</span></li>
+        <a href="relbrain-signup.html" class="rb-btn rb-btn--paper rb-btn--block">Essayer Pro</a>
+      </article>
+      <article class="price rb-sheet">
+        <span class="tier">Premium · groupes & lycées</span>
+        <div class="amount">19 €<small> /mois</small></div><span class="xaf">ou 12 500 FCFA / mois</span>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Tout Pro, jusqu'à 50 questions</li>
+          <li><i class="fa-solid fa-check"></i> Jusqu'à 10 membres</li>
+          <li><i class="fa-solid fa-check"></i> Tableau de bord enseignant</li>
+          <li><i class="fa-solid fa-check"></i> Classement de groupe</li>
+          <li><i class="fa-solid fa-check"></i> Support prioritaire</li>
         </ul>
-        <a href="relbrain-contact.html" class="block text-center border-2 border-slate-200 hover:border-violet-400 hover:bg-violet-50 text-slate-700 font-bold py-3 rounded-xl transition-all">Contacter</a>
-      </div>
+        <a href="relbrain-contact.html?sujet=partnership" class="rb-btn rb-btn--ghost rb-btn--block">Nous contacter</a>
+      </article>
+    </div>
+    <div class="pay-logos rb-reveal">
+      <span class="rb-tag rb-tag--outline">🟠 Orange Money</span><span class="rb-tag rb-tag--outline">🟡 MTN MoMo</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-visa"></i> Visa</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span><span class="rb-tag rb-tag--emerald">Sans engagement</span>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ FAQ ═══════════════════════════════════ -->
-<section class="py-20 px-4 bg-[var(--rb-cream)]">
-  <div class="max-w-2xl mx-auto">
-    <div class="text-center mb-12 reveal">
-      <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">Questions fréquentes</h2>
-      <p class="text-slate-600 font-semibold">Tout ce que tu dois savoir sur RelBrain AI.</p>
+<!-- ═══════════════════════════════ FAQ ═══════════════════════════════ -->
+<section class="rb-section">
+  <div class="rb-container rb-container--narrow">
+    <div style="text-align:center;margin-bottom:2rem" class="rb-reveal">
+      <span class="rb-eyebrow">Questions fréquentes</span>
+      <h2 class="rb-h2" style="margin-top:.5rem">Tout ce que tu veux savoir.</h2>
     </div>
-    <div class="space-y-3" id="faq-list"></div>
+    <div class="rb-accordion rb-reveal" id="faq"></div>
+    <p class="rb-caption" style="text-align:center;margin-top:1.5rem">Une autre question ? <a href="relbrain-support.html" style="color:var(--rb-violet);font-weight:750">Centre d'aide</a> · <a href="relbrain-contact.html" style="color:var(--rb-violet);font-weight:750">Nous écrire</a></p>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ CTA FINAL ═══════════════════════════════════ -->
-<section class="py-24 px-4 bg-white">
-  <div class="max-w-2xl mx-auto text-center reveal">
-    <div class="rounded-3xl p-10 md:p-14 shadow-2xl relative overflow-hidden" style="background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);box-shadow:0 30px 80px rgba(124,58,237,.35)">
-      <div class="absolute inset-0" style="background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,255,255,.18),transparent)"></div>
-      <div class="relative z-10">
-        <svg class="mx-auto mb-6 w-12 h-12 sparkle1 text-amber-300" viewBox="0 0 40 40" fill="none">
-          <path d="M20 2 L22 18 L38 20 L22 22 L20 38 L18 22 L2 20 L18 18 Z" fill="currentColor"/>
-        </svg>
-        <h2 class="text-3xl md:text-4xl font-black text-white mb-3">Prêt à apprendre<br/>autrement ?</h2>
-        <p class="text-violet-100 mb-8 text-base font-semibold">Rejoins 500 000 étudiants. Commence gratuitement.</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="signup.html" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-amber-50 text-violet-700 font-black px-8 py-4 rounded-full text-base transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-            <i class="fa-solid fa-rocket"></i> Commencer gratuitement
-          </a>
-          <a href="signup.html" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-7 py-4 rounded-full text-base transition-all">
-            <i class="fa-solid fa-cloud-arrow-up"></i> Uploader un document
-          </a>
-        </div>
-        <p class="text-violet-200 text-xs mt-5 font-semibold">Plan Pro · Essai 7 jours gratuit · Annulation en 1 clic</p>
-      </div>
+<!-- ═══════════════════════════════ CTA FINAL ═══════════════════════════════ -->
+<section class="rb-container" style="padding-bottom:var(--rb-section)">
+  <div class="final rb-reveal--scale">
+    <div class="glyphs" aria-hidden="true"><span style="left:8%;top:18%">π</span><span style="right:10%;top:22%;animation-delay:1s">√</span><span style="left:14%;bottom:16%;animation-delay:2s">∑</span><span style="right:16%;bottom:20%;animation-delay:.5s">✦</span></div>
+    <p class="rb-eyebrow" style="color:#c4b5fd;justify-content:center">Ton cerveau. Tes cours. Ton apprentissage.</p>
+    <h2 class="rb-h1" style="margin:1rem auto 1.25rem;max-width:40rem">Prêt·e à apprendre <em style="color:#f9a8d4">autrement</em> ?</h2>
+    <p style="color:#cfc6e4;font-weight:550;margin-bottom:2rem">Rejoins les étudiants qui révisent moins longtemps, mais mieux.</p>
+    <div class="rb-row" style="justify-content:center">
+      <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-rocket"></i> Commencer gratuitement</a>
+      <a href="relbrain-documentation.html" class="rb-btn rb-btn--lg" style="--_bg:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)">Lire le guide</a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════════ -->
-<footer class="bg-slate-900 text-white pt-16 pb-8 px-4">
-  <div class="max-w-5xl mx-auto">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-      <div class="col-span-2 md:col-span-1">
-        <div class="flex items-center gap-2 mb-4">
-          <div class="bg-violet-600 text-white p-1.5 rounded-xl"><i class="fa-solid fa-brain text-lg"></i></div>
-          <span class="text-lg font-black">RelBrain.ai</span>
-        </div>
-        <p class="text-sm text-slate-400 leading-relaxed mb-4">Transforme tes documents en apprentissage intelligent.</p>
-        <div class="flex items-center gap-3">
-          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-twitter text-xs"></i></a>
-          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-instagram text-xs"></i></a>
-          <a href="relbrain-discord.html" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-discord text-xs"></i></a>
-          <a href="#" class="w-8 h-8 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"><i class="fa-brands fa-tiktok text-xs"></i></a>
-        </div>
-      </div>
-      <div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Produit</p>
-        <ul class="space-y-2.5 text-sm text-slate-400">
-          <li><a href="#features" class="hover:text-white transition-colors">Fonctionnalités</a></li>
-          <li><a href="#pricing" class="hover:text-white transition-colors">Tarifs</a></li>
-          <li><a href="relbrain-integrations.html" class="hover:text-white transition-colors">API</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Ressources</p>
-        <ul class="space-y-2.5 text-sm text-slate-400">
-          <li><a href="relbrain-blog.html" class="hover:text-white transition-colors">Blog</a></li>
-          <li><a href="relbrain-support.html" class="hover:text-white transition-colors">Centre d'aide</a></li>
-          <li><a href="relbrain-discord.html" class="hover:text-white transition-colors">Discord</a></li>
-          <li><a href="relbrain-contact.html" class="hover:text-white transition-colors">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Légal</p>
-        <ul class="space-y-2.5 text-sm text-slate-400">
-          <li><a href="relbrain-mentions-legales.html" class="hover:text-white transition-colors">Mentions légales</a></li>
-          <li><a href="relbrain-cgu.html" class="hover:text-white transition-colors">CGU</a></li>
-          <li><a href="relbrain-confidentialite.html" class="hover:text-white transition-colors">Confidentialité</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-      <p class="text-xs text-slate-500">© 2026 RelBrain AI. Tous droits réservés.</p>
-      <div class="flex items-center gap-4">
-        <span class="text-xs text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Données chiffrées</span>
-        <span class="text-xs text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-lock text-violet-400"></i> RGPD conforme</span>
-      </div>
-    </div>
-  </div>
-</footer>
+</main>
+
+<footer data-rb-site-footer></footer>
 
 <script>
-/* ── Navbar scroll ── */
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('nav-scrolled', window.scrollY > 20);
-});
-
-/* ── Mobile menu ── */
-function toggleMenu(){document.getElementById('mobile-menu').classList.toggle('hidden');}
-
-/* ── Reviews carrousel ── */
-(function renderReviews(){
-  const rows = [
-    {target:'review-row-1', gradient:'from-violet-400 to-violet-600', data:[
-      {name:'Mohamed K.',text:"J'ai eu 19/20 en algorithmique grâce à RelBrain. Incroyable !",days:'2j'},
-      {name:'Chelsea M.',text:"Je prépare le BAC et RelBrain m'a sauvé la vie.",days:'5j'},
-      {name:'Pharel F.',text:"Upload le PDF le soir, quiz le matin. Révolution totale.",days:'1j'},
-      {name:'Sophie T.',text:"Vraiment addictif ! Les flashcards retournables sont géniales.",days:'8j'},
-      {name:'Jean-Pierre',text:"Note A+ en biologie grâce à RelBrain !",days:'12j'},
-      {name:'Amira D.',text:"Les résumés générés sont meilleurs que mes notes.",days:'3j'},
-      {name:'Marie R.',text:"Le mode IA adaptatif cible exactement mes lacunes.",days:'6j'},
-      {name:'Nadia L.',text:"J'ai rattrapé 2 semaines de cours en une soirée.",days:'9j'},
-    ]},
-    {target:'review-row-2', gradient:'from-pink-400 to-violet-500', data:[
-      {name:'Sara H.',text:"Le système de révision espacée est addictif !",days:'4j'},
-      {name:'Samuel P.',text:"J'utilise RelBrain pour mes partiels de médecine. Irremplaçable.",days:'7j'},
-      {name:'Ines F.',text:"L'IA comprend même mes notes manuscrites en photo.",days:'2j'},
-      {name:'Paul C.',text:"Le mode examen blanc m'a permis de gérer mon stress.",days:'15j'},
-      {name:'Fatima Z.',text:"Gratuit, puissant, intuitif. Je recommande à tous.",days:'1j'},
-      {name:'Pierre L.',text:"Testé par mes 3 enfants, ils adorent tous !",days:'11j'},
-      {name:'Jessica B.',text:"Je pensais que rien ne battrait Quizlet. Battu !",days:'5j'},
-      {name:'Ibrahim M.',text:"10/10 — le classement me motive énormément.",days:'3j'},
-    ]},
+document.addEventListener('DOMContentLoaded', function () {
+  /* ── Témoignages ── */
+  var notes = [
+    ["J'ai eu 19/20 en algorithmique grâce à RelBrain. Incroyable !", 'Mohamed K.', '#7c3aed'],
+    ["Je prépare le BAC et RelBrain m'a sauvé la vie.", 'Chelsea M.', '#ec4899'],
+    ["Upload le PDF le soir, quiz le matin. Révolution totale.", 'Pharel F.', '#f59e0b'],
+    ["Les flashcards retournables sont vraiment addictives.", 'Sophie T.', '#10b981'],
+    ["Les résumés générés sont meilleurs que mes notes.", 'Amira D.', '#0ea5e9'],
+    ["Le mode adaptatif cible exactement mes lacunes.", 'Marie R.', '#a855f7'],
+    ["J'ai rattrapé deux semaines de cours en une soirée.", 'Nadia L.', '#ec4899'],
+    ["La révision espacée, c'est le vrai secret.", 'Sara H.', '#7c3aed'],
+    ["Je l'utilise pour mes partiels de médecine. Irremplaçable.", 'Samuel P.', '#10b981'],
+    ["L'IA comprend même mes notes manuscrites en photo.", 'Inès F.', '#f59e0b'],
+    ["Le classement de la semaine me motive énormément.", 'Ibrahim M.', '#0ea5e9'],
+    ["Payé en Orange Money en une minute. Enfin !", 'Fatima Z.', '#a855f7'],
   ];
-  rows.forEach(({target, gradient, data}) => {
-    const el = document.getElementById(target);
-    const build = (r) => `
-      <div class="flex-shrink-0 w-72 review-card">
-        <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-sm font-black shrink-0">${r.name.charAt(0)}</div>
-          <div class="flex-1">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold text-slate-500">${r.name}</span>
-              <span class="text-[10px] text-slate-400">${r.days}</span>
-            </div>
-            <div class="text-amber-400 text-xs mb-2">★★★★★</div>
-            <p class="text-slate-900 text-sm leading-relaxed font-bold">${r.text}</p>
-          </div>
-        </div>
-      </div>`;
-    el.innerHTML = [...data, ...data].map(build).join('');
-  });
-})();
+  function row(list) {
+    return list.concat(list).map(function (n, i) {
+      return '<figure class="note" style="--r:' + ((i % 3) - 1) * 1.4 + 'deg"' + (i >= list.length ? ' aria-hidden="true"' : '') + '><p>« ' + n[0] + ' »</p><footer><i style="background:' + n[2] + '">' + n[1].charAt(0) + '</i>' + n[1] + ' <span style="margin-left:auto;color:var(--rb-amber)">★★★★★</span></footer></figure>';
+    }).join('');
+  }
+  document.getElementById('notes-1').innerHTML = row(notes.slice(0, 6));
+  document.getElementById('notes-2').innerHTML = row(notes.slice(6));
 
-/* ── Matières ── */
-(function renderSubjects(){
-  const subjects = [
-    {name:'Mathématiques', icon:'fa-square-root-variable', color:'blue'},
-    {name:'Physique', icon:'fa-atom', color:'violet'},
-    {name:'Chimie', icon:'fa-flask', color:'emerald'},
-    {name:'SVT / Bio', icon:'fa-dna', color:'rose'},
-    {name:'Informatique', icon:'fa-code', color:'indigo'},
-    {name:'Histoire', icon:'fa-landmark', color:'amber'},
-    {name:'Géographie', icon:'fa-globe', color:'teal'},
-    {name:'Économie', icon:'fa-chart-line', color:'orange'},
-    {name:'Droit', icon:'fa-scale-balanced', color:'slate'},
-    {name:'Médecine', icon:'fa-stethoscope', color:'pink'},
+  /* ── Matières ── */
+  var subjects = [['Mathématiques', 'fa-square-root-variable'], ['Physique', 'fa-atom'], ['Chimie', 'fa-flask'], ['SVT / Biologie', 'fa-dna'], ['Informatique', 'fa-code'], ['Histoire', 'fa-landmark'], ['Géographie', 'fa-globe'], ['Économie', 'fa-chart-line'], ['Droit', 'fa-scale-balanced'], ['Médecine', 'fa-stethoscope'], ['Philosophie', 'fa-feather'], ['Anglais', 'fa-language']];
+  document.getElementById('subjects').innerHTML = subjects.map(function (s) {
+    return '<a class="subject" href="relbrain-signup.html"><i class="fa-solid ' + s[1] + '" style="color:var(--rb-violet)"></i>' + s[0] + '</a>';
+  }).join('');
+
+  /* ── FAQ ── */
+  var faqs = [
+    ['Comment fonctionne la génération de quiz ?', "Tu importes un document. L'IA en extrait le texte, repère les notions clés et génère des questions adaptées au niveau choisi, avec une explication pour chacune. Tout est prêt en une trentaine de secondes."],
+    ['Mes documents sont-ils confidentiels ?', "Oui. Tes fichiers sont stockés dans un espace privé chiffré, accessible uniquement par ton compte. Ils ne sont ni vendus, ni publiés, ni utilisés pour entraîner des modèles. Détails dans notre politique de confidentialité."],
+    ['Puis-je payer avec Orange Money ou MTN MoMo ?', "Oui. Les forfaits Pro et Premium se paient en FCFA par Orange Money ou MTN Mobile Money, ou par carte bancaire en euros. Pas de prélèvement automatique : tu achètes 1 mois ou 12 mois (dont 2 offerts)."],
+    ['Quelle différence avec Quizlet ou Anki ?', "RelBrain génère automatiquement le contenu depuis TES cours et l'adapte à tes points faibles. Avec Quizlet ou Anki, tu dois créer toi-même tes cartes. RelBrain utilise le même algorithme de révision espacée (SM-2) qu'Anki."],
+    ['Ça marche avec une connexion lente ?', "RelBrain est conçu pour le mobile et les connexions instables : pages légères, mise en cache hors-ligne des pages déjà visitées, et reprise automatique des sessions."],
+    ['Le plan gratuit est-il vraiment gratuit ?', "Oui, sans carte bancaire et sans limite de durée : 5 documents par mois, quiz de 10 questions, flashcards et résumés courts. Tu passes à Pro quand tu veux."],
   ];
-  document.getElementById('subjects-grid').innerHTML = subjects.map(s => `
-    <div class="flex flex-col items-center gap-2 p-4 bg-white border border-${s.color}-200 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all card-lift">
-      <i class="fa-solid ${s.icon} text-xl text-${s.color}-500"></i>
-      <span class="text-xs font-black text-${s.color}-700">${s.name}</span>
-    </div>
-  `).join('');
-})();
+  document.getElementById('faq').innerHTML = faqs.map(function (f) { return '<details><summary>' + f[0] + '</summary><div>' + f[1] + '</div></details>'; }).join('');
 
-/* ── FAQ ── */
-(function renderFaq(){
-  const faqs = [
-    {q:"Comment fonctionne la génération de quiz ?", a:"Tu importes un document. Notre IA en extrait le texte, identifie les concepts clés et génère automatiquement des questions adaptées au niveau choisi. Tout est prêt en moins de 30 secondes."},
-    {q:"Mes documents sont-ils confidentiels ?", a:"Absolument. Tes fichiers sont chiffrés et ne sont jamais partagés. Ils sont utilisés uniquement pour générer ton contenu pédagogique, puis supprimés de nos serveurs."},
-    {q:"Quelle différence avec Quizlet ou Kahoot ?", a:"RelBrain génère automatiquement du contenu depuis TES documents, adapté à ton niveau. Quizlet nécessite de créer toi-même tes cartes. Kahoot est conçu pour la classe. RelBrain combine les deux avec l'IA."},
-    {q:"Le plan gratuit est-il vraiment gratuit ?", a:"Oui, sans carte bancaire requise. 5 documents par mois, quiz de 10 questions, flashcards de base. Tu peux passer à Pro à tout moment."},
-    {q:"Puis-je utiliser RelBrain sur mobile ?", a:"RelBrain est entièrement responsive et fonctionne sur tous les appareils. Une application mobile dédiée arrive bientôt."},
-    {q:"Comment fonctionne la révision espacée ?", a:"Notre algorithme est inspiré du système SM-2 (comme Anki). Il calcule le meilleur moment pour te re-proposer chaque flashcard selon ta performance passée."},
-  ];
-  document.getElementById('faq-list').innerHTML = faqs.map((f,i) => `
-    <div class="faq-item rb-card overflow-hidden cursor-pointer hover:border-violet-300 transition-all" onclick="toggleFaq(${i})">
-      <div class="flex items-center justify-between px-6 py-4">
-        <p class="text-sm font-bold text-slate-900 pr-4">${f.q}</p>
-        <i class="fa-solid fa-plus text-slate-400 faq-icon text-sm shrink-0"></i>
-      </div>
-      <div class="faq-answer">
-        <p class="px-6 pb-5 text-sm text-slate-500 leading-relaxed">${f.a}</p>
-      </div>
-    </div>
-  `).join('');
-})();
+  /* ── Carte retournable ── */
+  var flip = document.getElementById('demo-flip');
+  function doFlip() { flip.classList.toggle('is-flipped'); }
+  flip.addEventListener('click', doFlip);
+  flip.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doFlip(); } });
 
-function toggleFaq(idx){
-  const items = document.querySelectorAll('.faq-item');
-  const wasOpen = items[idx].classList.contains('open');
-  items.forEach(i => i.classList.remove('open'));
-  if (!wasOpen) items[idx].classList.add('open');
-}
-
-/* ── Smooth scroll ── */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-      document.getElementById('mobile-menu')?.classList.add('hidden');
-    }
+  /* ── Mini-quiz : éclat de savoir + XP + niveau ── */
+  var done = false;
+  document.querySelectorAll('#try .try-opt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (done) return;
+      if (b.dataset.ok === '1') {
+        done = true; b.classList.add('is-right', 'rb-answer-right');
+        RB.motion.burst(b, { count: 14 });
+        RB.motion.xp(30, b, { progress: 100 });
+        document.getElementById('try-hint').textContent = 'Bravo ! La file suit le principe FIFO.';
+        setTimeout(function () { RB.motion.levelUp(8, { perks: ['🎨 Thème « Nuit étoilée »', '❄️ +1 gel de série'] }); }, 1100);
+      } else {
+        b.classList.add('is-wrong'); RB.motion.shake(b);
+        document.getElementById('try-hint').textContent = 'Presque ! La pile, c\'est « dernier arrivé, premier servi ».';
+      }
+    });
   });
+
+  /* ── Scène du hero : surligneur → synapses → quiz → XP (boucle) ── */
+  var scene = document.getElementById('scene');
+  var marks = scene.querySelectorAll('.sheet .rb-mark');
+  var quiz = document.getElementById('scene-quiz'), right = document.getElementById('scene-right');
+  var links = document.getElementById('scene-links');
+  function drawLinks() {
+    var box = scene.getBoundingClientRect(), q = quiz.getBoundingClientRect();
+    var tx = q.left - box.left + 20, ty = q.top - box.top + 14;
+    links.setAttribute('viewBox', '0 0 ' + box.width + ' ' + box.height);
+    links.innerHTML = Array.prototype.map.call(marks, function (m) {
+      var r = m.getBoundingClientRect(), x = r.left - box.left + r.width / 2, y = r.bottom - box.top;
+      return '<path d="M' + x + ' ' + y + ' C ' + x + ' ' + (y + 60) + ', ' + (tx - 40) + ' ' + (ty - 40) + ', ' + tx + ' ' + ty + '"/>';
+    }).join('');
+  }
+  var xp = 2340;
+  function play() {
+    if (RB.motion.reduce()) { marks.forEach(function (m) { m.classList.add('is-on'); }); quiz.classList.add('is-on'); right.classList.add('is-right'); return; }
+    marks.forEach(function (m) { m.classList.remove('is-on'); });
+    quiz.classList.remove('is-on'); right.classList.remove('is-right'); links.classList.remove('is-on');
+    marks.forEach(function (m, i) { setTimeout(function () { m.classList.add('is-on'); }, 500 + i * 650); });
+    setTimeout(function () { drawLinks(); links.classList.add('is-on'); }, 2600);
+    setTimeout(function () { quiz.classList.add('is-on'); }, 3100);
+    setTimeout(function () { right.classList.add('is-right'); RB.motion.burst(right, { count: 10, spread: 80 }); }, 4700);
+    setTimeout(function () {
+      links.classList.remove('is-on');
+      RB.motion.countUp(document.getElementById('scene-xp'), xp + 20, { from: xp, suffix: ' XP' }); xp += 20;
+      document.getElementById('scene-bar').style.setProperty('--p', Math.min(96, 62 + (xp - 2340) / 2) + '%');
+    }, 5200);
+  }
+  var started = false;
+  new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting && !started) { started = true; play(); setInterval(function () { if (!document.hidden) play(); }, 10000); }
+  }, { threshold: .3 }).observe(scene);
+  window.addEventListener('resize', function () { if (links.classList.contains('is-on')) drawLinks(); });
 });
-
-/* ── Pause carrousels hover ── */
-document.querySelectorAll('.animate-scroll-right, .animate-scroll-left').forEach(el => {
-  el.parentElement.addEventListener('mouseenter', () => el.style.animationPlayState='paused');
-  el.parentElement.addEventListener('mouseleave', () => el.style.animationPlayState='running');
-});
-
-/* ── Scroll reveal ── */
-const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }});
-}, {threshold: 0.12});
-document.querySelectorAll('.reveal, .reveal-scale').forEach(el => revealObserver.observe(el));
-
-/* ── Counter animation ── */
-const counterObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const el = e.target;
-      const target = parseFloat(el.dataset.count);
-      const divide = parseFloat(el.dataset.divide || 1);
-      const suffix = el.dataset.suffix || '';
-      const duration = 1600;
-      const start = performance.now();
-      const tick = (now) => {
-        const p = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        const val = target * eased;
-        el.textContent = (divide > 1 ? (val/divide).toFixed(1) : Math.round(val)) + suffix;
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-      counterObserver.unobserve(el);
-    }
-  });
-}, {threshold: 0.4});
-document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 </script>
 </body>
 </html>

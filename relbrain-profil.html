@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.ai – Mon profil</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -101,7 +105,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -137,29 +141,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4" style="border-color:#c4b5fd;background:#faf5ff;">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
-      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -174,20 +179,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -206,7 +211,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         </div>
         <div class="flex-1 text-center sm:text-left">
           <h1 class="text-lg md:text-xl font-black text-slate-900 mb-0.5" id="prev-name">Pharel FOFE</h1>
-          <p class="text-xs text-slate-500 font-semibold mb-2">pharel@relbrain.ai · Douala, Cameroun</p>
+          <p class="text-xs text-slate-500 font-semibold mb-2" id="prev-meta">pharel@relbrain.ai · Douala, Cameroun</p>
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
             <span class="text-[10px] font-black text-violet-700 bg-violet-100 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-star mr-1"></i> Niveau 7 · Scholar</span>
             <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">🔥 12 jours</span>
@@ -218,6 +223,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <label for="avatar-input" class="gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200 cursor-pointer text-center"><i class="fa-solid fa-camera mr-1"></i> Changer photo</label>
           <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="previewAvatar(this)"/>
           <button class="border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold px-4 py-2 rounded-lg text-xs" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk mr-1"></i> Enregistrer</button>
+          <div id="save-feedback" class="flex justify-center"></div>
         </div>
       </div>
     </div>
@@ -268,12 +274,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           </div>
           <div class="mb-3">
             <label class="rb-label">Email</label>
-            <div class="input-wrap"><i class="fa-solid fa-envelope input-icon"></i><input type="email" class="rb-input has-icon" value="pharel.fofe@exemple.com"/></div>
-            <p class="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-1"><i class="fa-solid fa-circle-check text-[9px]"></i> Adresse vérifiée</p>
+            <div class="input-wrap"><i class="fa-solid fa-envelope input-icon"></i><input type="email" id="email-input" class="rb-input has-icon" value="pharel.fofe@exemple.com"/></div>
+            <p class="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-1" id="email-status"><i class="fa-solid fa-circle-check text-[9px]"></i> Adresse vérifiée</p>
           </div>
           <div class="grid sm:grid-cols-2 gap-3">
-            <div><label class="rb-label">Téléphone</label><div class="input-wrap"><i class="fa-solid fa-phone input-icon"></i><input type="tel" class="rb-input has-icon" placeholder="+237 6 XX XX XX XX"/></div></div>
-            <div><label class="rb-label">Pays</label><input type="text" class="rb-input" value="Cameroun"/></div>
+            <div><label class="rb-label">Téléphone</label><div class="input-wrap"><i class="fa-solid fa-phone input-icon"></i><input type="tel" id="phone-input" class="rb-input has-icon" placeholder="+237 6 XX XX XX XX"/></div></div>
+            <div><label class="rb-label">Pays</label><input type="text" id="pays-input" class="rb-input" value="Cameroun"/></div>
           </div>
         </div>
 
@@ -284,7 +290,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <label class="rb-label mb-1.5">Niveau scolaire</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-3" id="level-grid"></div>
           <div class="grid sm:grid-cols-2 gap-3">
-            <div><label class="rb-label">Établissement</label><div class="input-wrap"><i class="fa-solid fa-building-columns input-icon"></i><input type="text" class="rb-input has-icon" value="Université de Douala"/></div></div>
+            <div><label class="rb-label">Établissement</label><div class="input-wrap"><i class="fa-solid fa-building-columns input-icon"></i><input type="text" id="etab-input" class="rb-input has-icon" value="Université de Douala"/></div></div>
             <div><label class="rb-label">Classe / Filière</label><div class="input-wrap"><i class="fa-solid fa-layer-group input-icon"></i><input type="text" id="classe" class="rb-input has-icon" value="L3 Informatique" oninput="syncPreview()"/></div></div>
           </div>
         </div>
@@ -300,7 +306,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <div class="rb-card p-4">
           <div class="flex items-center justify-between mb-3">
             <div>
-              <h2 class="font-black text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500 text-xs"></i> Badges</h2>
+              <h2 class="font-black text-slate-900 text-sm flex items-center gap-2" id="badges"><i class="fa-solid fa-trophy text-amber-500 text-xs"></i> Badges</h2>
               <p class="text-[10px] text-slate-400 font-semibold mt-0.5">10 débloqués sur 24</p>
             </div>
             <button class="text-[10px] font-black text-violet-600 hover:underline" onclick="toast('Tous les badges bientôt disponibles','info')">Voir tous →</button>
@@ -432,5 +438,135 @@ function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 document.getElementById('note-modal').addEventListener('click',e=>{if(e.target.id==='note-modal')closeNote();});
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Profil
+     Lecture / enregistrement du profil (RLS : colonnes « identité » seulement),
+     photo vers le bucket « avatars », statistiques et 45 badges réels.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(async function (ctx) {
+    var p = ctx.profile || {}, g = ctx.game || {};
+    var LEVEL_DB = { college: 'college', lycee: 'lycee', bts: 'bts', licence: 'licence', master: 'master', prepa: 'prepa', doctorat: 'autre', pro: 'autre' };
+    var LEVEL_LABEL = { college: 'Collège', lycee: 'Lycée', bts: 'BTS', licence: 'Licence', master: 'Master', prepa: 'Prépa', autre: 'Autre' };
+    var TIER = { bronze: '🥉 Ligue Bronze', argent: '🥈 Ligue Argent', or: '🥇 Ligue Or', platine: '💎 Ligue Platine', diamant: '💠 Ligue Diamant', maitre: '👑 Ligue Maître' };
+    var TITLES = ['Curieux·se', 'Apprenti·e', 'Explorateur·rice', 'Studieux·se', 'Stratège', 'Érudit·e', 'Maître des fiches', 'Virtuose', 'Sage', 'Légende'];
+    var avatarFile = null;
+
+    // Remplissage du formulaire
+    document.getElementById('prenom').value = p.first_name || '';
+    document.getElementById('nom').value = p.last_name || '';
+    document.getElementById('email-input').value = ctx.user.email || '';
+    document.getElementById('email-input').readOnly = true;
+    document.getElementById('email-status').innerHTML = ctx.user.email_confirmed_at
+      ? '<i class="fa-solid fa-circle-check text-[9px]"></i> Adresse vérifiée'
+      : '<i class="fa-solid fa-circle-exclamation text-[9px]"></i> En attente de validation — <a href="relbrain-validation-email.html" class="underline">renvoyer le lien</a>';
+    if (!ctx.user.email_confirmed_at) document.getElementById('email-status').className = 'text-[10px] text-amber-600 font-semibold mt-1 flex items-center gap-1';
+    document.getElementById('phone-input').value = p.phone ? '+' + p.phone.replace(/^\+/, '') : '';
+    document.getElementById('pays-input').value = p.country || '';
+    document.getElementById('etab-input').value = p.institution || '';
+    document.getElementById('classe').value = p.field || '';
+    if (p.school_level) selectLevel(p.school_level === 'autre' ? 'pro' : p.school_level);
+    selectedGoals = new Set(p.goals || []);
+    goals.forEach(function (goal) {
+      var on = selectedGoals.has(goal.id);
+      document.getElementById('goal-' + goal.id).classList.toggle('selected', on);
+      document.getElementById('gci-' + goal.id).classList.toggle('hidden', !on);
+    });
+    if (p.avatar_url) { var img = document.getElementById('avatar-img'); img.src = p.avatar_url; img.classList.remove('hidden'); document.getElementById('avatar-letter').classList.add('hidden'); }
+    document.getElementById('avatar-letter').textContent = (p.first_name || ctx.user.email || '?').charAt(0).toUpperCase();
+    syncPreview();
+    document.getElementById('prev-meta').textContent = [ctx.user.email, p.institution, p.country].filter(Boolean).join(' · ');
+
+    // Pastilles + stats
+    var tags = document.querySelectorAll('#prev-name ~ div span');
+    var title = TITLES[Math.min(TITLES.length - 1, Math.floor(((g.level || 1) - 1) / 3))];
+    if (tags[0]) tags[0].innerHTML = '<i class="fa-solid fa-star mr-1"></i> Niveau ' + (g.level || 1) + ' · ' + (p.title || title);
+    if (tags[1]) tags[1].textContent = '🔥 ' + (g.streak || 0) + ' jour' + ((g.streak || 0) > 1 ? 's' : '');
+    if (tags[2]) tags[2].textContent = '🎓 ' + [LEVEL_LABEL[p.school_level] || 'Niveau', p.field].filter(Boolean).join(' ');
+    if (tags[3] && g.league) tags[3].textContent = TIER[g.league.tier] || '';
+    var stats = document.querySelectorAll('.grid.grid-cols-2.md\\:grid-cols-4 .text-xl');
+    stats[0].textContent = RB.formatNumber(g.xp); stats[2].textContent = g.streak || 0;
+    try {
+      var act = await RB.data.activity(365);
+      var mins = (act.subjects || []).reduce(function (n, s) { return n + (s.study_seconds || 0); }, 0) / 60;
+      var quizzes = (act.subjects || []).reduce(function (n, s) { return n + (s.quizzes_taken || 0); }, 0);
+      stats[1].textContent = quizzes;
+      stats[3].textContent = mins >= 60 ? Math.round(mins / 60) + 'h' : Math.round(mins) + ' min';
+      stats[1].nextElementSibling.textContent = 'Quiz terminés';
+    } catch (e) {}
+
+    // Carte niveau
+    var levelCard = document.querySelector('.sticky-panel .rb-card');
+    if (levelCard) {
+      levelCard.querySelector('span').textContent = 'NIVEAU ' + (g.level || 1);
+      levelCard.querySelector('p.text-base').textContent = p.title || title;
+      levelCard.querySelector('p.text-violet-100').textContent = RB.formatNumber(g.next_level_xp - g.xp) + ' XP avant le niveau ' + ((g.level || 1) + 1);
+      var span = (g.next_level_xp - g.level_floor_xp) || 1;
+      levelCard.querySelector('.h-full.bg-white').style.width = Math.round((g.xp - g.level_floor_xp) / span * 100) + '%';
+    }
+
+    // Badges (45)
+    var all = [], showAll = false;
+    function renderBadges() {
+      var visible = all.filter(function (b) { return !b.secret || b.unlocked_at; });
+      var list = showAll ? visible : visible.filter(function (b) { return b.unlocked_at; }).concat(visible.filter(function (b) { return !b.unlocked_at; }).slice(0, 6)).slice(0, 12);
+      document.getElementById('badges-grid').innerHTML = list.map(function (b) {
+        return '<div class="ach-badge ' + (b.unlocked_at ? 'unlocked' : 'locked') + '" title="' + RB.escape(b.description + (b.unlocked_at ? ' — obtenu ' + RB.timeAgo(b.unlocked_at) : '')) + '">' +
+          '<div class="text-xl">' + (b.unlocked_at ? b.icon : '🔒') + '</div><p class="text-[9px] font-black text-slate-700 leading-tight">' + RB.escape(b.name) + '</p></div>';
+      }).join('');
+    }
+    try {
+      all = await RB.data.achievements();
+      var got = all.filter(function (b) { return b.unlocked_at; }).length;
+      var badgeHead = document.getElementById('badges-grid').previousElementSibling;
+      badgeHead.querySelector('p.text-\\[10px\\]').textContent = got + ' débloqués sur ' + all.length;
+      var btn = badgeHead.querySelector('button');
+      btn.removeAttribute('onclick');
+      btn.onclick = function () { showAll = !showAll; btn.textContent = showAll ? 'Réduire ↑' : 'Voir tous →'; renderBadges(); };
+      renderBadges();
+      if (location.hash === '#badges') document.getElementById('badges-grid').scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {}
+
+    // Photo
+    var baseAvatar = window.previewAvatar;
+    window.previewAvatar = function (input) {
+      var f = input.files && input.files[0]; if (!f) return;
+      if (f.size > 2 * 1024 * 1024) { toast('Image trop lourde (2 Mo maximum)', 'error'); return; }
+      avatarFile = f; baseAvatar(input);
+      toast('Photo prête — clique sur Enregistrer', 'info');
+    };
+
+    // Enregistrement
+    window.saveProfile = async function () {
+      var btn = document.querySelector('button[onclick="saveProfile()"]');
+      var first = document.getElementById('prenom').value.trim(), last = document.getElementById('nom').value.trim();
+      if (!first) { RB.motion.shake(document.getElementById('prenom')); toast('Le prénom est requis', 'error'); return; }
+      btn.classList.add('rb-btn', 'is-loading');
+      try {
+        if (avatarFile) { await RB.data.uploadAvatar(avatarFile); avatarFile = null; }
+        var phone = document.getElementById('phone-input').value.replace(/\D/g, '');
+        await RB.data.updateProfile({
+          first_name: first, last_name: last || null,
+          phone: phone || null,
+          country: document.getElementById('pays-input').value.trim() || null,
+          institution: document.getElementById('etab-input').value.trim() || null,
+          field: document.getElementById('classe').value.trim() || null,
+          school_level: LEVEL_DB[selectedLevel] || null,
+          goals: Array.from(selectedGoals),
+        });
+        syncPreview();
+        toast('Profil enregistré ✓', 'success');
+        RB.motion.success(document.getElementById('save-feedback'), { burst: false });
+        setTimeout(function () { document.getElementById('save-feedback').innerHTML = ''; }, 2500);
+        RB.refreshShell();
+        // Le badge « Carte d'identité » se débloque à la prochaine action notée
+      } catch (e) { RB.handleError(e); }
+      finally { btn.classList.remove('is-loading'); }
+    };
+  });
+});
+</script>
+
 </body>
 </html>

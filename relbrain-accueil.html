@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.AI – Accueil</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -130,7 +134,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -165,31 +169,32 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
       <div class="text-right shrink-0">
-        <p class="text-[9px] text-amber-500 font-black">🔥12</p>
+        <p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p>
       </div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item active"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -204,20 +209,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -283,7 +288,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       </svg>
     </div>
 
-    <h1 class="ai-greeting">Bonjour Pharel 👋</h1>
+    <h1 class="ai-greeting">Bonjour <span data-rb="first-name">Pharel</span> 👋</h1>
     <h2 class="ai-title">Comment puis-je t'<span class="gradient-text">aider</span> aujourd'hui ?</h2>
     <p class="ai-subtitle">Pose une question, colle un extrait de cours ou choisis une suggestion pour commencer.</p>
 
@@ -329,5 +334,177 @@ function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 document.getElementById('note-modal').addEventListener('click',e=>{if(e.target.id==='note-modal')closeNote();});
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);}
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Accueil : assistant IA + plan du jour
+     · Chat en streaming (/api/ai/chat), conversations sauvegardées,
+       contexte d'un document (RAG) au choix via le bouton « + ».
+     · Plan du jour : recommandations personnalisées + 3 défis quotidiens
+       + défi de la semaine (get_recommendations, get_my_gamification).
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style>
+.ai-hero.chatting{justify-content:flex-start;min-height:auto;padding-top:1rem}
+.ai-hero.chatting .brain-scene{width:56px;height:56px;margin-bottom:.5rem}
+.ai-hero.chatting .pulse-wave,.ai-hero.chatting .orbit-dot,.ai-hero.chatting .brain-halo-2{display:none}
+.ai-hero.chatting .ai-greeting,.ai-hero.chatting .ai-title,.ai-hero.chatting .ai-subtitle,.ai-hero.chatting .action-cards,.ai-hero.chatting .ai-suggestions,.ai-hero.chatting #coach-plan{display:none}
+#chat-thread{width:100%;max-width:640px;display:flex;flex-direction:column;gap:.85rem;margin-bottom:1rem;position:relative;z-index:1}
+.chat-msg{max-width:88%;padding:.8rem 1rem;border-radius:1rem;font-size:.85rem;line-height:1.6;font-weight:550;animation:rb-fade-up var(--rb-dur-base) var(--rb-ease-out)}
+.chat-msg.user{align-self:flex-end;background:var(--rb-ink);color:#fff;border-bottom-right-radius:.3rem}
+.chat-msg.bot{align-self:flex-start;background:var(--rb-surface);border:1px solid var(--rb-line);color:var(--rb-ink-2);border-bottom-left-radius:.3rem}
+.chat-msg.bot ul,.chat-msg.bot ol{padding-left:1.1rem;margin:.35rem 0}
+.chat-msg.bot ul{list-style:disc}.chat-msg.bot ol{list-style:decimal}
+.chat-msg.bot strong{color:var(--rb-ink)}
+.chat-msg.bot code{font-family:var(--rb-font-mono);font-size:.8em;background:var(--rb-surface-sunk);padding:.1em .35em;border-radius:.3em}
+.chat-doc-chip{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;position:relative;z-index:1}
+.doc-picker{position:absolute;bottom:calc(100% + .5rem);left:0;width:min(20rem,90vw);max-height:16rem;overflow:auto;background:var(--rb-surface);border:1px solid var(--rb-line);border-radius:var(--rb-radius-md);box-shadow:var(--rb-shadow-lg);z-index:20;padding:.35rem}
+.doc-picker button{display:block;width:100%;text-align:left;padding:.55rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:700;color:var(--rb-ink-2)}
+.doc-picker button:hover{background:var(--rb-violet-50);color:var(--rb-violet)}
+#coach-plan{width:100%;max-width:560px;margin-top:1.5rem;position:relative;z-index:1}
+.plan-item{display:flex;align-items:center;gap:.75rem;padding:.75rem .85rem;text-decoration:none}
+.plan-ring{--size:2.4rem}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(async function (ctx) {
+    var hero = document.querySelector('.ai-hero');
+    var input = document.getElementById('ai-input');
+    var wrap = document.querySelector('.ai-input-wrap');
+    var conversationId = sessionStorage.getItem('rb_conv') || null;
+    var documentId = null, documentTitle = null, sending = false;
+
+    // Fil de discussion + puce de document
+    var thread = document.createElement('div'); thread.id = 'chat-thread';
+    wrap.insertAdjacentElement('beforebegin', thread);
+    var chipBox = document.createElement('div'); chipBox.className = 'chat-doc-chip';
+    wrap.insertAdjacentElement('beforebegin', chipBox);
+
+    function md(text) {
+      var h = RB.escape(text)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+      var lines = h.split('\n'), out = [], list = null;
+      lines.forEach(function (l) {
+        var ul = l.match(/^\s*[-•*]\s+(.*)/), ol = l.match(/^\s*\d+[.)]\s+(.*)/);
+        if (ul || ol) {
+          var type = ul ? 'ul' : 'ol';
+          if (list !== type) { if (list) out.push('</' + list + '>'); out.push('<' + type + '>'); list = type; }
+          out.push('<li>' + (ul || ol)[1] + '</li>');
+        } else {
+          if (list) { out.push('</' + list + '>'); list = null; }
+          out.push(l.trim() ? l + '<br/>' : '<br/>');
+        }
+      });
+      if (list) out.push('</' + list + '>');
+      return out.join('').replace(/(<br\/>){3,}/g, '<br/><br/>');
+    }
+    function bubble(role, html) {
+      var el = document.createElement('div'); el.className = 'chat-msg ' + role; el.innerHTML = html;
+      thread.appendChild(el); el.scrollIntoView({ behavior: 'smooth', block: 'end' }); return el;
+    }
+    function renderChip() {
+      chipBox.innerHTML = documentId
+        ? '<span class="rb-tag"><i class="fa-solid fa-file-lines"></i> ' + RB.escape(documentTitle) + ' <button aria-label="Retirer le document" style="margin-left:.2rem" id="chip-x"><i class="fa-solid fa-xmark"></i></button></span>'
+        : '';
+      var x = document.getElementById('chip-x');
+      if (x) x.onclick = function () { documentId = null; renderChip(); };
+    }
+
+    // Reprise de la conversation en cours
+    if (conversationId) {
+      try {
+        var msgs = await RB.data.chat.messages(conversationId);
+        if (msgs.length) { hero.classList.add('chatting'); msgs.forEach(function (m) { bubble(m.role === 'user' ? 'user' : 'bot', m.role === 'user' ? RB.escape(m.content) : md(m.content)); }); }
+      } catch (e) { conversationId = null; }
+    }
+
+    window.sendAI = async function () {
+      var text = input.value.trim();
+      if (!text) { input.focus(); RB.motion.shake(wrap); return; }
+      if (sending) return;
+      sending = true; input.value = '';
+      hero.classList.add('chatting');
+      bubble('user', RB.escape(text));
+      var bot = bubble('bot', '');
+      var stop = RB.motion.thinking(bot, documentId ? ['Je relis ton cours', 'Je cherche le passage utile', 'Je formule une explication'] : ['Je réfléchis', 'Je connecte les idées', 'Je formule une explication']);
+      var started = Date.now(), first = true;
+      try {
+        var r = await RB.data.chat.send(text, {
+          conversationId: conversationId, documentId: documentId,
+          onDelta: function (_, full) { if (first) { stop(); first = false; } bot.innerHTML = md(full); bot.scrollIntoView({ block: 'end' }); },
+        });
+        if (first) stop();
+        conversationId = r.conversationId;
+        try { sessionStorage.setItem('rb_conv', conversationId); } catch (e) {}
+        if (!r.text) bot.innerHTML = '<em>Pas de réponse, réessaie.</em>';
+        RB.data.logSession('chat', (Date.now() - started) / 1000 + 60, documentId).catch(function () {});
+      } catch (e) {
+        stop(); bot.remove(); RB.handleError(e);
+      } finally { sending = false; input.focus(); }
+    };
+
+    // Nouvelle conversation
+    var reset = document.createElement('button');
+    reset.className = 'rb-btn rb-btn--ghost rb-btn--sm'; reset.style.cssText = 'position:relative;z-index:1;margin-top:.6rem';
+    reset.innerHTML = '<i class="fa-solid fa-plus"></i> Nouvelle conversation';
+    reset.onclick = function () { conversationId = null; sessionStorage.removeItem('rb_conv'); thread.innerHTML = ''; hero.classList.remove('chatting'); input.focus(); };
+    wrap.insertAdjacentElement('afterend', reset);
+
+    // Bouton « + » : choisir un cours comme contexte
+    var plus = wrap.querySelector('.ai-input-addon');
+    plus.setAttribute('aria-label', 'Discuter à partir d\'un de mes cours');
+    plus.removeAttribute('onclick');
+    plus.addEventListener('click', async function (e) {
+      e.stopPropagation();
+      var old = document.querySelector('.doc-picker'); if (old) { old.remove(); return; }
+      var picker = document.createElement('div'); picker.className = 'doc-picker';
+      picker.innerHTML = '<div style="padding:.6rem"><div class="rb-skeleton rb-skeleton-line"></div><div class="rb-skeleton rb-skeleton-line"></div></div>';
+      wrap.style.position = 'relative'; wrap.appendChild(picker);
+      try {
+        var docs = (await RB.data.documents.list()).filter(function (d) { return d.status === 'ready'; });
+        picker.innerHTML = docs.length ? '<p class="rb-caption" style="padding:.4rem .7rem">Discuter à partir de…</p>' + docs.map(function (d) { return '<button data-id="' + d.id + '">📄 ' + RB.escape(d.title) + '</button>'; }).join('')
+          : '<p class="rb-caption" style="padding:.8rem">Aucun cours analysé. <a href="relbrain-documents.html" style="color:var(--rb-violet)">Importer</a></p>';
+        picker.querySelectorAll('[data-id]').forEach(function (b) {
+          b.onclick = function () { documentId = b.getAttribute('data-id'); documentTitle = b.textContent.replace('📄 ', ''); renderChip(); picker.remove(); input.focus(); };
+        });
+      } catch (err) { picker.remove(); RB.handleError(err); }
+    });
+    document.addEventListener('click', function () { var p = document.querySelector('.doc-picker'); if (p) p.remove(); });
+
+    // Plan du jour
+    var plan = document.createElement('section'); plan.id = 'coach-plan';
+    document.querySelector('.action-cards').insertAdjacentElement('afterend', plan);
+    plan.innerHTML = '<div class="rb-skeleton" style="height:9rem;border-radius:1rem"></div>';
+    try {
+      var res = await Promise.all([RB.data.recommendations(), Promise.resolve(ctx.game)]);
+      var recs = res[0].slice(0, 3), game = res[1] || {};
+      var daily = (game.challenges || []).filter(function (c) { return c.period === 'daily'; });
+      var weekly = (game.challenges || []).find(function (c) { return c.period === 'weekly'; });
+      function ring(c) {
+        var p = Math.round(Math.min(100, c.progress / c.target * 100));
+        return '<svg class="rb-ring plan-ring" viewBox="0 0 100 100" style="--p:' + p + '"><circle class="rb-ring__track" cx="50" cy="50" r="42"/><circle class="rb-ring__fill" cx="50" cy="50" r="42" pathLength="100"' + (c.completed ? ' style="stroke:var(--rb-emerald)"' : '') + '/></svg>';
+      }
+      plan.innerHTML =
+        '<div class="flex items-end justify-between mb-2"><p class="rb-eyebrow">Ton plan du jour</p>' +
+        '<span class="rb-caption">' + (game.studied_today ? '✅ Série validée aujourd\'hui' : '🔥 Série : ' + (game.streak || 0) + ' j — étudie aujourd\'hui pour la prolonger') + '</span></div>' +
+        '<div class="rb-sheet rb-dogear" style="text-align:left;overflow:hidden">' +
+        recs.map(function (r) {
+          return '<a class="plan-item rb-lift" href="' + RB.escape(r.link) + '" style="border-bottom:1px solid var(--rb-line-soft)"><span style="font-size:1.3rem">' + r.icon + '</span>' +
+            '<span style="flex:1;min-width:0"><span class="text-xs font-black text-slate-800 block">' + RB.escape(r.title) + '</span><span class="text-[10px] text-slate-500 font-semibold block">' + RB.escape(r.body) + '</span></span>' +
+            '<span class="rb-tag">' + RB.escape(r.cta) + ' →</span></a>';
+        }).join('') +
+        '<div style="padding:.85rem;display:grid;grid-template-columns:repeat(' + Math.max(daily.length, 1) + ',1fr);gap:.6rem;background:var(--rb-surface-2)">' +
+        daily.map(function (c) {
+          return '<div style="display:flex;align-items:center;gap:.55rem;min-width:0">' + ring(c) +
+            '<span style="min-width:0"><span class="text-[10px] font-black text-slate-800 block truncate">' + c.icon + ' ' + RB.escape(c.title) + '</span>' +
+            '<span class="text-[9px] text-slate-500 font-bold block">' + (c.completed ? 'Réussi ✓' : c.progress + ' / ' + c.target) + ' · +' + c.xp + ' XP</span></span></div>';
+        }).join('') + '</div>' +
+        (weekly ? '<div style="padding:.65rem .85rem;border-top:1px solid var(--rb-line-soft);display:flex;align-items:center;gap:.6rem"><span class="rb-tag rb-tag--amber">Défi de la semaine</span><span class="text-[10px] font-bold text-slate-600" style="flex:1">' + RB.escape(weekly.title) + '</span>' +
+          '<div class="rb-xp-bar" style="width:6rem"><div class="rb-xp-bar__fill" style="--p:' + Math.round(Math.min(100, weekly.progress / weekly.target * 100)) + '%"></div></div><span class="text-[10px] font-black text-amber-600">+' + weekly.xp + '</span></div>' : '') +
+        '</div>';
+      RB.motion.reveal(plan);
+    } catch (e) { plan.innerHTML = ''; }
+  });
+});
+</script>
+
 </body>
 </html>

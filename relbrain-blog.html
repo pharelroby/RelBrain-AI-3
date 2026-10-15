@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Blog — RelBrain</title>
+<meta name="description" content="Méthodes de révision validées par la recherche, guides du Bac et des concours, et conseils pour réviser avec l'IA."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+<style>
+.post-cover{aspect-ratio:16/9;border-radius:var(--rb-radius-md);background:linear-gradient(135deg,var(--from),var(--to));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.post-cover::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 23px,rgba(255,255,255,.12) 23px 24px)}
+.post-cover::after{content:'';position:absolute;left:14%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35)}
+.post-cover span{font-size:3.2rem;position:relative;filter:drop-shadow(0 8px 18px rgba(0,0,0,.2));transition:transform var(--rb-dur-slow) var(--rb-ease-spring)}
+.post-card:hover .post-cover span{transform:scale(1.15) rotate(-6deg)}
+.post-cover--big{aspect-ratio:21/9}.post-cover--big span{font-size:5rem}
+.post-card{display:flex;flex-direction:column;text-decoration:none;padding:.75rem .75rem 1.25rem}
+.post-card h3{font-family:var(--rb-font-display);font-weight:650;font-size:1.3rem;line-height:1.25;color:var(--rb-ink);margin:1rem .5rem .5rem}
+.post-card p{font-size:.9rem;color:var(--rb-muted);font-weight:550;line-height:1.55;margin:0 .5rem}
+.post-meta{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:.9rem .5rem 0;font-size:.75rem;font-weight:700;color:var(--rb-faint)}
+.featured{display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;align-items:center;padding:1rem;margin-bottom:2.5rem;text-decoration:none}
+@media(max-width:860px){.featured{grid-template-columns:1fr}}
+.featured h2{font-family:var(--rb-font-display);font-weight:650;font-size:clamp(1.6rem,1.2rem + 1.5vw,2.4rem);line-height:1.15;letter-spacing:-.02em;color:var(--rb-ink);margin:.75rem 0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem}
+.chips button{cursor:pointer}
+.read-progress{position:fixed;top:0;left:0;height:3px;background:var(--rb-grad-ink);z-index:60;width:0;transition:width 80ms linear}
+.article-head{max-width:46rem;margin:0 auto;text-align:center}
+.article-body{max-width:46rem;margin:0 auto}
+.share{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem}
+</style>
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Le blog</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">Apprendre à <em>apprendre</em>.</h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Méthodes de révision validées par la recherche, guides d'examen et conseils pour tirer le meilleur de l'IA — sans jargon.</p>
+    
+  </div>
+</section>
+<section class="rb-page-body" style="padding-top:2.5rem">
+  <div class="rb-container">
+    <div class="chips" id="chips" role="tablist" aria-label="Catégories"></div>
+    <div id="featured"></div>
+    <div class="rb-cards" id="grid" style="grid-template-columns:repeat(auto-fill,minmax(19rem,1fr))"></div>
+    <div class="rb-sheet rb-sheet--paper rb-ruled" style="margin-top:3.5rem;padding:2rem 2rem 2rem 3.4rem;display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;justify-content:space-between">
+      <div><p class="rb-eyebrow">Une astuce par jour</p><p style="font-family:var(--rb-font-display);font-size:1.4rem;font-weight:650;margin-top:.4rem">Suis la chaîne WhatsApp RelBrain.</p></div>
+      <a class="rb-btn rb-btn--ink" href="relbrain-communautes.html#whatsapp"><i class="fa-brands fa-whatsapp"></i> Rejoindre</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+<script>
+window.RBBlog = {
+  load: function () { return fetch('content/blog/posts.json').then(function (r) { if (!r.ok) throw new Error('blog'); return r.json(); }); },
+  inline: function (t) {
+    return RB.escape(t)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[\s(«])_(.+?)_(?=[\s.,;:!?)»]|$)/g, '$1<em>$2</em>')
+      .replace(/\[([^\]]+)\]\(((?:https?:\/\/|relbrain-|#)[^)\s]+)\)/g, '<a href="$2">$1</a>');
+  },
+  date: function (d) { return new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); },
+  cover: function (p, big) {
+    return '<div class="post-cover' + (big ? ' post-cover--big' : '') + '" style="--from:' + p.cover.from + ';--to:' + p.cover.to + '"><span>' + p.cover.glyph + '</span></div>';
+  },
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+  var data, current = 'all';
+  function card(p, cats) {
+    return '<a class="post-card rb-sheet rb-lift" href="relbrain-article.html?slug=' + p.slug + '">' + RBBlog.cover(p) +
+      '<h3>' + RB.escape(p.title) + '</h3><p>' + RB.escape(p.excerpt) + '</p>' +
+      '<div class="post-meta"><span class="rb-tag rb-tag--outline">' + RB.escape(cats[p.category] || '') + '</span><span>' + RBBlog.date(p.date) + '</span><span>' + p.reading_minutes + ' min de lecture</span></div></a>';
+  }
+  function render() {
+    var cats = {}; data.categories.forEach(function (c) { cats[c.id] = c.label; });
+    var list = data.posts.filter(function (p) { return current === 'all' || p.category === current; });
+    var first = list[0];
+    document.getElementById('featured').innerHTML = first ? '<a class="featured rb-sheet rb-sheet--paper rb-lift" href="relbrain-article.html?slug=' + first.slug + '">' + RBBlog.cover(first, true) +
+      '<div><span class="rb-tag rb-tag--pink">À la une</span><h2>' + RB.escape(first.title) + '</h2><p class="rb-lead" style="font-size:1rem">' + RB.escape(first.excerpt) + '</p>' +
+      '<div class="post-meta" style="margin-left:0"><span>' + RBBlog.date(first.date) + '</span><span>' + first.reading_minutes + ' min</span></div></div></a>' : '';
+    document.getElementById('grid').innerHTML = list.slice(1).map(function (p) { return card(p, cats); }).join('');
+    RB.motion.reveal(document.getElementById('grid'));
+  }
+  RBBlog.load().then(function (d) {
+    data = d;
+    var chips = document.getElementById('chips');
+    chips.innerHTML = '<button class="rb-tag" data-cat="all" role="tab">Tous les articles</button>' + d.categories.map(function (c) { return '<button class="rb-tag rb-tag--outline" role="tab" data-cat="' + c.id + '">' + RB.escape(c.label) + '</button>'; }).join('');
+    chips.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cat]'); if (!b) return;
+      current = b.dataset.cat;
+      chips.querySelectorAll('[data-cat]').forEach(function (x) { x.className = 'rb-tag' + (x === b ? '' : ' rb-tag--outline'); x.setAttribute('aria-selected', x === b); });
+      render();
+    });
+    render();
+  }).catch(function () { document.getElementById('grid').innerHTML = '<p class="rb-caption">Impossible de charger les articles pour le moment.</p>'; });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Design system « Cahier vivant » — RelBrain</title>
+<meta name="description" content="Identité visuelle, tokens et animations signature de RelBrain, avec démonstrations interactives."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+<style>
+.ds-sec{padding-block:clamp(2.5rem,2rem + 2vw,4rem);border-bottom:1px solid var(--rb-line)}
+.ds-sec > .rb-container > h2{margin:.5rem 0 .5rem}
+.ds-sec .rb-lead{margin-bottom:2rem;max-width:44rem}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:.85rem}
+.swatch{border-radius:var(--rb-radius-md);overflow:hidden;border:1px solid var(--rb-line);background:var(--rb-surface);text-align:left;cursor:pointer;transition:transform var(--rb-dur-base) var(--rb-ease-spring)}
+.swatch:hover{transform:translateY(-3px)}
+.swatch i{display:block;height:4.5rem;background:var(--c)}
+.swatch span{display:block;padding:.6rem .7rem;font-size:.72rem;font-weight:700;color:var(--rb-ink-2)}
+.swatch code{display:block;font-size:.66rem;color:var(--rb-muted);margin-top:.15rem}
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1rem}
+.demo{padding:1.4rem;display:flex;flex-direction:column;gap:1rem}
+.demo h3{font-family:var(--rb-font-display);font-size:1.2rem;font-weight:650;color:var(--rb-ink)}
+.demo .why{font-size:.84rem;color:var(--rb-muted);font-weight:550;line-height:1.55}
+.demo .why strong{color:var(--rb-ink)}
+.stage{min-height:7.5rem;border-radius:var(--rb-radius-md);background:var(--rb-surface-2);border:1px dashed var(--rb-line);display:flex;align-items:center;justify-content:center;padding:1rem;gap:1rem;flex-wrap:wrap;position:relative}
+.demo pre{margin:0;background:#160f29;color:#ece6fb;border-radius:.65rem;padding:.75rem .9rem;font-size:.72rem;overflow:auto;line-height:1.55}
+.type-row{display:grid;grid-template-columns:8rem 1fr;gap:1rem;align-items:baseline;padding:.85rem 0;border-bottom:1px solid var(--rb-line-soft)}
+.type-row code{font-size:.72rem;color:var(--rb-muted)}
+@media(max-width:640px){.type-row{grid-template-columns:1fr}}
+.tok{width:100%;border-collapse:collapse;font-size:.85rem}
+.tok td,.tok th{padding:.6rem .75rem;border-bottom:1px solid var(--rb-line);text-align:left}
+.tok th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--rb-muted)}
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:760px){.dodont{grid-template-columns:1fr}}
+.dodont > div{padding:1.25rem}
+.dodont li{font-size:.9rem;line-height:1.55;margin:.4rem 0;color:var(--rb-ink-2);font-weight:550}
+</style>
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Design system</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">Cahier <em>vivant</em>.</h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">L'identité visuelle et les animations signature de RelBrain : un cahier d'étudiant qui prend vie. Chaque animation a un sens pédagogique — sinon, elle n'existe pas.</p>
+    <div class="rb-page-meta rb-reveal" style="--rb-delay:220ms"><span><i class="fa-solid fa-file-code"></i>Source : relbrain-design-system.css</span><span><i class="fa-solid fa-wand-magic-sparkles"></i>Animations : relbrain-motion.js</span></div>
+  </div>
+</section>
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">01 · Principes</span>
+  <h2 class="rb-h2">Ce qui rend RelBrain reconnaissable</h2>
+  <div class="rb-cards" data-rb-stagger="70" style="margin-top:1.5rem">
+    <div class="rb-sheet" style="padding:1.25rem"><p class="rb-h3">Le cahier</p><p class="rb-caption" style="font-size:.88rem;margin-top:.4rem">Papier crème, lignes réglées, marge rose, coin corné. On étudie sur une page, pas dans un tableau de bord froid.</p></div>
+    <div class="rb-sheet" style="padding:1.25rem"><p class="rb-h3">L'encre et le surligneur</p><p class="rb-caption" style="font-size:.88rem;margin-top:.4rem">Violet pour l'action, rose et ambre pour repérer l'essentiel. Jamais plus de deux accents à la fois.</p></div>
+    <div class="rb-sheet" style="padding:1.25rem"><p class="rb-h3">La voix éditoriale</p><p class="rb-caption" style="font-size:.88rem;margin-top:.4rem">Fraunces pour les titres (doux, littéraire, italique expressif), Plus Jakarta Sans pour l'interface.</p></div>
+    <div class="rb-sheet" style="padding:1.25rem"><p class="rb-h3">Le geste juste</p><p class="rb-caption" style="font-size:.88rem;margin-top:.4rem">Chaque mouvement mime un geste d'apprentissage : surligner, relier, retenir, réussir, progresser.</p></div>
+  </div>
+</div></section>
+
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">02 · Couleurs</span>
+  <h2 class="rb-h2">Palette</h2>
+  <p class="rb-lead">Clique sur une couleur pour copier son token. Les pages n'utilisent jamais de valeur en dur.</p>
+  <div class="swatches"><button class="swatch" style="--c:var(--rb-cream)" data-copy="var(--rb-cream)"><i></i><span>Papier<code>--rb-cream<br/>#fdf4e8</code></span></button><button class="swatch" style="--c:var(--rb-violet)" data-copy="var(--rb-violet)"><i></i><span>Encre<code>--rb-violet<br/>#7c3aed</code></span></button><button class="swatch" style="--c:var(--rb-pink)" data-copy="var(--rb-pink)"><i></i><span>Surligneur rose<code>--rb-pink<br/>#ec4899</code></span></button><button class="swatch" style="--c:var(--rb-amber)" data-copy="var(--rb-amber)"><i></i><span>Surligneur ambre<code>--rb-amber<br/>#f59e0b</code></span></button><button class="swatch" style="--c:var(--rb-ink)" data-copy="var(--rb-ink)"><i></i><span>Texte<code>--rb-ink<br/>#1a1033</code></span></button><button class="swatch" style="--c:var(--rb-emerald)" data-copy="var(--rb-emerald)"><i></i><span>Juste<code>--rb-emerald<br/>#10b981</code></span></button><button class="swatch" style="--c:var(--rb-rose)" data-copy="var(--rb-rose)"><i></i><span>Faux<code>--rb-rose<br/>#f43f5e</code></span></button><button class="swatch" style="--c:var(--rb-line)" data-copy="var(--rb-line)"><i></i><span>Filets du cahier<code>--rb-line<br/>#e7d9c5</code></span></button><button class="swatch" style="--c:var(--rb-purple)" data-copy="var(--rb-purple)"><i></i><span>Encre claire<code>--rb-purple<br/>#a855f7</code></span></button></div>
+</div></section>
+
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">03 · Typographie</span>
+  <h2 class="rb-h2">Échelle typographique</h2>
+  <div style="margin-top:1.5rem">
+    <div class="type-row"><code>.rb-display</code><p class="rb-display" style="font-size:clamp(2rem,1.5rem + 3vw,3.6rem)">Apprendre, <em>vraiment</em>.</p></div>
+    <div class="type-row"><code>.rb-h1</code><p class="rb-h1">Relire n'est pas <em>réviser</em>.</p></div>
+    <div class="type-row"><code>.rb-h2</code><p class="rb-h2">Du polycopié au réflexe</p></div>
+    <div class="type-row"><code>.rb-h3</code><p class="rb-h3">Fiche de révision</p></div>
+    <div class="type-row"><code>.rb-lead</code><p class="rb-lead">Importe tes cours, RelBrain repère l'essentiel et te fait réviser au bon moment.</p></div>
+    <div class="type-row"><code>.rb-eyebrow</code><p class="rb-eyebrow">Coach d'étude IA</p></div>
+    <div class="type-row"><code>.rb-annotation</code><p class="rb-annotation">← à retenir pour le Bac !</p></div>
+  </div>
+</div></section>
+
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">04 · Composants</span>
+  <h2 class="rb-h2">Boutons, cartes, étiquettes, champs</h2>
+  <div class="demo-grid" style="margin-top:1.5rem">
+    <div class="demo rb-sheet"><h3>Boutons</h3><div class="rb-row"><button class="rb-btn rb-btn--ink">Encre</button><button class="rb-btn rb-btn--paper">Papier</button><button class="rb-btn rb-btn--ghost">Fantôme</button></div>
+      <div class="rb-row"><button class="rb-btn rb-btn--ink is-loading" style="width:8rem">…</button><button class="rb-btn rb-btn--sm" style="--_bg:var(--rb-emerald)" id="btn-success"><i class="fa-solid fa-check"></i> Succès</button></div>
+      <p class="why">L'onde au clic part du doigt (<code>.rb-ripple</code>). Le chargement remplace le texte par les trois neurones de la synapse.</p></div>
+    <div class="demo rb-sheet rb-sheet--paper"><h3>Feuille posée</h3><p class="why">Ombre pleine décalée, pour les éléments éditoriaux (<code>.rb-sheet--paper</code>).</p><div class="rb-sheet rb-ruled rb-dogear" style="padding:1rem 1rem 1rem 2.75rem"><p style="font-size:.88rem;line-height:28px">Feuille réglée avec marge et coin corné.</p></div></div>
+    <div class="demo rb-sheet rb-lift"><h3>Carte interactive</h3><p class="why">Survole-moi : élévation, ombre colorée, micro-zoom (<code>.rb-lift</code>, variantes <code>--pink</code>, <code>--amber</code>).</p><div class="rb-row"><span class="rb-tag">Violet</span><span class="rb-tag rb-tag--pink">Rose</span><span class="rb-tag rb-tag--amber">Ambre</span><span class="rb-tag rb-tag--emerald">Vert</span><span class="rb-kbd">Ctrl</span><span class="rb-stamp">Validé</span></div></div>
+    <div class="demo rb-sheet"><h3>Champs</h3>
+      <div class="rb-field" id="f-demo"><label class="rb-field-label" for="f-email">Email</label><input class="rb-control" id="f-email" placeholder="toi@exemple.com"/><span class="rb-field-error">Adresse email invalide.</span></div>
+      <div class="rb-row"><button class="rb-btn rb-btn--ghost rb-btn--sm" id="f-err">Montrer une erreur</button><label class="rb-toggle"><input type="checkbox" checked aria-label="Interrupteur"/><span></span></label></div></div>
+  </div>
+</div></section>
+
+<section class="ds-sec" id="animations"><div class="rb-container">
+  <span class="rb-eyebrow">05 · Animations signature</span>
+  <h2 class="rb-h2">Six gestes d'apprentissage</h2>
+  <p class="rb-lead">Chaque animation est un outil pédagogique. Toutes respectent <code>prefers-reduced-motion</code> : les changements d'état restent, les mouvements disparaissent.</p>
+  <div class="demo-grid">
+    <div class="demo rb-sheet"><h3>1 · Surligneur</h3>
+      <div class="stage"><p style="font-size:1.05rem;font-weight:600">La mitochondrie produit l'<mark class="rb-mark" id="m1">énergie de la cellule</mark> sous forme d'<mark class="rb-mark rb-mark--pink" id="m2">ATP</mark>.</p></div>
+      <p class="why"><strong>Sens :</strong> repérer l'essentiel. Le trait se pose dans l'ordre de lecture quand la notion devient visible.</p>
+      <button class="rb-btn rb-btn--ghost rb-btn--sm" data-replay="mark">Rejouer</button>
+      <pre>&lt;mark class="rb-mark"&gt;notion clé&lt;/mark&gt;</pre></div>
+    <div class="demo rb-sheet"><h3>2 · Synapse — l'IA réfléchit</h3>
+      <div class="stage" id="think-stage"><span class="rb-synapse" style="--rb-synapse-size:3.2rem"><i></i><i></i><i></i></span></div>
+      <p class="why"><strong>Sens :</strong> apprendre, c'est connecter des idées. Remplace tous les spinners génériques pendant les traitements IA.</p>
+      <button class="rb-btn rb-btn--ghost rb-btn--sm" id="think-btn">Version avec messages</button>
+      <pre>&lt;span class="rb-synapse"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;
+RB.motion.thinking(el, ['Lecture…', 'Connexion des idées…'])</pre></div>
+    <div class="demo rb-sheet"><h3>3 · Éclat de savoir</h3>
+      <div class="stage"><button class="rb-btn rb-btn--ink" id="burst-btn">Bonne réponse ✓</button></div>
+      <p class="why"><strong>Sens :</strong> une bonne réponse « fait tilt ». Glyphes de savoir (π, √, ∑, A+, ✦), moins d'une seconde : récompense, pas distraction.</p>
+      <pre>RB.motion.burst(element, { count: 14 })</pre></div>
+    <div class="demo rb-sheet"><h3>4 · Montée d'XP & niveau</h3>
+      <div class="stage" style="flex-direction:column;align-items:stretch"><div class="rb-row" style="justify-content:space-between"><strong class="rb-tabular" data-rb-xp-total="2340">2 340</strong><span class="rb-caption">Niveau 7</span></div><div class="rb-xp-bar"><div class="rb-xp-bar__fill" id="xp-fill" style="--p:60%"></div></div></div>
+      <div class="rb-row"><button class="rb-btn rb-btn--paper rb-btn--sm" id="xp-btn">+40 XP</button><button class="rb-btn rb-btn--ink rb-btn--sm" id="lvl-btn">Niveau supérieur</button></div>
+      <p class="why"><strong>Sens :</strong> rendre l'effort visible. Le gain s'envole du point d'action vers la jauge ; le passage de niveau est un vrai moment.</p>
+      <pre>RB.motion.xp(40, el, { progress: 72 })
+RB.motion.levelUp(8, { perks: ['Thème Nuit étoilée'] })</pre></div>
+    <div class="demo rb-sheet"><h3>5 · Courbe de l'oubli</h3>
+      <svg class="rb-curve" id="curve-demo" data-reviews="1,3,7,16"></svg>
+      <p class="why"><strong>Sens :</strong> montrer pourquoi on révise. La mémoire chute, chaque révision espacée la relève durablement.</p>
+      <button class="rb-btn rb-btn--ghost rb-btn--sm" data-replay="curve">Rejouer</button>
+      <pre>&lt;svg class="rb-curve" data-reviews="1,3,7,16"&gt;&lt;/svg&gt;</pre></div>
+    <div class="demo rb-sheet"><h3>6 · Révélation à l'encre</h3>
+      <div class="stage" id="reveal-stage" style="flex-direction:column;align-items:stretch" data-rb-stagger="120"><div class="rb-sheet" style="padding:.6rem .8rem">Définition</div><div class="rb-sheet" style="padding:.6rem .8rem">Exemple</div><div class="rb-sheet" style="padding:.6rem .8rem">Exercice</div></div>
+      <p class="why"><strong>Sens :</strong> l'information arrive dans l'ordre de lecture, une idée après l'autre — jamais tout à la fois.</p>
+      <button class="rb-btn rb-btn--ghost rb-btn--sm" data-replay="reveal">Rejouer</button>
+      <pre>&lt;div data-rb-stagger="90"&gt;…&lt;/div&gt;  ·  class="rb-reveal"</pre></div>
+  </div>
+</div></section>
+
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">06 · Micro-interactions</span>
+  <h2 class="rb-h2">Retours immédiats</h2>
+  <div class="demo-grid" style="margin-top:1.5rem">
+    <div class="demo rb-sheet"><h3>Succès</h3><div class="stage" id="ok-stage"></div><button class="rb-btn rb-btn--ghost rb-btn--sm" id="ok-btn">Valider</button><p class="why">Le check se dessine, le tampon « Validé » se pose comme sur une copie corrigée.</p></div>
+    <div class="demo rb-sheet"><h3>Erreur douce</h3><div class="stage"><div class="rb-sheet" style="padding:.7rem 1rem" id="shake-target">Réponse : O(n²)</div></div><button class="rb-btn rb-btn--ghost rb-btn--sm" id="shake-btn">Mauvaise réponse</button><p class="why">Secousse courte et faible : on signale, on ne punit pas.</p></div>
+    <div class="demo rb-sheet"><h3>Chargement</h3><div class="stage" style="flex-direction:column;align-items:stretch"><div class="rb-skeleton rb-skeleton-line"></div><div class="rb-skeleton rb-skeleton-line"></div><div class="rb-skeleton rb-skeleton-line"></div></div><p class="why">Squelettes couleur papier : la mise en page ne saute pas quand les données arrivent.</p></div>
+    <div class="demo rb-sheet"><h3>Flashcard</h3><div class="rb-flip" id="flip-demo" style="height:7.5rem;cursor:pointer"><div class="rb-flip__inner" style="height:100%"><div class="rb-flip__face" style="height:100%;border-radius:var(--rb-radius-md);background:var(--rb-surface-2);border:1.5px solid var(--rb-line);display:flex;align-items:center;justify-content:center;font-weight:750">Que signifie FIFO ?</div><div class="rb-flip__face rb-flip__face--back" style="border-radius:var(--rb-radius-md);background:var(--rb-grad-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:750;padding:1rem;text-align:center">First In, First Out</div></div></div><p class="why">Retournement avec léger rebond (<code>.rb-flip</code>).</p></div>
+  </div>
+</div></section>
+
+<section class="ds-sec"><div class="rb-container">
+  <span class="rb-eyebrow">07 · Tokens de mouvement</span>
+  <h2 class="rb-h2">Durées et courbes</h2>
+  <div style="overflow-x:auto;margin-top:1.5rem"><table class="tok">
+    <thead><tr><th>Token</th><th>Valeur</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>--rb-dur-fast</code></td><td>160 ms</td><td>Survol, focus, couleurs</td></tr>
+      <tr><td><code>--rb-dur-base</code></td><td>260 ms</td><td>Cartes, menus, toasts</td></tr>
+      <tr><td><code>--rb-dur-slow</code></td><td>480 ms</td><td>Révélations, modales</td></tr>
+      <tr><td><code>--rb-dur-story</code></td><td>900 ms</td><td>Surligneur, jauge d'XP, courbe</td></tr>
+      <tr><td><code>--rb-ease-out</code></td><td>cubic-bezier(.22,1,.36,1)</td><td>Entrées naturelles</td></tr>
+      <tr><td><code>--rb-ease-spring</code></td><td>cubic-bezier(.34,1.56,.64,1)</td><td>Moments « eurêka » (badge, carte, tampon)</td></tr>
+      <tr><td><code>--rb-ease-ink</code></td><td>cubic-bezier(.77,0,.18,1)</td><td>Traits d'encre et surligneur</td></tr>
+    </tbody>
+  </table></div>
+  <div class="dodont" style="margin-top:2rem">
+    <div class="rb-sheet" style="border-top:4px solid var(--rb-emerald)"><p class="rb-h3">À faire</p><ul class="rb-prose" style="font-size:.9rem"><li>Une animation = un geste d'apprentissage.</li><li>Célébrer après une action de l'élève, jamais au hasard.</li><li>Garder les célébrations sous la seconde.</li><li>Tester en mode sombre et en réduction des animations.</li></ul></div>
+    <div class="rb-sheet" style="border-top:4px solid var(--rb-rose)"><p class="rb-h3">À éviter</p><ul class="rb-prose" style="font-size:.9rem"><li>Les dégradés de texte sur chaque titre.</li><li>Les spinners génériques (utiliser la synapse).</li><li>Plus de deux couleurs d'accent dans un même bloc.</li><li>Des confettis pour une action banale.</li></ul></div>
+  </div>
+</div></section>
+</main>
+<footer data-rb-site-footer></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { navigator.clipboard.writeText(b.dataset.copy).then(function () { RB.toast(b.dataset.copy + ' copié', 'success'); }); }); });
+  document.querySelector('[data-replay="mark"]').onclick = function () { ['m1', 'm2'].forEach(function (id, i) { var m = document.getElementById(id); m.classList.remove('is-on'); void m.offsetWidth; setTimeout(function () { m.classList.add('is-on'); }, 150 + i * 500); }); };
+  document.querySelector('[data-replay="curve"]').onclick = function () { var old = document.getElementById('curve-demo'), svg = old.cloneNode(false); svg.className.baseVal = 'rb-curve'; old.replaceWith(svg); RB.motion.forgettingCurve(svg); requestAnimationFrame(function () { svg.classList.add('is-on'); }); };
+  document.querySelector('[data-replay="reveal"]').onclick = function () { var kids = document.querySelectorAll('#reveal-stage > *'); kids.forEach(function (k) { k.classList.remove('is-in'); }); void document.body.offsetWidth; setTimeout(function () { kids.forEach(function (k) { k.classList.add('is-in'); }); }, 60); };
+  var stop = null;
+  document.getElementById('think-btn').onclick = function () { var s = document.getElementById('think-stage'); if (stop) { stop(); stop = null; s.innerHTML = '<span class="rb-synapse" style="--rb-synapse-size:3.2rem"><i></i><i></i><i></i></span>'; return; } stop = RB.motion.thinking(s); };
+  document.getElementById('burst-btn').onclick = function () { RB.motion.burst(this, { count: 16 }); };
+  var p = 60;
+  document.getElementById('xp-btn').onclick = function () { p = Math.min(100, p + 12); RB.motion.xp(40, this, { progress: p }); };
+  document.getElementById('lvl-btn').onclick = function () { RB.motion.levelUp(8, { perks: ['🎨 Thème « Nuit étoilée »', '❄️ +1 gel de série'] }); };
+  document.getElementById('ok-btn').onclick = function () { RB.motion.success(document.getElementById('ok-stage'), { stamp: 'Validé' }); };
+  document.getElementById('shake-btn').onclick = function () { RB.motion.shake(document.getElementById('shake-target')); };
+  document.getElementById('btn-success').onclick = function () { var b = this; b.innerHTML = '<i class="fa-solid fa-check"></i> Enregistré'; RB.motion.burst(b, { count: 8, set: 'stars', spread: 60 }); };
+  document.getElementById('f-err').onclick = function () { var f = document.getElementById('f-demo'); f.classList.add('has-error'); RB.motion.shake(f.querySelector('.rb-control')); };
+  document.getElementById('flip-demo').onclick = function () { this.classList.toggle('is-flipped'); };
+});
+</script>
+</body>
+</html>

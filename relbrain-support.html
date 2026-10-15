@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Centre d'aide — RelBrain</title>
+<meta name="description" content="Guide de démarrage rapide, tutoriels vidéo et solutions aux problèmes courants : compte, documents, quiz, flashcards, paiement Mobile Money."/>
+<meta name="theme-color" content="#7c3aed"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-design-system.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<script src="relbrain-site.js" defer></script>
+
+</head>
+<body class="rb-site">
+<a href="#contenu" class="rb-sr-only">Aller au contenu</a>
+<header data-rb-site-header></header>
+<main id="contenu">
+<section class="rb-page-hero">
+  <div class="rb-container">
+    <span class="rb-eyebrow rb-reveal">Centre d'aide</span>
+    <h1 class="rb-h1 rb-reveal" style="--rb-delay:80ms">Comment pouvons-nous <em>t'aider</em> ?</h1>
+    <p class="rb-lead rb-reveal" style="--rb-delay:160ms">Cherche ta question ou parcours les guides. La plupart des réponses tiennent en une minute.</p>
+    
+  </div>
+</section>
+<section class="rb-page-body" style="padding-top:2rem">
+  <div class="rb-container">
+    <div class="rb-sheet rb-sheet--paper" style="padding:.5rem .5rem .5rem 1.1rem;display:flex;align-items:center;gap:.75rem;max-width:44rem;margin:0 auto 3rem">
+      <i class="fa-solid fa-magnifying-glass" style="color:var(--rb-violet)"></i>
+      <input id="help-search" class="rb-control" style="border:0;box-shadow:none;padding-left:0;background:transparent" placeholder="Ex. : paiement Orange Money, flashcards, mot de passe…" aria-label="Rechercher dans l'aide"/>
+    </div>
+
+    <h2 class="rb-h3" style="margin-bottom:1rem">Guide de démarrage rapide</h2>
+    <div class="rb-cards" data-rb-stagger="70" style="margin-bottom:3rem">
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-documentation.html#demarrage"><span class="rb-icon-tile">1</span><span><h3>Créer ton compte</h3><p>Inscription, validation de l'email, profil.</p></span></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-documentation.html#importer"><span class="rb-icon-tile">2</span><span><h3>Importer un cours</h3><p>PDF, Word, PowerPoint ou photos de notes.</p></span></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-documentation.html#quiz"><span class="rb-icon-tile">3</span><span><h3>Lancer un quiz</h3><p>Types, difficultés et IA adaptative.</p></span></a>
+      <a class="rb-sheet rb-link-card rb-lift" href="relbrain-documentation.html#flashcards"><span class="rb-icon-tile">4</span><span><h3>Réviser chaque jour</h3><p>Flashcards et révision espacée SM-2.</p></span></a>
+    </div>
+
+    <h2 class="rb-h3" style="margin-bottom:1rem">Tutoriels vidéo</h2>
+    <div class="rb-cards" style="margin-bottom:3rem" id="videos"></div>
+
+    <div class="rb-grid">
+      <div class="rb-col-8">
+        <h2 class="rb-h3" style="margin-bottom:.5rem">Problèmes courants</h2>
+        <div class="rb-accordion" id="faq-list"></div>
+        <p class="rb-caption" id="no-result" hidden style="margin-top:1rem">Aucun résultat. <a href="relbrain-contact.html?sujet=support" style="color:var(--rb-violet);font-weight:700">Pose ta question à l'équipe →</a></p>
+      </div>
+      <aside class="rb-col-4">
+        <div class="rb-sheet ink-cta" style="padding:1.5rem;background:var(--rb-grad-ink);color:#fff;border:0">
+          <p class="rb-eyebrow" style="color:#fde68a">Toujours bloqué·e ?</p>
+          <p style="font-family:var(--rb-font-display);font-size:1.35rem;font-weight:650;margin:.5rem 0 1rem">Une personne de l'équipe te répond.</p>
+          <a class="rb-btn rb-btn--paper rb-btn--block" href="relbrain-contact.html?sujet=support">Contacter le support</a>
+          <a class="rb-btn rb-btn--block" style="--_bg:rgba(255,255,255,.12);margin-top:.6rem" href="relbrain-communautes.html"><i class="fa-brands fa-discord"></i> Demander sur Discord</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+</main>
+<footer data-rb-site-footer></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var faqs = [
+    ['Compte', "Je n'ai pas reçu l'email de confirmation", "Vérifie tes spams et l'onglet Promotions. Depuis la page de validation, tu peux renvoyer l'email (toutes les 30 secondes). Si ton adresse comporte une faute de frappe, crée simplement un nouveau compte."],
+    ['Compte', "J'ai oublié mon mot de passe", "Sur la page de connexion, clique sur « Mot de passe oublié ? ». Tu recevras un lien valable une heure pour en choisir un nouveau."],
+    ['Compte', 'Comment supprimer mon compte ou télécharger mes données ?', "Paramètres → Suppr. compte. Tu peux d'abord exporter toutes tes données au format JSON. La suppression est immédiate et définitive."],
+    ['Documents', "L'analyse de mon document a échoué", "Le fichier est peut-être un scan sans texte, protégé par mot de passe ou trop volumineux. Importe les pages en photo (OCR), ou copie-colle le texte dans Mes Quiz → Coller du texte."],
+    ['Documents', 'Quelle est la taille maximale ?', '20 Mo par fichier (10 Mo avec le forfait gratuit). Pour un très gros cours, découpe-le par chapitre : les quiz seront plus précis.'],
+    ['Quiz', "Une question me semble fausse", "L'IA peut se tromper. Signale-la via le formulaire de contact (sujet : Bug) en indiquant le cours et la question : chaque signalement améliore nos consignes."],
+    ['Quiz', "Pourquoi je ne peux pas faire 30 questions ?", "Le forfait gratuit est limité à 10 questions par quiz. Pro permet 30 questions, Premium 50."],
+    ['Flashcards', 'Pourquoi une carte revient-elle si souvent ?', "Si tu réponds « Encore » ou « Difficile », l'algorithme la reprogramme rapidement : c'est voulu, pour l'ancrer. Dès que tu réponds « Bien », l'intervalle s'allonge."],
+    ['Motivation', "J'ai perdu ma série alors que j'ai étudié", "La série est calculée selon ton fuseau horaire et compte les quiz terminés, les cartes révisées et les sessions de 2 minutes ou plus. Un gel de série protège automatiquement une journée manquée s'il t'en reste."],
+    ['Motivation', 'Comment fonctionnent les ligues ?', "Chaque semaine, tu affrontes jusqu'à 30 élèves de ta ligue. Dimanche à minuit (Douala), le top 7 monte, les 5 derniers descendent. Seuls ton prénom, l'initiale de ton nom et ton XP de la semaine sont visibles."],
+    ['Paiement', "J'ai payé par MTN MoMo mais rien ne se passe", "Valide bien la demande reçue sur ton téléphone avec ton code PIN. La confirmation peut prendre quelques minutes ; recharge la page Abonnement. Sans changement après 30 minutes, contacte le support avec la référence de transaction."],
+    ['Paiement', 'Mon abonnement se renouvelle-t-il automatiquement ?', "Non. Tu achètes 1 ou 12 mois. Un rappel arrive 3 jours avant la fin ; ensuite ton compte repasse en gratuit sans perte de données."],
+    ['Notifications', 'Je ne reçois pas les rappels', "Active le canal Push dans Paramètres → Notifications et autorise le navigateur. Sur iPhone, installe d'abord RelBrain sur l'écran d'accueil. Tu peux aussi choisir l'heure du rappel."],
+  ];
+  var list = document.getElementById('faq-list');
+  list.innerHTML = faqs.map(function (f) { return '<details data-q="' + (f[0] + ' ' + f[1] + ' ' + f[2]).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + '"><summary><span><span class="rb-tag rb-tag--outline" style="margin-right:.6rem">' + f[0] + '</span>' + f[1] + '</span></summary><div>' + f[2] + '</div></details>'; }).join('');
+  document.getElementById('help-search').addEventListener('input', function () {
+    var q = this.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(), shown = 0;
+    list.querySelectorAll('details').forEach(function (d) { var ok = !q || q.split(/\s+/).every(function (w) { return d.dataset.q.indexOf(w) > -1; }); d.hidden = !ok; if (ok) shown++; if (q && ok) d.open = true; });
+    document.getElementById('no-result').hidden = shown > 0;
+  });
+  var videos = [['Importer un cours et lancer ton premier quiz', '3 min'], ['Réviser avec les flashcards (SM-2)', '4 min'], ['Payer avec Orange Money ou MTN MoMo', '2 min'], ['Utiliser le coach IA sur un exercice', '3 min']];
+  document.getElementById('videos').innerHTML = videos.map(function (v) {
+    return '<a class="rb-sheet rb-lift" href="' + ((window.RB && RB.SOCIAL && RB.SOCIAL.youtube) || '#') + '" target="_blank" rel="noopener" style="display:block;overflow:hidden;text-decoration:none">' +
+      '<div style="aspect-ratio:16/9;background:var(--rb-grad-ink);display:flex;align-items:center;justify-content:center;position:relative"><span style="width:3.2rem;height:3.2rem;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--rb-violet)"><i class="fa-solid fa-play"></i></span><span class="rb-tag" style="position:absolute;right:.6rem;bottom:.6rem">' + v[1] + '</span></div>' +
+      '<div style="padding:1rem"><p style="font-weight:750;color:var(--rb-ink)">' + v[0] + '</p><p class="rb-caption" style="margin-top:.25rem">Sur la chaîne YouTube RelBrain</p></div></a>';
+  }).join('');
+});
+</script>
+</body>
+</html>

@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>RelBrain.ai – Générateur de Quiz IA</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
@@ -145,7 +149,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
 </style>
 </head>
-<body>
+<body data-rb-private>
 
 <div id="rb-toast-host"></div>
 
@@ -169,20 +173,8 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 <!-- OVERLAY GÉNÉRATION -->
 <div class="gen-overlay" id="gen-overlay">
   <div class="bg-white rounded-2xl border border-[#e7d9c5] p-6 text-center max-w-sm w-full" style="box-shadow:0 24px 60px rgba(124,58,237,.25)">
-    <div class="relative mx-auto mb-3 w-fit">
-      <svg class="gen-ring" viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r="42" fill="none" stroke="#f5f3ff" stroke-width="8"/>
-        <circle class="gen-spin" cx="48" cy="48" r="42" fill="none" stroke="url(#gradRing)" stroke-width="8" stroke-linecap="round" stroke-dasharray="180 264"/>
-        <defs>
-          <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#7c3aed"/>
-            <stop offset="100%" stop-color="#ec4899"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center">
-        <i class="fa-solid fa-wand-magic-sparkles text-violet-500 text-xl gen-float"></i>
-      </div>
+    <div class="rb-thought-wave mx-auto mb-4" style="width:4.5rem;height:4.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--rb-violet-50)">
+      <span class="rb-synapse" style="--rb-synapse-size:2.4rem" role="status" aria-label="Génération en cours"><i></i><i></i><i></i></span>
     </div>
     <p class="font-black text-slate-900 text-sm mb-0.5" id="gen-label">Analyse du document…</p>
     <p class="text-[10px] text-slate-500 font-semibold mb-3" id="gen-sub">L'IA prépare vos questions</p>
@@ -207,29 +199,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </a>
 
     <a href="relbrain-profil.html" class="avatar-card mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0">K</div>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
       <div class="flex-1 min-w-0">
-        <p class="text-xs font-black text-slate-800 truncate">Pharel FOFE</p>
-        <p class="text-[9px] text-violet-600 font-bold">Niveau 7 · 2 340 XP</p>
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
       </div>
-      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black">🔥12</p></div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
     </a>
 
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="Dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item active"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
 
     <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
       <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
-      <button class="upgrade-btn" onclick="toast('Découvre les plans Pro 🚀','info')"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
     </div>
   </div>
 </aside>
@@ -244,20 +237,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
-      <button class="header-btn relative" onclick="toast('3 notifications','info')">
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
         <i class="fa-solid fa-bell"></i>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
       </button>
       <div class="relative" id="avatar-wrap">
-        <div class="avatar-btn" onclick="toggleAvatarMenu()">K</div>
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
         <div class="avatar-menu" id="avatar-menu">
           <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
-            <p class="text-xs font-black text-slate-800">Pharel FOFE</p>
-            <p class="text-[10px] text-slate-400 font-semibold">pharel@relbrain.ai</p>
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
           </div>
           <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
           <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
-          <a href="index.html" class="avatar-menu-item danger"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
         </div>
       </div>
     </div>
@@ -710,7 +703,7 @@ function generateQuiz(){
   const steps = [
     {pct:15, label:'Lecture du document…', sub:docName, step:'📄 Extraction'},
     {pct:32, label:'Analyse sémantique…', sub:'Identification des concepts', step:'🧠 Analyse IA'},
-    {pct:52, label:'Extraction des notions…', sub:'Concepts identifiés', step:'📚 Concepts'},
+    {pct:52, label:'Connexion des idées…', sub:'Concepts identifiés', step:'🔗 Synapses'},
     {pct:72, label:'Génération des questions…', sub:state.count + ' questions · ' + state.typeLabel, step:'✍️ Rédaction'},
     {pct:88, label:'Calibrage…', sub:'Niveau : ' + diffs.find(x=>x.id===state.diff).label, step:'⚖️ Ajustement'},
     {pct:100, label:'Quiz prêt ! 🎉', sub:'Redirection...', step:'✅ Terminé'}
@@ -757,5 +750,167 @@ renderTypes();
 renderDiffs();
 updateSummary();
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INTÉGRATION BACKEND — Configuration du quiz
+     Sources réelles (documents analysés, upload, texte collé, matière),
+     génération via /api/ai/quiz, puis redirection vers l'écran de quiz.
+     Paramètres d'URL : ?doc=<id> (document présélectionné), ?focus=<notion>
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  RB.onReady(function () {
+    var params = new URLSearchParams(location.search);
+    var realDocs = [], subject = null, quota = null;
+    var focus = params.get('focus') ? [params.get('focus')] : [];
+
+    function iconFor(d) {
+      if (/pdf/.test(d.mime_type || '')) return ['fa-file-pdf', 'bg-rose-50 text-rose-500'];
+      if (/word/.test(d.mime_type || '')) return ['fa-file-word', 'bg-blue-50 text-blue-500'];
+      if (/presentation/.test(d.mime_type || '')) return ['fa-file-powerpoint', 'bg-orange-50 text-orange-500'];
+      if (/image/.test(d.mime_type || '')) return ['fa-file-image', 'bg-emerald-50 text-emerald-500'];
+      return ['fa-file-lines', 'bg-slate-100 text-slate-500'];
+    }
+
+    // Les fonctions de rendu d'origine sont réutilisées : on remplit leurs tableaux.
+    var baseDynamic = window.renderSourceDynamic;
+    window.renderSourceDynamic = function () {
+      if (state.source === 'recent' && !realDocs.length) {
+        document.getElementById('source-dynamic').innerHTML =
+          '<div class="pt-3 border-t border-[#f0e6d8] text-center py-4"><p class="text-xs font-black text-slate-700 mb-1">Aucun document analysé pour l\'instant</p>' +
+          '<p class="text-[10px] text-slate-500 font-semibold mb-2">Importe un cours, colle un texte ou choisis une matière.</p>' +
+          '<a href="relbrain-documents.html" class="rb-btn rb-btn--ink rb-btn--sm">Importer un cours</a></div>';
+        return;
+      }
+      baseDynamic();
+      var box = document.getElementById('source-dynamic');
+      if (state.source === 'subject') {
+        box.querySelectorAll('.doc-card').forEach(function (card) {
+          var name = card.textContent.trim();
+          if (name === subject) { card.classList.add('selected'); card.querySelector('.doc-check').innerHTML = '<i class="fa-solid fa-check text-white text-[7px]"></i>'; }
+          card.addEventListener('click', function () { subject = name; renderSourceDynamic(); updateSummary(); });
+        });
+      }
+      if (state.source === 'upload') {
+        var drop = box.querySelector('.border-dashed');
+        var input = document.createElement('input');
+        input.type = 'file'; input.className = 'rb-sr-only'; input.accept = '.pdf,.docx,.pptx,.txt,.md,.png,.jpg,.jpeg,.webp';
+        drop.removeAttribute('onclick'); drop.appendChild(input);
+        drop.addEventListener('click', function (e) { if (e.target !== input) input.click(); });
+        drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.style.borderColor = '#7c3aed'; });
+        drop.addEventListener('drop', function (e) { e.preventDefault(); if (e.dataTransfer.files[0]) uploadThenSelect(e.dataTransfer.files[0], drop); });
+        input.addEventListener('change', function () { if (input.files[0]) uploadThenSelect(input.files[0], drop); });
+      }
+      if (state.source === 'paste') {
+        var ta = box.querySelector('textarea');
+        ta.id = 'paste-text';
+        ta.value = sessionStorage.getItem('rb_paste') || '';
+        ta.addEventListener('input', function () { try { sessionStorage.setItem('rb_paste', ta.value); } catch (e) {} });
+      }
+    };
+
+    async function uploadThenSelect(file, drop) {
+      var stop = RB.motion.thinking(drop, ['Envoi sécurisé', 'Lecture du document', 'Repérage des notions clés']);
+      try {
+        var r = await RB.data.documents.upload(file, {});
+        stop();
+        toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        RB.celebrate(r.xp, drop);
+        await loadDocs(r.document.id);
+        state.source = 'recent'; renderSources();
+      } catch (e) { stop(); RB.handleError(e); renderSourceDynamic(); }
+    }
+
+    async function loadDocs(preselect) {
+      var list = (await RB.data.documents.list()).filter(function (d) { return d.status === 'ready'; });
+      realDocs = list;
+      docs.length = 0;
+      list.forEach(function (d) {
+        var ic = iconFor(d);
+        docs.push({ id: d.id, name: RB.escape(d.title), sub: RB.escape([d.subject, d.page_count ? d.page_count + ' pages' : '', RB.timeAgo(d.created_at)].filter(Boolean).join(' · ')), icon: ic[0], color: ic[1], subject: d.subject });
+      });
+      var idx = preselect ? docs.findIndex(function (d) { return d.id === preselect; }) : -1;
+      state.doc = idx >= 0 ? idx : 0;
+      sources[0].sub = list.length + ' document' + (list.length > 1 ? 's' : '') + ' analysé' + (list.length > 1 ? 's' : '');
+      if (focus.length) sources[0].sub += ' · focus : ' + focus[0];
+      renderSources(); updateSummary();
+    }
+
+    // Résumé : nom de la source réellement choisie
+    var baseSummary = window.updateSummary;
+    window.updateSummary = function () {
+      baseSummary();
+      var label = state.source === 'recent' ? (docs[state.doc] && docs[state.doc].name) || '—'
+        : state.source === 'paste' ? 'Texte collé' : state.source === 'subject' ? (subject || 'Choisis une matière') : 'Nouveau fichier';
+      var tmp = document.createElement('div'); tmp.innerHTML = label;
+      document.getElementById('sum-doc').textContent = tmp.textContent;
+      if (quota && state.count > quota.max_questions) {
+        document.getElementById('sum-count').innerHTML = state.count + ' <i class="fa-solid fa-lock text-amber-500" title="Forfait Pro requis"></i>';
+      }
+    };
+
+    // Génération réelle
+    window.generateQuiz = async function () {
+      var body = {
+        count: state.count, type: state.type, difficulty: state.diff,
+        settings: { timer: state.options.timer, explain: state.options.explain, adapt: state.options.adapt, shuffle: state.options.shuffle },
+        focus_concepts: focus.length ? focus : undefined,
+      };
+      if (state.source === 'recent') {
+        if (!docs[state.doc] || !docs[state.doc].id) { toast('Choisis un document analysé', 'error'); return; }
+        body.document_id = docs[state.doc].id;
+      } else if (state.source === 'paste') {
+        var t = (document.getElementById('paste-text') || {}).value || '';
+        if (t.replace(/\s/g, '').length < 100) { RB.motion.shake(document.getElementById('paste-text')); toast('Colle au moins 100 caractères de cours', 'error'); return; }
+        body.text = t;
+      } else if (state.source === 'subject') {
+        if (!subject) { toast('Choisis une matière', 'error'); return; }
+        body.subject = subject;
+      } else { toast('Dépose d\'abord ton fichier', 'error'); return; }
+
+      var overlay = document.getElementById('gen-overlay');
+      var bar = document.getElementById('gen-bar'), pct = document.getElementById('gen-pct');
+      var label = document.getElementById('gen-label'), sub = document.getElementById('gen-sub'), stepsEl = document.getElementById('gen-steps');
+      overlay.classList.add('open');
+      var steps = [
+        [12, 'Lecture du cours…', '📄 Extraction'], [30, 'Repérage des notions clés…', '🧠 Analyse IA'],
+        [52, 'Connexion des idées…', '🔗 Synapses'], [74, 'Rédaction des questions…', '✍️ Rédaction'], [88, 'Calibrage de la difficulté…', '⚖️ Ajustement'],
+      ];
+      var i = 0;
+      var tick = setInterval(function () {
+        if (i >= steps.length) return;
+        var s = steps[i++];
+        bar.style.width = s[0] + '%'; pct.textContent = s[0] + '%'; label.textContent = s[1];
+        stepsEl.innerHTML = steps.slice(0, i).map(function (st, k) {
+          return '<div class="flex items-center gap-1.5 text-[10px] font-semibold ' + (k === i - 1 ? 'text-violet-700' : 'text-slate-500') + '">' +
+            (k === i - 1 ? '<span class="rb-synapse" style="--rb-synapse-size:.9rem"><i></i><i></i><i></i></span>' : '<i class="fa-solid fa-check text-emerald-600 text-[8px]"></i>') +
+            '<span>' + st[2] + '</span></div>';
+        }).join('');
+      }, 2600);
+      sub.textContent = state.count + ' questions · ' + state.typeLabel;
+      try {
+        var r = await RB.data.quiz.generate(body);
+        clearInterval(tick);
+        bar.style.width = '100%'; pct.textContent = '100%'; label.textContent = 'Quiz prêt ! 🎉'; sub.textContent = r.quiz.title;
+        try { sessionStorage.setItem('rb_quiz_' + r.quiz.id, JSON.stringify(r.quiz)); } catch (e) {}
+        setTimeout(function () { location.href = 'relbrain-quiz-interface.html?quiz=' + r.quiz.id; }, 600);
+      } catch (e) {
+        clearInterval(tick);
+        overlay.classList.remove('open');
+        RB.handleError(e);
+      }
+    };
+
+    // Chargement initial
+    (async function () {
+      try {
+        quota = await RB.data.quota();
+        await loadDocs(params.get('doc'));
+        if (!realDocs.length && !params.get('doc')) { state.source = focus.length ? 'subject' : 'paste'; renderSources(); }
+      } catch (e) { RB.handleError(e, 'Impossible de charger tes documents.'); }
+    })();
+  });
+});
+</script>
+
 </body>
 </html>
