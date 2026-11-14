@@ -445,11 +445,12 @@ document.addEventListener('DOMContentLoaded', function () {
         RB.data.logSession('chat', (Date.now() - started) / 1000 + 60, documentId).catch(function () {});
       } catch (e) {
         stop();
-        if (e && e.code === 'feature_locked' && e.details && e.details.feature === 'tutor') {
-          // Plan gratuit : pas de tuteur, mais on montre tout ce qui reste possible
+        if (!(e && e.status === 401)) {
+          // Phase de test : le tuteur est fermé. Quelle que soit l'erreur, on explique
+          // calmement et on montre tout ce qui reste possible (jamais de message technique).
           bot.classList.add('chat-locked');
-          bot.innerHTML = '<p><strong>🔒 Le tuteur IA arrive avec les formules payantes.</strong></p>' +
-            '<p>Elles ouvriront bientôt. Pendant le lancement, tu peux déjà transformer tes cours en révisions, gratuitement :</p>' +
+          bot.innerHTML = '<p><strong>🧪 Le tuteur IA n'est pas encore disponible.</strong></p>' +
+            '<p>RelBrain est en phase de test : le tuteur arrivera avec la <strong>prochaine mise à jour</strong>. En attendant, tu peux déjà transformer tes cours en révisions, gratuitement :</p>' +
             '<div class="locked-actions">' +
               '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-quiz-setup.html"><i class="fa-solid fa-circle-question"></i> Générer un quiz</a>' +
               '<a class="rb-btn rb-btn--ghost rb-btn--sm" href="relbrain-flashcards.html"><i class="fa-solid fa-layer-group"></i> Mes flashcards</a>' +

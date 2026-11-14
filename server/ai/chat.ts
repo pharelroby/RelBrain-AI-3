@@ -6,43 +6,40 @@ import { z } from 'zod';
 import type OpenAI from 'openai';
 import { route, parse, HttpError } from '../../lib/http';
 import { admin } from '../../lib/supabase';
-import { assertQuota, assertAiBurst, getQuota } from '../../lib/quota';
+import { assertQuota, assertAiBurst } from '../../lib/quota';
 import { openai, MODELS, trackUsage, toHttpError, chatExtras, tokenLimit } from '../../lib/ai/openai';
 import { chatSystemPrompt } from '../../lib/ai/prompts';
 import { documentContext, loadProfile } from '../../lib/documents';
 
 const Body = z.object({
   message: z.string().trim().min(1).max(4000),
-  conversation_id: z.string().uuid().optional(),
-  document_id: z.string().uuid().optional(),
+  conversation_id: z.string().uuid().nullish().transform((v) => v ?? undefined),
+  document_id: z.string().uuid().nullish().transform((v) => v ?? undefined),
 });
 
 // ═══════════════════════════════════════════════════════════════
-// 🔒 TUTEUR IA RÉSERVÉ AUX FORMULES PAYANTES (phase de test)
+// 🔒 TUTEUR IA FERMÉ PENDANT LA PHASE DE TEST
 // ────────────────────────────────────────────────────────────────
-// Le tuteur consomme beaucoup de jetons d'IA. Les élèves du plan
-// gratuit reçoivent un message qui les oriente vers les quiz, les
-// flashcards et les résumés. Les administrateurs y ont toujours accès,
-// ainsi que les élèves passés en Pro / Premium dans la salle des profs.
-// Pour l'ouvrir à tout le monde : TUTOR_FOR_FREE=true (Vercel + .env.local).
+// Le tuteur consomme beaucoup de jetons d'IA : il est fermé pour TOUT
+// le monde (administrateurs compris) tant que la phase de test dure.
+// Les élèves reçoivent un message qui les oriente vers les quiz, les
+// flashcards et les résumés, qui restent disponibles.
+// Pour l'ouvrir (prochaine mise à jour) : TUTOR_ENABLED=true
+// dans Vercel (Settings → Environment Variables) et dans .env.local.
 // ═══════════════════════════════════════════════════════════════
-async function assertTutorAccess(userId: string) {
-  if (process.env.TUTOR_FOR_FREE === 'true') return;
-  const { plan } = await getQuota(userId);
-  if (plan !== 'free') return;
-  const { data: me } = await admin().from('profiles').select('is_admin').eq('id', userId).maybeSingle();
-  if (me?.is_admin) return;
+function assertTutorAccess() {
+  if (process.env.TUTOR_ENABLED === 'true') return;
   throw new HttpError(
     403,
     'feature_locked',
-    'Le tuteur IA fait partie des formules payantes, qui ouvriront bientôt. Avec le plan gratuit, tu peux déjà générer des quiz, des flashcards et des résumés à partir de tes cours.',
+    "Le tuteur IA n'est pas disponible pendant la phase de test. Il arrivera avec la prochaine mise à jour. En attendant, tu peux générer des quiz, des flashcards et des résumés à partir de tes cours.",
     { feature: 'tutor' },
   );
 }
 
 export default route({ methods: ['POST'], auth: true }, async ({ req, res, user }) => {
+  assertTutorAccess();
   const body = parse(Body, req.body);
-  await assertTutorAccess(user.id);
   const quota = await assertQuota(user.id, 'ai_requests');
   await assertAiBurst(user.id, quota.plan);
   const sb = admin();
