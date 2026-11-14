@@ -1,0 +1,8 @@
+# Fichiers jamais envoyés à Vercel.
+# ⚠️ Surtout .env.local : il contient tes clés secrètes. Sur Vercel, on les
+#    saisit dans Settings → Environment Variables (voir GUIDE-LANCEMENT.md).
+.env
+.env.*
+!.env.example
+LANCER-RELBRAIN.bat
+*.log

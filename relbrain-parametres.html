@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <script>
 (function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();
 </script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.ai – Paramètres</title>
+<title>RelBrain.AI – Paramètres</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <style>
@@ -189,7 +192,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
       </div>
       <div>
-        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
       </div>
     </a>
@@ -206,12 +209,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
-      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
+      <a href="relbrain-concours.html" class="nav-item"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item active mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
@@ -432,6 +435,11 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 
           <!-- Canal -->
           <div class="rb-card p-4">
+            <div class="mb-4 pb-4 border-b border-[#f0e6d8]">
+              <h3 class="font-black text-slate-900 text-xs mb-2.5">Sons de RelBrain</h3>
+              <label class="flex items-center gap-2 text-xs font-bold text-slate-700 mb-2"><input type="checkbox" id="snd-on"/> Activer les sons (quiz, flashcards, notifications)</label>
+              <div class="flex items-center gap-2"><i class="fa-solid fa-volume-low text-slate-400 text-xs"></i><input type="range" id="snd-vol" min="0" max="1" step="0.05" class="flex-1" aria-label="Volume"/><button type="button" id="snd-test" class="text-[10px] font-black text-violet-600 hover:underline">Écouter</button></div>
+            </div>
             <h3 class="font-black text-slate-900 text-xs mb-2.5">Canaux de réception</h3>
             <div class="grid sm:grid-cols-3 gap-2">
               <label class="radio-card selected cursor-pointer" onclick="selectRadio(this)">
@@ -501,7 +509,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
                 <div class="text-white">
                   <p class="text-[10px] font-black uppercase tracking-widest opacity-90">Plan actuel</p>
                   <p class="text-lg font-black">Pro</p>
-                  <p class="text-[10px] font-bold opacity-90 mt-0.5">Renouvellement le 14 août 2026 · 9€/mois</p>
+                  <p class="text-[10px] font-bold opacity-90 mt-0.5">Sans engagement</p>
                 </div>
               </div>
               <div class="flex flex-col gap-1 items-start md:items-end">
@@ -534,7 +542,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
               <!-- FREE -->
               <div class="plan-card" onclick="choosePlan(this,'Gratuit')">
                 <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-0.5">Gratuit</p>
-                <div class="text-2xl font-black mb-3 text-slate-900">0€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="text-2xl font-black mb-3 text-slate-900">0 F<small class="text-xs font-bold text-slate-500">/mois</small></div>
                 <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> 5 documents/mois</div>
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Quiz 10 questions</div>
@@ -549,12 +557,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
               <div class="plan-card selected" onclick="choosePlan(this,'Pro')">
                 <span class="plan-badge">⭐ ACTUEL</span>
                 <p class="text-[10px] font-black uppercase tracking-wider text-violet-600 mb-0.5">Pro</p>
-                <div class="text-2xl font-black mb-3 text-slate-900">9€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="text-2xl font-black mb-3 text-slate-900">3 000 F<small class="text-xs font-bold text-slate-500">/mois</small></div>
                 <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Documents illimités</div>
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Quiz 30 questions</div>
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Flashcards + SM-2</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Mode examen blanc</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> Fiches détaillées</div>
                   <div class="plan-feature"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i> IA adaptative</div>
                 </div>
                 <p class="text-[10px] font-black text-violet-600 text-center">✓ Ton plan actuel</p>
@@ -564,12 +572,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
               <div class="plan-card" onclick="choosePlan(this,'Premium')">
                 <span class="plan-badge" style="background:linear-gradient(135deg,#fbbf24,#d97706)">✨ PREMIUM</span>
                 <p class="text-[10px] font-black uppercase tracking-wider text-amber-600 mb-0.5">Premium</p>
-                <div class="text-2xl font-black mb-3 text-slate-900">19€<small class="text-xs font-bold text-slate-500">/mois</small></div>
+                <div class="text-2xl font-black mb-3 text-slate-900">6 500 F<small class="text-xs font-bold text-slate-500">/mois</small></div>
                 <div class="space-y-0.5 mb-3 pb-3 border-b border-[#f0e6d8]">
                   <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Tout de Pro +</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Documents vidéo</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Tuteur IA 24/7</div>
-                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Analyse prédictive</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Quiz jusqu'à 50 questions</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> 1 000 requêtes IA / jour</div>
+                  <div class="plan-feature" style="opacity:.6"><i class="fa-regular fa-clock text-[9px]"></i> Bientôt : espace de groupe</div>
                   <div class="plan-feature"><i class="fa-solid fa-check text-amber-500 text-[9px]"></i> Support prioritaire</div>
                 </div>
                 <p class="text-[10px] font-bold text-amber-600 text-center">Mettre à niveau →</p>
@@ -915,6 +923,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var r = await RB.sb.from('plans').select('*');
       (r.data || []).forEach(function (pl) { planPrices[pl.id] = pl; });
     }
+    var PAY_ON = !!(window.RB_CONFIG && window.RB_CONFIG.PAIEMENTS_ACTIFS); // réglage dans relbrain-config.js
     function renderPrices() {
       if (!planPrices.pro) return; // grille pas encore chargée
       var xaf = provider !== 'stripe';
@@ -926,6 +935,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<small class="text-xs font-bold text-slate-500">' + (months === 12 ? '/an' : '/mois') + '</small>';
       });
       payBtn.innerHTML = plan === 'free' ? 'Rester sur le plan gratuit' : '<i class="fa-solid fa-lock"></i> Payer ' + fmt((months === 12 ? 10 : 1) * (provider === 'stripe' ? planPrices[plan].price_eur_cents : planPrices[plan].price_xaf), provider === 'stripe' ? 'EUR' : 'XAF') + ' · ' + (provider === 'stripe' ? 'Carte' : provider === 'orange_money' ? 'Orange Money' : 'MTN MoMo');
+      if (!PAY_ON && plan !== 'free') payBtn.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Bientôt disponible';
     }
     async function renderStatus() {
       sub = await RB.data.payments.subscription();
@@ -1013,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
     payBtn.onclick = function () {
+      if (!PAY_ON && plan !== 'free') { payBody.innerHTML = '<div class="text-center"><p style="font-size:2rem">🚀</p><p style="font-family:var(--rb-font-display);font-weight:650;font-size:1.25rem">Bientôt disponible</p><p class="text-xs text-slate-500 font-semibold mt-1 mb-4">Pendant le lancement, RelBrain est entièrement gratuit. Les offres Pro et Premium ouvriront très vite, payables par Orange Money, MTN MoMo ou carte.</p><button class="rb-btn rb-btn--ink rb-btn--block" onclick="document.getElementById(\'modal-pay\').classList.remove(\'open\')">Compris</button></div>'; payModal.classList.add('open'); return; }
       if (plan === 'free') return toast('Tu peux revenir au gratuit à tout moment : ton accès payant reste actif jusqu\'à son échéance.', 'info');
       if (provider === 'mtn_momo') {
         var saved = (p.phone || '').replace(/^237/, '');
@@ -1064,5 +1075,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var on = document.getElementById('snd-on'), vol = document.getElementById('snd-vol'), test = document.getElementById('snd-test');
+  if (!on || !RB.sound) return;
+  on.checked = RB.sound.enabled(); vol.value = RB.sound.volume();
+  on.onchange = function () { RB.sound.setEnabled(on.checked); if (on.checked) RB.sound.play('notif'); };
+  vol.onchange = function () { RB.sound.setVolume(vol.value); RB.sound.play('notif'); };
+  test.onclick = function () { RB.sound.play('notif'); };
+});
+</script>
 </body>
 </html>

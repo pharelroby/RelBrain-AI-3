@@ -7,11 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "vercel dev",
+    "dev": "tsx scripts/dev.ts",
+    "dev:vercel": "vercel dev",
     "typecheck": "tsc --noEmit",
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --linked > lib/database.types.ts",
-    "vapid": "web-push generate-vapid-keys"
+    "vapid": "web-push generate-vapid-keys",
+    "demo": "tsx scripts/demo.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -31,6 +33,7 @@
     "@types/pdf-parse": "^1.1.4",
     "@types/web-push": "^3.6.4",
     "@vercel/node": "^3.2.29",
+    "tsx": "^4.23.15",
     "typescript": "^5.6.3"
   }
 }

@@ -56,14 +56,15 @@ Supabase Postgres : tables + RLS + fonctions SQL (XP, séries, SM-2, ligues, dé
 ├── relbrain-site.js                En-tête / pied de page du site vitrine, sommaire automatique
 ├── sw.js · manifest.webmanifest · icon*.png/svg     PWA : hors-ligne léger + notifications push
 ├── content/blog/posts.json         Articles du blog (structure évolutive)
-├── api/                            ★ Fonctions serverless (Vercel)
+├── api/router.ts                   ★ L'aiguilleur : une seule fonction Vercel pour toutes les routes /api
+├── server/                         ★ Les routes (appelées par api/router.ts)
 │   ├── auth/        signup · login · recover · resend          (limitation de débit)
 │   ├── documents/   process · delete                            (upload, extraction, RAG)
 │   ├── ai/          analyze · quiz · flashcards · summary · chat (streaming)
 │   ├── notifications/subscribe     (Web Push)
 │   ├── payments/    checkout · status
 │   ├── webhooks/    stripe · mobile-money
-│   ├── cron/        notifications (horaire) · subscriptions (quotidien)
+│   ├── cron/        notifications · subscriptions (une fois par jour)
 │   ├── account/     export (RGPD) · delete
 │   ├── keys.ts · v1/quizzes.ts     API publique (clés rb_live_…)
 │   ├── contact.ts · health.ts
@@ -74,7 +75,7 @@ Supabase Postgres : tables + RLS + fonctions SQL (XP, séries, SM-2, ligues, dé
 │   ├── notify.ts (push + email) · api-keys.ts
 │   └── payments/ index · stripe · mtn-momo · orange-money
 ├── middleware.ts                   Protection des pages privées (edge)
-├── supabase/migrations/            ★ 0001 schéma+RLS · 0002 gamification · 0003 apprentissage · 0004 données · 0005 cron
+├── supabase/migrations/            ★ 0001 schéma+RLS · 0002 gamification · 0003 apprentissage · 0004 données · 0005 cron · 0006 classement + documents sans /api · 0007 durcissement · 0008 concours & annales
 ├── vercel.json · package.json · tsconfig.json · .env.example
 ```
 
@@ -93,13 +94,24 @@ Ouvre `http://localhost:3000`. Sans configuration, tout s'affiche en mode démo.
 
 ## 4. Mise en production pas à pas
 
+### 4.0 Lancer en local avec Gemini
+
+1. Crée une clé sur <https://aistudio.google.com/apikey> et colle-la dans `.env.local`, ligne `GEMINI_API_KEY=`.
+2. Double-clique sur `LANCER-RELBRAIN.bat` (ou `npm run dev`) : pages + `/api` sur `http://localhost:3005`, sans compte Vercel. Le serveur redémarre à chaque enregistrement de `.env.local`.
+3. Administration : `relbrain-admin.html`. Pour nommer un administrateur, voir l'en-tête de `supabase/migrations/0009_admin.sql`.
+
 ### 4.1 Supabase
+
+> **État actuel (20/10/2026)** — projet connecté : `tuyhhcfghvhqyoqebuds` (eu-central-1).
+> Migrations 0001 → 0008 appliquées (0008 le 23/10/2026), clés publiques dans `relbrain-config.js`,
+> clés serveur dans `.env.local` (jamais commité). Il reste à faire **dans le
+> dashboard** les étapes 4 et 6 ci-dessous (URL de redirection + SMTP).
 
 1. Crée un projet sur <https://supabase.com/dashboard> (région la plus proche de tes élèves, ex. Europe de l'Ouest).
 2. **Extensions** (Database → Extensions) : active `vector` et `pg_cron`.
 3. **Migrations** — au choix :
    - CLI : `npx supabase link --project-ref <ref>` puis `npm run db:push` ;
-   - ou copie-colle dans l'éditeur SQL, **dans l'ordre**, `supabase/migrations/0001` → `0005`.
+   - ou copie-colle dans l'éditeur SQL, **dans l'ordre**, `supabase/migrations/0001` → `0008`.
 4. **Authentication → URL Configuration**
    - *Site URL* : `https://ton-domaine`
    - *Redirect URLs* : `https://ton-domaine/relbrain-validation-email.html`, `https://ton-domaine/relbrain-reset-password.html`, `https://ton-domaine/relbrain-accueil.html` (et les mêmes en `http://localhost:3000/…` pour le développement).
@@ -121,8 +133,8 @@ Recopie `SUPABASE_URL` et `SUPABASE_ANON_KEY` (publiques) dans **`relbrain-confi
 1. Importe le dépôt sur <https://vercel.com/new> (framework : *Other*).
 2. Ajoute toutes les variables de `.env.example` dans *Settings → Environment Variables*.
 3. Déploie, puis ouvre `https://ton-domaine/api/health` : chaque intégration doit être à `true`.
-4. **Cron** : `vercel.json` déclare `/api/cron/notifications` (toutes les heures) et `/api/cron/subscriptions` (chaque jour). Le planning horaire nécessite un plan Vercel Pro ; sur le plan gratuit, passe-le en quotidien ou appelle l'URL depuis `pg_cron` + `pg_net` avec l'en-tête `Authorization: Bearer $CRON_SECRET`.
-5. `api/documents/process.ts` a `maxDuration: 300` : vérifie que ton plan Vercel l'autorise (sinon 60 s suffisent pour la plupart des cours).
+4. **Cron** : `vercel.json` lance `/api/cron/notifications` chaque jour à 17 h UTC (18 h au Cameroun) et `/api/cron/subscriptions` chaque matin, ce qu'autorise le plan gratuit. Avec un plan payant, tu peux passer les rappels en horaire (`0 * * * *`) et mettre `REMINDERS_HOURLY=true`.
+5. Toutes les routes passent par `api/router.ts` (`maxDuration: 300`, le maximum du plan gratuit) : le plan gratuit limite un projet à 12 fonctions, RelBrain n'en utilise qu'une. Guide pas à pas : `GUIDE-LANCEMENT.md`.
 
 ### 4.4 Paiements
 
@@ -154,8 +166,8 @@ Chaque emplacement est signalé dans le code par un bloc `🔑 CLÉ API À INSÉ
 | `OPENAI_API_KEY` | `lib/ai/openai.ts` | ❌ secrète |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | `relbrain-config.js` / `lib/notify.ts` | ✅ / ❌ |
 | `RESEND_API_KEY` | `lib/notify.ts` | ❌ secrète |
-| `CRON_SECRET` | `api/cron/*.ts` | ❌ secrète |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | `lib/payments/stripe.ts`, `api/webhooks/stripe.ts` | ❌ secrètes |
+| `CRON_SECRET` | `server/cron/*.ts` | ❌ secrète |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | `lib/payments/stripe.ts`, `server/webhooks/stripe.ts` | ❌ secrètes |
 | `MTN_MOMO_*` | `lib/payments/mtn-momo.ts` | ❌ secrètes |
 | `ORANGE_MONEY_*` | `lib/payments/orange-money.ts` | ❌ secrètes |
 
@@ -173,7 +185,9 @@ Chaque emplacement est signalé dans le code par un bloc `🔑 CLÉ API À INSÉ
 
 **Quiz notés côté serveur** — les bonnes réponses ne sont **pas lisibles** par le navigateur (privilèges de colonnes) : `check_answer()` corrige chaque réponse (QCM, vrai/faux, réponse courte tolérante aux accents, calcul avec tolérance, rédaction auto-évaluée), `finish_quiz_attempt()` calcule score, XP, bonus et points faibles.
 
-**Progression** — `study_sessions`, `quiz_attempts`, `quiz_answers`, `flashcard_reviews` (SM-2 dans `review_flashcard()`), `user_progress` (maîtrise par matière), vue `v_concept_stats`, `get_weak_points()`, `get_recommendations()`, `get_activity()` (page Historique avec filtres et graphiques).
+**Progression** — `study_sessions`, `quiz_attempts`, `quiz_answers`, `flashcard_reviews` (SM-2 dans `review_flashcard()`), `user_progress` (maîtrise par matière), vue `v_concept_stats`, `get_weak_points()`, `get_recommendations()`, `get_activity()` (section Historique du tableau de bord `dashboard.html#historique` : filtres, graphiques, sessions, documents importés). Classement : `get_leaderboard(scope, period)` — ligue, semaine, général, pays, établissement, avec ta position même hors du top.
+
+**Concours** — page `relbrain-concours.html` (menu, sous Classement) : catalogue des concours (IUT de Douala, ENSP Douala et Yaoundé en 1re et 3e année, ESSEC, JFN, Saint Jérôme, UCAC), puis pour chaque concours ses niveaux et ses épreuves par année, de la plus récente à la plus ancienne. Tables `concours` → `concours_levels` → `concours_annales`, lecture réservée aux élèves connectés, écriture réservée à l'équipe (`service_role`). Les PDF vont dans le bucket privé `annales` et s'ouvrent par lien temporaire de 10 min. « S'entraîner » copie le texte de l'épreuve (`content_text`) dans Mes documents, puis ouvre la création de quiz (cela compte dans le quota de documents). La marche à suivre pour ajouter une épreuve est en tête de `supabase/migrations/0008_concours.sql`.
 
 **Notifications** — table `notifications` + préférences par catégorie, centre de notifications avec lu/non-lu et temps réel, Web Push (service worker), emails (Resend), **rappels intelligents** à l'heure d'étude habituelle apprise (`refresh_study_habits()`), heures calmes, messages du coach stockés par conversation.
 

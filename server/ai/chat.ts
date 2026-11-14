@@ -7,7 +7,7 @@ import type OpenAI from 'openai';
 import { route, parse, HttpError } from '../../lib/http';
 import { admin } from '../../lib/supabase';
 import { assertQuota, assertAiBurst } from '../../lib/quota';
-import { openai, MODELS, trackUsage, toHttpError } from '../../lib/ai/openai';
+import { openai, MODELS, trackUsage, toHttpError, chatExtras, tokenLimit } from '../../lib/ai/openai';
 import { chatSystemPrompt } from '../../lib/ai/prompts';
 import { documentContext, loadProfile } from '../../lib/documents';
 
@@ -77,7 +77,8 @@ export default route({ methods: ['POST'], auth: true }, async ({ req, res, user 
         stream: true,
         stream_options: { include_usage: true },
         temperature: 0.6,
-        max_tokens: 1500,
+        max_tokens: tokenLimit(1500),
+        ...chatExtras,
         messages,
       });
       model = m;

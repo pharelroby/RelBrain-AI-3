@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script src="relbrain-loader.js"></script>
+<meta charset="UTF-8"/>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RelBrain.AI – Concours</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="relbrain-theme.css"/>
+<script src="relbrain-theme.js" defer></script>
+<script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
+<script src="relbrain-config.js"></script>
+<script src="relbrain-app.js" defer></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-size:.8125rem;}
+
+/* ══════════════ SIDEBAR COMPACTE ══════════════ */
+.sidebar{width:240px;min-width:240px;background:#fff;border-right:1px solid #e7d9c5;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.sidebar.collapsed{transform:translateX(-240px);}
+@media(max-width:900px){.sidebar{transform:translateX(-240px);box-shadow:0 0 40px rgba(0,0,0,.15);}.sidebar.open{transform:translateX(0);}.main-content{margin-left:0!important;}}
+.main-content{margin-left:240px;flex:1;min-width:0;transition:margin .28s;}
+
+.nav-item{display:flex;align-items:center;gap:.625rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.8125rem;font-weight:700;color:#57534e;cursor:pointer;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:#faf5ff;color:#7c3aed;}
+.nav-item.active{background:#f5f3ff;color:#6d28d9;font-weight:800;}
+.nav-item.active .nav-icon{color:#7c3aed;}
+.nav-item .nav-icon{width:1rem;text-align:center;flex-shrink:0;font-size:.85rem;color:#78716c;}
+
+.avatar-card{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;background:#fdf4e8;border:1px solid #e7d9c5;border-radius:.75rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.avatar-card:hover{border-color:#c4b5fd;background:#faf5ff;}
+
+.note-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:#fff;border:1.5px solid #e7d9c5;color:#57534e;font-weight:800;font-size:.75rem;cursor:pointer;transition:all .2s;width:100%;}
+.note-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .75rem;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);color:#fff;font-weight:800;font-size:.75rem;box-shadow:0 4px 12px rgba(124,58,237,.22);cursor:pointer;transition:all .2s;border:0;width:100%;}
+.upgrade-btn:hover{transform:translateY(-1px);}
+
+/* ══════════════ HEADER ══════════════ */
+.app-header{height:56px;background:rgba(253,244,232,.9);backdrop-filter:blur(12px);border-bottom:1px solid #e7d9c5;display:flex;align-items:center;padding:0 1rem;gap:.75rem;position:sticky;top:0;z-index:30;}
+.header-btn{width:34px;height:34px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;color:#57534e;cursor:pointer;transition:all .15s;background:transparent;border:0;}
+.header-btn:hover{background:#f5f3ff;color:#7c3aed;}
+.header-btn i{font-size:.875rem;}
+
+.avatar-btn{width:34px;height:34px;border-radius:.625rem;background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:13px;cursor:pointer;position:relative;box-shadow:0 3px 10px rgba(124,58,237,.22);}
+.avatar-btn::after{content:'';position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid #fdf4e8;}
+
+.avatar-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:#fff;border:1px solid #e7d9c5;border-radius:.75rem;box-shadow:0 16px 40px rgba(15,23,42,.12);opacity:0;visibility:hidden;transform:translateY(-6px);transition:all .2s;z-index:100;overflow:hidden;}
+.avatar-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
+.avatar-menu-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;font-size:.75rem;font-weight:700;color:#57534e;transition:all .12s;text-decoration:none;}
+.avatar-menu-item:hover{background:#faf5ff;color:#7c3aed;}
+.avatar-menu-item.danger:hover{background:#fff1f2;color:#e11d48;}
+
+/* ══════════════ CARDS ══════════════ */
+.rb-card{background:#fff;border-radius:.875rem;border:1px solid #e7d9c5;box-shadow:0 1px 8px rgba(15,23,42,.03);}
+.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rb-input{width:100%;padding:.625rem .875rem;border:1.5px solid #e7d9c5;border-radius:.625rem;font-size:.8125rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:700;}
+.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.rb-textarea{width:100%;padding:.625rem .875rem;border:1.5px solid #e7d9c5;border-radius:.625rem;font-size:.8125rem;color:#0f172a;background:#fff;transition:all .15s;outline:none;font-weight:600;resize:none;line-height:1.5;font-family:inherit;}
+.rb-textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
+.prog-bar{height:5px;background:#f0e6d8;border-radius:9999px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:9999px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+/* ══════════════ MODAL ══════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal-box{background:#fff;border-radius:1.125rem;border:1px solid #e7d9c5;box-shadow:0 24px 60px rgba(0,0,0,.18);width:100%;max-width:400px;padding:1.25rem;animation:modalUp .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+@keyframes modalUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══════════════ TOAST ══════════════ */
+#rb-toast-host{position:fixed;bottom:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.375rem;pointer-events:none;}
+.rb-toast{display:flex;align-items:center;gap:.5rem;padding:.625rem .875rem;border-radius:.625rem;font-size:.75rem;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+/* ══════════════ CONCOURS ══════════════ */
+.seg{display:flex;gap:.25rem;padding:.25rem;background:#fff;border:1px solid #e7d9c5;border-radius:.75rem;overflow-x:auto;scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{white-space:nowrap;padding:.4rem .7rem;border-radius:.55rem;font-size:.7rem;font-weight:800;color:#78716c;display:inline-flex;align-items:center;gap:.35rem;transition:all .15s;background:transparent;border:0;cursor:pointer}
+.seg button:hover{color:#7c3aed;background:#faf5ff}
+.seg button.on{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.22)}
+.c-card{display:block;background:#fff;border:1px solid #e7d9c5;border-radius:.875rem;padding:1rem;text-decoration:none;position:relative;overflow:hidden;transition:all .18s;box-shadow:0 1px 8px rgba(15,23,42,.03)}
+.c-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.c-card:hover{border-color:#c4b5fd;transform:translateY(-2px);box-shadow:0 10px 24px rgba(124,58,237,.10)}
+.c-logo{width:48px;height:44px;border-radius:.75rem;background:var(--c);color:#fff;font-weight:900;font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.02em}
+.lvl-chip{font-size:.62rem;font-weight:800;color:#6d28d9;background:#f5f3ff;border:1px solid #ddd6fe;padding:.12rem .5rem;border-radius:9999px}
+.back-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:800;color:#6d28d9;text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.c-hero{border-radius:1rem;padding:1.25rem;color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(124,58,237,.22)}
+.c-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,255,255,.28),transparent 50%);pointer-events:none}
+.c-crest{width:60px;height:56px;border-radius:1rem;background:#fff;color:#6d28d9;font-weight:900;font-size:.78rem;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.18);flex-shrink:0}
+.year-head{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;border-bottom:1px solid #f0e6d8;background:#fffcf7}
+.year-badge{font-size:.8rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#a855f7);padding:.2rem .6rem;border-radius:.5rem}
+.new-tag{font-size:.58rem;font-weight:900;color:#047857;background:#ecfdf5;padding:.1rem .45rem;border-radius:9999px;margin-left:.3rem;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle}
+.ann-row{display:flex;align-items:center;gap:.65rem;padding:.6rem .7rem;border-radius:.625rem;transition:background .12s;flex-wrap:wrap}
+.ann-row:hover{background:#faf5ff}
+.ann-icon{width:34px;height:34px;border-radius:.6rem;background:#f5f3ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.fmt{font-weight:800}
+.fmt-qcm{color:#0369a1}.fmt-red{color:#b45309}.fmt-mix{color:#6d28d9}
+.ann-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .6rem;border-radius:.5rem;font-size:.66rem;font-weight:800;color:#57534e;background:#fff;border:1.5px solid #e7d9c5;cursor:pointer;transition:all .15s}
+.ann-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff}
+.ann-btn.primary{background:linear-gradient(135deg,#7c3aed,#a855f7);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.22)}
+.ann-btn:disabled{opacity:.6;cursor:wait}
+@media(max-width:560px){.ann-row>div:last-child{width:100%;justify-content:flex-start;padding-left:2.7rem}}
+html.dark .seg{background:#1c1730;border-color:rgba(255,255,255,.08)}
+html.dark .c-card{background:#1c1730;border-color:rgba(255,255,255,.08)}
+html.dark .year-head{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+html.dark .ann-row:hover{background:rgba(124,58,237,.12)}
+html.dark .ann-btn{background:#1c1730;border-color:rgba(255,255,255,.12);color:#d6d3d1}
+html.dark .ann-btn.primary{background:linear-gradient(135deg,#7c3aed,#a855f7);border-color:transparent;color:#fff}
+html.dark .lvl-chip,html.dark .ann-icon{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.3)}
+</style>
+</head>
+<body data-rb-private>
+
+<div id="rb-toast-host"></div>
+
+<!-- MODAL NOTE -->
+<div id="note-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-white text-sm"></i></div>
+      <div><p class="text-sm font-black text-slate-900">Prendre une note</p><p class="text-[10px] text-slate-500 font-semibold">L'IA va l'analyser</p></div>
+      <button class="ml-auto text-slate-400 hover:text-slate-700" onclick="closeNote()"><i class="fa-solid fa-xmark text-sm"></i></button>
+    </div>
+    <input type="text" id="note-title" class="rb-input mb-2" placeholder="Titre de la note"/>
+    <textarea id="note-content" rows="4" class="rb-textarea mb-3" placeholder="Écris ta note ici..."></textarea>
+    <div class="flex gap-2">
+      <button class="flex-1 border-2 border-[#e7d9c5] text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-[#faf5ff]" onclick="closeNote()">Annuler</button>
+      <button class="flex-1 gradient-bg text-white font-black py-2 rounded-lg text-xs" onclick="saveNote()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="flex">
+<aside class="sidebar" id="sidebar">
+  <div class="px-4 py-4 flex flex-col h-full overflow-y-auto">
+    <a href="relbrain-accueil.html" class="flex items-center gap-2 mb-4">
+      <div class="bg-violet-600 text-white p-1.5 rounded-lg shadow-sm shadow-violet-200 relative">
+        <i class="fa-solid fa-brain text-sm"></i>
+        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
+      </div>
+      <div>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
+        <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
+      </div>
+    </a>
+
+    <a href="relbrain-profil.html" class="avatar-card mb-4">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-black text-xs shrink-0 overflow-hidden" data-rb="avatar">K</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-black text-slate-800 truncate" data-rb="name">Pharel FOFE</p>
+        <p class="text-[9px] text-violet-600 font-bold" data-rb="level-line">Niveau 7 · 2 340 XP</p>
+      </div>
+      <div class="text-right shrink-0"><p class="text-[9px] text-amber-500 font-black" data-rb="streak">🔥12</p></div>
+    </a>
+
+    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
+    <nav class="space-y-0.5 mb-3">
+      <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
+      <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
+      <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
+      <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
+      <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
+      <a href="relbrain-concours.html" class="nav-item active"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
+    </nav>
+
+    <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
+
+    <div class="mt-auto space-y-1.5 pt-3 border-t border-[#e7d9c5]">
+      <button class="note-btn" onclick="openNote()"><i class="fa-solid fa-pen-to-square text-[10px]"></i> Prendre une note</button>
+      <button class="upgrade-btn" data-rb-action="upgrade" onclick="location.href='relbrain-parametres.html#abonnement'"><i class="fa-solid fa-arrow-up text-[10px]"></i> Upgrader</button>
+    </div>
+  </div>
+</aside>
+
+<div class="main-content flex flex-col min-h-screen" id="main-content">
+  <header class="app-header">
+    <button class="header-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="flex items-center gap-1 text-xs">
+      <span class="text-slate-500 font-bold">RelBrain</span>
+      <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+      <span class="font-black text-slate-800" id="crumb">Concours</span>
+    </div>
+    <div class="ml-auto flex items-center gap-1.5">
+      <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
+      <button class="header-btn relative" data-rb-action="notifications" aria-label="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-[#fdf4e8]"></span>
+      </button>
+      <div class="relative" id="avatar-wrap">
+        <div class="avatar-btn" onclick="toggleAvatarMenu()" data-rb="avatar" role="button" tabindex="0" aria-label="Menu du compte">K</div>
+        <div class="avatar-menu" id="avatar-menu">
+          <div class="px-3 py-2.5 border-b border-[#e7d9c5]">
+            <p class="text-xs font-black text-slate-800" data-rb="name">Pharel FOFE</p>
+            <p class="text-[10px] text-slate-400 font-semibold" data-rb="email">pharel@relbrain.ai</p>
+          </div>
+          <a href="relbrain-profil.html" class="avatar-menu-item"><i class="fa-solid fa-user text-violet-500 text-xs"></i> Mon profil</a>
+          <a href="relbrain-parametres.html" class="avatar-menu-item"><i class="fa-solid fa-gear text-violet-500 text-xs"></i> Paramètres</a>
+          <a href="index.html" class="avatar-menu-item danger" data-rb-action="logout"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <div class="p-4 md:p-5 max-w-4xl mx-auto w-full space-y-3">
+
+    <!-- ═══ VUE 1 : CATALOGUE ═══ -->
+    <section id="view-list" class="space-y-3">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+        <div>
+          <h1 class="text-xl md:text-2xl font-black text-slate-900">Concours</h1>
+          <p class="text-xs text-slate-500 mt-0.5 font-semibold">Les annales des concours des grandes écoles du Cameroun, de la plus récente à la plus ancienne.</p>
+        </div>
+        <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i><input id="q" class="rb-input" style="padding:.45rem .7rem .45rem 1.8rem;width:14rem;font-size:.75rem" placeholder="Chercher une école" aria-label="Chercher une école"/></div>
+      </div>
+      <div class="seg" id="cats" role="tablist" aria-label="Type d'école">
+        <button data-cat="" class="on"><i class="fa-solid fa-border-all"></i> Tous</button>
+        <button data-cat="ingenieur"><i class="fa-solid fa-gears"></i> Ingénieur</button>
+        <button data-cat="technologie"><i class="fa-solid fa-microchip"></i> Technologie</button>
+        <button data-cat="commerce"><i class="fa-solid fa-chart-line"></i> Commerce</button>
+        <button data-cat="universite"><i class="fa-solid fa-building-columns"></i> Universités</button>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-3" id="grid"></div>
+    </section>
+
+    <!-- ═══ VUE 2 : UN CONCOURS ═══ -->
+    <section id="view-detail" class="space-y-3" hidden>
+      <a href="relbrain-concours.html" class="back-link" id="back"><i class="fa-solid fa-arrow-left"></i> Tous les concours</a>
+      <div class="c-hero" id="hero">
+        <div class="relative z-10 flex items-center gap-3">
+          <div class="c-crest" id="h-crest">?</div>
+          <div class="min-w-0">
+            <p class="text-[10px] font-black uppercase tracking-widest opacity-90" id="h-cat">&nbsp;</p>
+            <h1 class="text-lg md:text-xl font-black leading-tight" id="h-name">&nbsp;</h1>
+            <p class="text-xs font-semibold opacity-90" id="h-full">&nbsp;</p>
+          </div>
+        </div>
+        <p class="relative z-10 text-xs font-semibold opacity-90 mt-3 max-w-xl" id="h-desc"></p>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <div class="seg" id="levels" role="tablist" aria-label="Niveau d'entrée"></div>
+        <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i><input id="q2" class="rb-input" style="padding:.4rem .7rem .4rem 1.8rem;width:12rem;font-size:.72rem" placeholder="Matière ou année" aria-label="Filtrer les épreuves"/></div>
+      </div>
+      <p class="text-[11px] text-slate-500 font-semibold" id="req"></p>
+      <div id="annales" class="space-y-3"></div>
+    </section>
+
+    <footer class="border-t border-[#e7d9c5] py-4">
+      <p class="text-[10px] text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
+    </footer>
+  </div>
+</div>
+</div>
+
+<script>
+function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
+function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
+document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function openNote(){document.getElementById('note-modal').classList.add('open');}
+function closeNote(){document.getElementById('note-modal').classList.remove('open');}
+function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
+function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
+</script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     CONCOURS
+     · relbrain-concours.html            : catalogue (tables concours + concours_levels)
+     · relbrain-concours.html?c=enspy&n=3e : un concours, un niveau, ses épreuves
+       (concours_annales) regroupées par année, de la plus récente à la plus ancienne
+     · Sujet / Corrigé : lien temporaire vers le bucket privé « annales »
+     · S'entraîner : le texte de l'épreuve devient un document → quiz
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  var CAT = { ingenieur: 'École d\'ingénieurs', technologie: 'Institut de technologie', commerce: 'École de commerce', universite: 'Université' };
+  var FORMAT = { qcm: ['QCM', 'fmt-qcm'], redaction: ['Rédaction', 'fmt-red'], mixte: ['QCM + questions ouvertes', 'fmt-mix'] };
+  var catalog = [], cat = '', current = null, level = null, annales = [];
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return window.RB && RB.escape ? RB.escape(s) : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
+  function initials(c) { return esc(c.abbr || (c.short_name || '?').slice(0, 4).toUpperCase()); }
+  function count(l) { return l.annales && l.annales[0] ? l.annales[0].count : (l.count || 0); }
+  function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+  /* ─── Données d'exemple (mode démo) ─── */
+  var DEMO = [
+    ['iut-douala', 'IUT', 'IUT de Douala', 'Institut Universitaire de Technologie de Douala', 'technologie', 'Douala', '#0ea5e9', [['1re', '1re année', 'Baccalauréat ou GCE A-Level'], ['3e', '3e année', 'DUT, BTS, HND ou Licence 2']]],
+    ['enspd', 'ENSPD', 'ENSP Douala', 'École Nationale Supérieure Polytechnique de Douala', 'ingenieur', 'Douala', '#7c3aed', [['1re', '1re année', 'Baccalauréat C, D, E, F ou GCE A-Level scientifique'], ['3e', '3e année', 'Licence 2 ou équivalent (Bac + 2) scientifique']]],
+    ['enspy', 'ENSPY', 'ENSP Yaoundé', 'École Nationale Supérieure Polytechnique de Yaoundé', 'ingenieur', 'Yaoundé', '#6d28d9', [['1re', '1re année', 'Baccalauréat C, D, E, F ou GCE A-Level scientifique'], ['3e', '3e année', 'Licence 2 ou équivalent (Bac + 2) scientifique']]],
+    ['essec-douala', 'ESSEC', 'ESSEC', 'École Supérieure des Sciences Économiques et Commerciales de Douala', 'commerce', 'Douala', '#f59e0b', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
+    ['jfn', 'JFN', 'JFN', 'JFN', 'universite', null, '#ec4899', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
+    ['saint-jerome', 'USJ', 'Saint Jérôme', 'Université Catholique Saint Jérôme de Douala', 'universite', 'Douala', '#10b981', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
+    ['ucac', 'UCAC', 'UCAC', 'Université Catholique d\'Afrique Centrale', 'universite', 'Yaoundé', '#e11d48', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
+  ].map(function (c) {
+    return { slug: c[0], abbr: c[1], short_name: c[2], name: c[3], category: c[4], city: c[5], color: c[6], description: null,
+      levels: c[7].map(function (l, i) { return { id: c[0] + ':' + l[0], code: l[0], label: l[1], requirement: l[2], sort_order: i + 1, count: c[4] === 'ingenieur' || c[4] === 'technologie' ? 12 - i * 4 : 6 }; }) };
+  });
+  function demoAnnales(levelId) {
+    var sci = /enspd|enspy|iut/.test(levelId), subj = sci ? ['Mathématiques', 'Physique', 'Chimie'] : ['Mathématiques', 'Culture générale', 'Anglais'];
+    var out = [];
+    [2025, 2024, 2023, 2022].forEach(function (y, i) {
+      subj.forEach(function (s, k) { if (i === 3 && k === 2) return; out.push({ id: levelId + y + k, year: y, subject: s, format: k === 0 ? 'mixte' : k === 1 ? 'qcm' : 'redaction', duration_minutes: k === 0 ? 180 : 120, sujet_path: 'demo', corrige_path: i < 3 ? 'demo' : null, has_text: i < 2 }); });
+    });
+    return out;
+  }
+
+  async function loadCatalog() {
+    if (!window.RB || RB.demo) return DEMO;
+    return (await RB.data.concours.list()).map(function (c) { c.levels = (c.levels || []).sort(function (a, b) { return a.sort_order - b.sort_order; }); return c; });
+  }
+
+  /* ─── Vue 1 : catalogue ─── */
+  function card(c) {
+    var total = c.levels.reduce(function (s, l) { return s + count(l); }, 0);
+    return '<a class="c-card" href="?c=' + encodeURIComponent(c.slug) + '" data-slug="' + esc(c.slug) + '" style="--c:' + esc(c.color || '#7c3aed') + '">' +
+      '<div class="flex items-start gap-3"><div class="c-logo">' + initials(c) + '</div><div class="flex-1 min-w-0">' +
+      '<p class="text-sm font-black text-slate-900 truncate">' + esc(c.short_name) + '</p>' +
+      '<p class="text-[10px] text-slate-500 font-semibold leading-snug">' + esc(c.name !== c.short_name ? c.name : CAT[c.category] || '') + '</p></div>' +
+      '<i class="fa-solid fa-chevron-right text-[10px] text-slate-300 mt-1"></i></div>' +
+      '<div class="flex flex-wrap items-center gap-1.5 mt-3">' + c.levels.map(function (l) { return '<span class="lvl-chip">' + esc(l.label) + '</span>'; }).join('') +
+      (c.city ? '<span class="text-[10px] text-slate-400 font-bold ml-auto"><i class="fa-solid fa-location-dot mr-1"></i>' + esc(c.city) + '</span>' : '') + '</div>' +
+      '<p class="text-[10px] font-black mt-2 ' + (total ? 'text-violet-600' : 'text-slate-400') + '">' + (total ? total + ' épreuve' + (total > 1 ? 's' : '') + ' disponible' + (total > 1 ? 's' : '') : 'Annales bientôt disponibles') + '</p></a>';
+  }
+  function renderGrid() {
+    var q = norm($('q').value.trim());
+    var list = catalog.filter(function (c) { return (!cat || c.category === cat) && (!q || norm(c.short_name + ' ' + c.name + ' ' + (c.city || '')).indexOf(q) > -1); });
+    $('grid').innerHTML = list.length ? list.map(card).join('') : '<p class="text-xs text-slate-500 font-semibold py-6 text-center sm:col-span-2">Aucune école ne correspond à ta recherche.</p>';
+  }
+
+  /* ─── Vue 2 : un concours ─── */
+  function renderHero(c) {
+    $('hero').style.background = 'linear-gradient(135deg,' + (c.color || '#7c3aed') + ',#a855f7 70%,#ec4899)';
+    $('h-crest').textContent = c.abbr || (c.short_name || '?').slice(0, 4).toUpperCase();
+    $('h-cat').textContent = (CAT[c.category] || '') + (c.city ? ' · ' + c.city : '');
+    $('h-name').textContent = 'Concours ' + c.short_name;
+    $('h-full').textContent = c.name !== c.short_name ? c.name : '';
+    $('h-desc').textContent = c.description || '';
+    document.title = 'RelBrain.AI – Concours ' + c.short_name;
+    $('crumb').textContent = c.short_name;
+  }
+  function renderLevels() {
+    $('levels').innerHTML = current.levels.map(function (l) { return '<button role="tab" data-level="' + esc(l.code) + '" class="' + (l === level ? 'on' : '') + '" aria-selected="' + (l === level) + '"><i class="fa-solid fa-graduation-cap"></i> ' + esc(l.label) + '</button>'; }).join('');
+    $('req').innerHTML = level && level.requirement ? '<i class="fa-solid fa-circle-info text-violet-500 mr-1"></i> Accès : ' + esc(level.requirement) : '';
+  }
+  function item(a) {
+    var f = FORMAT[a.format] || FORMAT.mixte;
+    return '<div class="ann-row" data-search="' + esc(norm(a.subject + ' ' + a.year + ' ' + (a.session || ''))) + '">' +
+      '<div class="ann-icon"><i class="fa-solid fa-file-lines"></i></div>' +
+      '<div class="flex-1 min-w-0"><p class="text-xs font-black text-slate-800">' + esc(a.subject) + (a.session ? ' <span class="text-slate-400 font-bold">· ' + esc(a.session) + '</span>' : '') + '</p>' +
+      '<p class="text-[10px] text-slate-500 font-semibold"><span class="fmt ' + f[1] + '">' + f[0] + '</span>' + (a.duration_minutes ? ' · ' + (a.duration_minutes >= 60 ? Math.floor(a.duration_minutes / 60) + ' h' + (a.duration_minutes % 60 ? ' ' + (a.duration_minutes % 60) : '') : a.duration_minutes + ' min') : '') + (a.coefficient ? ' · coef. ' + String(a.coefficient).replace('.', ',') : '') + '</p></div>' +
+      '<div class="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">' +
+      (a.sujet_path ? '<button class="ann-btn" data-open="' + esc(a.sujet_path) + '"><i class="fa-solid fa-file-pdf"></i> Sujet</button>' : '') +
+      (a.corrige_path ? '<button class="ann-btn" data-open="' + esc(a.corrige_path) + '"><i class="fa-solid fa-circle-check"></i> Corrigé</button>' : '<span class="text-[10px] text-slate-400 font-bold px-1">Corrigé à venir</span>') +
+      (a.has_text ? '<button class="ann-btn primary" data-practice="' + esc(a.id) + '" data-title="' + esc(current.short_name + ' ' + a.year + ' · ' + a.subject + ' (' + level.label + ')') + '"><i class="fa-solid fa-bolt"></i> S\'entraîner</button>' : '') +
+      '</div></div>';
+  }
+  function renderAnnales() {
+    var box = $('annales');
+    if (!annales.length) { box.innerHTML = '<div class="rb-card p-6 text-center"><p class="text-3xl mb-2">📚</p><p class="text-xs text-slate-600 font-bold">Les annales de ce concours arrivent bientôt.</p><p class="text-[10px] text-slate-500 font-semibold mt-1">En attendant, importe tes propres sujets dans <a href="relbrain-documents.html" class="text-violet-600 font-black underline">Mes documents</a> pour t\'entraîner.</p></div>'; return; }
+    var years = {}; annales.forEach(function (a) { (years[a.year] = years[a.year] || []).push(a); });
+    box.innerHTML = Object.keys(years).sort(function (a, b) { return b - a; }).map(function (y, i) {
+      return '<div class="rb-card overflow-hidden year-block"><div class="year-head"><span class="year-badge">' + y + '</span><p class="text-xs font-black text-slate-800">Session ' + y + (i === 0 ? ' <span class="new-tag">la plus récente</span>' : '') + '</p><p class="text-[10px] text-slate-400 font-bold ml-auto">' + years[y].length + ' épreuve' + (years[y].length > 1 ? 's' : '') + '</p></div><div class="p-2">' + years[y].map(item).join('') + '</div></div>';
+    }).join('');
+    filterAnnales();
+  }
+  function filterAnnales() {
+    var q = norm($('q2').value.trim());
+    document.querySelectorAll('#annales .ann-row').forEach(function (r) { r.style.display = !q || r.dataset.search.indexOf(q) > -1 ? '' : 'none'; });
+    document.querySelectorAll('#annales .year-block').forEach(function (b) { b.style.display = [].some.call(b.querySelectorAll('.ann-row'), function (r) { return r.style.display !== 'none'; }) ? '' : 'none'; });
+  }
+  function skeleton(box, n) { $(box).innerHTML = Array.from({ length: n }, function () { return '<div class="rb-card p-4"><div class="rb-skeleton rb-skeleton-line" style="width:40%"></div><div class="rb-skeleton rb-skeleton-line" style="width:70%;margin-top:.5rem"></div></div>'; }).join(''); }
+
+  async function selectLevel(code) {
+    level = current.levels.find(function (l) { return l.code === code; }) || current.levels[0];
+    renderLevels();
+    try { history.replaceState(null, '', '?c=' + encodeURIComponent(current.slug) + (level ? '&n=' + encodeURIComponent(level.code) : '')); } catch (e) {}
+    if (!level) { annales = []; return renderAnnales(); }
+    skeleton('annales', 2);
+    try {
+      var lv = level;
+      var rows = (!window.RB || RB.demo) ? demoAnnales(lv.id) : await RB.data.concours.annales(lv.id);
+      if (lv !== level) return;
+      annales = rows; renderAnnales();
+    } catch (e) {
+      if (window.RB && RB.handleError) RB.handleError(e, 'Annales indisponibles.');
+      $('annales').innerHTML = '<p class="text-center text-xs text-rose-600 font-bold py-6">Impossible de charger les annales. <button class="underline" onclick="location.reload()">Réessayer</button></p>';
+    }
+  }
+  async function openConcours(slug, code) {
+    current = catalog.find(function (c) { return c.slug === slug; });
+    if (!current && window.RB && !RB.demo) { try { current = await RB.data.concours.get(slug); current.levels.sort(function (a, b) { return a.sort_order - b.sort_order; }); } catch (e) { current = null; } }
+    if (!current) { toast('Concours introuvable.', 'error'); return showList(); }
+    $('view-list').hidden = true; $('view-detail').hidden = false; $('q2').value = '';
+    renderHero(current);
+    window.scrollTo(0, 0);
+    selectLevel(code);
+  }
+  function showList() {
+    current = null; $('view-detail').hidden = true; $('view-list').hidden = false;
+    document.title = 'RelBrain.AI – Concours'; $('crumb').textContent = 'Concours';
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    renderGrid();
+  }
+
+  /* ─── Actions ─── */
+  async function openFile(path, btn) {
+    if (!window.RB || RB.demo) return toast('Mode démo : les PDF s\'ouvriront ici une fois les annales en ligne.', 'info');
+    var w = window.open('', '_blank'); btn.disabled = true;
+    try { var url = await RB.data.concours.fileUrl(path); if (w) w.location = url; else location.href = url; }
+    catch (e) { if (w) w.close(); RB.handleError ? RB.handleError(e, 'Fichier indisponible.') : toast('Fichier indisponible.', 'error'); }
+    finally { btn.disabled = false; }
+  }
+  async function practice(id, title, btn) {
+    if (!window.RB || RB.demo) return toast('Mode démo : l\'épreuve serait ajoutée à tes documents, puis tu choisirais ton quiz.', 'info');
+    btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Préparation…';
+    try {
+      var r = await RB.data.concours.practice(id, title);
+      toast('Épreuve ajoutée à tes documents ✨', 'success');
+      setTimeout(function () { location.href = 'relbrain-quiz-setup.html?doc=' + encodeURIComponent(r.document_id || (r.document && r.document.id) || ''); }, 600);
+    } catch (e) {
+      RB.handleError ? RB.handleError(e, 'Impossible de préparer l\'entraînement.') : toast('Impossible de préparer l\'entraînement.', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-bolt"></i> S\'entraîner';
+    }
+  }
+
+  async function start() {
+    $('cats').addEventListener('click', function (e) { var b = e.target.closest('button[data-cat]'); if (!b) return; cat = b.dataset.cat; document.querySelectorAll('#cats button').forEach(function (x) { x.classList.toggle('on', x === b); }); renderGrid(); });
+    $('q').addEventListener('input', renderGrid);
+    $('q2').addEventListener('input', filterAnnales);
+    $('grid').addEventListener('click', function (e) { var a = e.target.closest('a[data-slug]'); if (!a || e.metaKey || e.ctrlKey) return; e.preventDefault(); openConcours(a.dataset.slug); });
+    $('back').addEventListener('click', function (e) { e.preventDefault(); showList(); });
+    $('levels').addEventListener('click', function (e) { var b = e.target.closest('button[data-level]'); if (b && (!level || b.dataset.level !== level.code)) selectLevel(b.dataset.level); });
+    $('annales').addEventListener('click', function (e) {
+      var o = e.target.closest('[data-open]'); if (o) return openFile(o.dataset.open, o);
+      var p = e.target.closest('[data-practice]'); if (p) return practice(p.dataset.practice, p.dataset.title, p);
+    });
+    skeleton('grid', 4);
+    try { catalog = await loadCatalog(); }
+    catch (e) { if (window.RB && RB.handleError) RB.handleError(e, 'Concours indisponibles.'); $('grid').innerHTML = '<p class="text-center text-xs text-rose-600 font-bold py-6 sm:col-span-2">Impossible de charger les concours. <button class="underline" onclick="location.reload()">Réessayer</button></p>'; return; }
+    var p = new URLSearchParams(location.search);
+    if (p.get('c')) openConcours(p.get('c'), p.get('n')); else renderGrid();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.RB && !RB.demo) RB.onReady(start); else start();
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -21,9 +21,12 @@ export const config = {
     '/relbrain-quiz-interface', '/relbrain-quiz-interface.html',
     '/relbrain-flashcards', '/relbrain-flashcards.html',
     '/relbrain-classement', '/relbrain-classement.html',
-    '/relbrain-historique', '/relbrain-historique.html',
+    '/relbrain-concours', '/relbrain-concours.html',
     '/relbrain-profil', '/relbrain-profil.html',
     '/relbrain-parametres', '/relbrain-parametres.html',
+    '/relbrain-admin', '/relbrain-admin.html',
+    // Code source et données internes : jamais servis aux visiteurs
+    '/server/:path*', '/lib/:path*', '/scripts/:path*', '/supabase/:path*', '/content/demo/:path*',
   ],
 };
 
@@ -36,6 +39,9 @@ function readCookie(req: Request, name: string): string | null {
 }
 
 export default async function middleware(request: Request) {
+  if (/^\/(server|lib|scripts|supabase|content\/demo)(\/|$)/.test(new URL(request.url).pathname)) {
+    return new Response('Page introuvable', { status: 404 });
+  }
   const supabaseUrl = process.env.SUPABASE_URL;
   // Mode démo : backend non configuré → les maquettes restent accessibles
   if (!supabaseUrl) return next();

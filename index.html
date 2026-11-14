@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
 <script>
 (function(){try{
@@ -23,6 +24,7 @@
 <link rel="stylesheet" href="relbrain-design-system.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <script src="relbrain-site.js" defer></script>
@@ -64,6 +66,27 @@ html.dark .quiz-pop .opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
 .student{position:absolute;z-index:1;left:-1.5rem;bottom:2.5rem;width:9.5rem}
 @media(max-width:960px){.scene{min-height:34rem}.student{left:auto;right:0;bottom:auto;top:-1rem;width:7rem}}
 @media(max-width:560px){.scene .sheet{padding-left:2.6rem}.quiz-pop{right:-.25rem}.student{display:none}}
+
+/* ═══ Le haut de page tient dans l'écran : titre + illustration visibles sans défiler ═══
+   Les tailles suivent la hauteur de l'écran (vh) : un portable 1366×768 voit tout d'un coup. */
+@media(min-width:961px){
+  .hero{min-height:calc(100svh - 4rem);display:flex;align-items:center;padding:clamp(1rem,3.5vh,2.5rem) 0 clamp(1.25rem,4.5vh,3rem)}
+  .hero-grid{width:100%;gap:clamp(1.5rem,.5rem + 3vw,3.5rem)}
+  .hero .rb-display{font-size:clamp(2.1rem,min(1rem + 3.2vw,7.4vh),3.6rem);line-height:1.04}
+  .hero h1{margin:clamp(.5rem,1.4vh,.9rem) 0 clamp(.6rem,1.6vh,1rem)}
+  .hero .rb-lead{font-size:clamp(.92rem,min(.8rem + .4vw,2.3vh),1.1rem);line-height:1.55}
+  .hero-cta{margin:clamp(.9rem,2.6vh,1.6rem) 0 clamp(.7rem,2vh,1.1rem)}
+  .hero .rb-btn--lg{min-height:2.85rem;padding:.8rem 1.35rem;font-size:.93rem}
+  .scene{min-height:clamp(21rem,62vh,28rem)}
+  .scene .sheet{padding:1.2rem 1.25rem 1.1rem 3rem;max-width:25rem}
+  .scene .sheet-title{font-size:1.1rem;margin-bottom:.4rem}
+  .scene .sheet p{font-size:.85rem;line-height:25px}
+  .quiz-pop{width:min(17rem,80%);padding:.9rem;bottom:2.4rem}
+  .quiz-pop .q{margin:.45rem 0 .55rem}
+  .quiz-pop .opt{padding:.38rem .6rem;margin-bottom:.32rem}
+  .student{width:clamp(6.5rem,15vh,8.5rem);bottom:3rem}
+  .scene-xp{width:14rem;padding:.5rem .8rem}
+}
 
 /* Bandeau institutions */
 .marquee{overflow:hidden;border-block:1px solid var(--rb-line);background:var(--rb-bg-alt);padding:1.1rem 0;mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
@@ -133,6 +156,30 @@ html.dark .quiz-pop .opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
 html.dark .try-opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
 html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 
+/* Engagements, établissement, avis vérifiés */
+.trust{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;padding:0;margin:0;font-size:.8rem;font-weight:700;color:var(--rb-ink-2)}
+.trust i{color:var(--rb-emerald);margin-right:.3rem}
+.stat strong{font-size:clamp(1.9rem,1.3rem + 2vw,2.9rem)}
+.stat span{display:block;margin-top:.45rem;line-height:1.45}
+.school-band{display:flex;align-items:center;gap:1rem;margin-top:1.75rem;padding:1rem 1.25rem;border-radius:var(--rb-radius-sheet);background:var(--rb-surface);border:1px dashed var(--rb-violet-300);color:var(--rb-ink-2);font-size:.9rem;line-height:1.5;text-decoration:none;transition:border-color var(--rb-dur-fast),transform var(--rb-dur-base) var(--rb-ease-out)}
+.school-band:hover{border-color:var(--rb-violet);transform:translateY(-2px)}
+.school-band strong{color:var(--rb-ink)}
+.school-band__icon{width:2.6rem;height:2.6rem;flex-shrink:0;border-radius:.8rem .8rem .8rem .3rem;background:var(--rb-violet-50);color:var(--rb-violet);display:flex;align-items:center;justify-content:center}
+.school-band .rb-arrow{margin-left:auto;color:var(--rb-faint);transition:transform var(--rb-dur-base) var(--rb-ease-spring)}
+.school-band:hover .rb-arrow{transform:translateX(4px);color:var(--rb-violet)}
+.promise{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(1.5rem,1rem + 3vw,3.5rem);align-items:center;padding:clamp(1.5rem,1rem + 2vw,2.5rem);background:var(--rb-surface);border:1px solid var(--rb-line);border-radius:var(--rb-radius-sheet);box-shadow:var(--rb-shadow-paper)}
+@media(max-width:860px){.promise{grid-template-columns:1fr}}
+.promise h3{font-family:var(--rb-font-display);font-weight:650;font-size:var(--rb-text-2xl);letter-spacing:-.02em;color:var(--rb-ink);margin:.35rem 0 .6rem}
+.promise p{color:var(--rb-ink-2);line-height:1.65;margin-bottom:1.25rem}
+.promise__steps{list-style:none;padding:0;margin:0;display:grid;gap:.85rem}
+.promise__steps li{display:flex;gap:.85rem;align-items:flex-start;font-size:.9rem;color:var(--rb-muted);line-height:1.5}
+.promise__steps b{width:2rem;height:2rem;flex-shrink:0;border-radius:.6rem .6rem .6rem .2rem;background:var(--rb-violet);color:#fff;box-shadow:2px 2px 0 0 var(--rb-pink);display:flex;align-items:center;justify-content:center;font-family:var(--rb-font-display);font-weight:800}
+.promise__steps strong{display:block;color:var(--rb-ink);font-weight:750}
+.reviews-score{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-weight:700;color:var(--rb-ink-2);margin-bottom:.5rem}
+.reviews-score b{font-family:var(--rb-font-display);font-size:2rem;color:var(--rb-ink)}
+.reviews-score .stars{color:var(--rb-amber);letter-spacing:.1em}
+.notes-wrap.is-static .notes-row{animation:none;flex-wrap:wrap;width:auto;justify-content:center;padding-inline:var(--rb-gutter)}
+
 /* Témoignages : notes collées */
 .notes-row{display:flex;gap:1.25rem;width:max-content;animation:marquee 60s linear infinite;padding:1rem 0}
 .notes-row--rev{animation-direction:reverse;animation-duration:70s}
@@ -160,6 +207,12 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 .price li{display:flex;gap:.55rem;align-items:flex-start}
 .price li i{margin-top:.2rem;color:var(--rb-emerald)}
 .price li.off{opacity:.45}.price li.off i{color:var(--rb-faint)}
+.price li.soon{opacity:.75;font-style:italic}.price li.soon i{color:var(--rb-faint)}
+.price .eur{display:block;font-size:.72rem;font-weight:650;color:var(--rb-muted);margin-top:.15rem}
+.price--featured .eur,.price--featured li.soon i{color:rgba(255,255,255,.75)}
+.launch-note{display:flex;gap:.6rem;align-items:flex-start;max-width:44rem;margin:0 auto 2rem;padding:.85rem 1.1rem;border-radius:var(--rb-radius-md);background:var(--rb-amber-100);color:var(--rb-ink-2);font-size:.9rem;line-height:1.5}
+.launch-note strong{color:var(--rb-ink)}
+.price-compare{text-align:center;max-width:40rem;margin:2rem auto 0;font-size:.88rem;font-weight:600;color:var(--rb-muted)}
 .price--featured{background:var(--rb-grad-ink);border:0;color:#fff;transform:translateY(-.75rem);box-shadow:var(--rb-shadow-ink)}
 .price--featured .tier,.price--featured .amount,.price--featured .amount small,.price--featured ul,.price--featured .xaf{color:#fff}
 .price--featured li i{color:#fde68a}
@@ -196,12 +249,11 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
         <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-bolt"></i> Commencer gratuitement</a>
         <a href="#how" class="rb-btn rb-btn--paper rb-btn--lg">Voir comment ça marche</a>
       </div>
-      <div class="proof rb-reveal" style="--rb-delay:320ms">
-        <div class="proof-faces" aria-hidden="true">
-          <span style="background:#7c3aed">A</span><span style="background:#ec4899">M</span><span style="background:#f59e0b">I</span><span style="background:#10b981">F</span>
-        </div>
-        <p class="rb-caption" style="max-width:20rem">Sans carte bancaire · Plan gratuit pour toujours · Orange Money & MTN MoMo acceptés</p>
-      </div>
+      <ul class="trust rb-reveal" style="--rb-delay:320ms">
+        <li><i class="fa-solid fa-check"></i> Sans carte bancaire</li>
+        <li><i class="fa-solid fa-check"></i> Gratuit pendant le lancement</li>
+        <li><i class="fa-solid fa-check"></i> Fonctionne sur téléphone</li>
+      </ul>
     </div>
 
     <!-- Signature : le cahier se transforme en quiz -->
@@ -253,22 +305,28 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
   </div>
 </section>
 
-<!-- ═══════════════════════════════ INSTITUTIONS ═══════════════════════════════ -->
-<div class="marquee" aria-label="Établissements de nos étudiants">
+<!-- ═══════════════════════════════ POUR QUI ═══════════════════════════════ -->
+<div class="marquee" aria-label="Pensé pour tous les examens, du secondaire à l'université">
   <div class="marquee__track">
-    <span class="marquee__item">Université de Douala</span><span class="marquee__item">Polytech Yaoundé</span><span class="marquee__item">Lycée Leclerc</span><span class="marquee__item">UCAC</span><span class="marquee__item">ESSEC Douala</span><span class="marquee__item">Université de Dschang</span><span class="marquee__item">Lycée Joss</span><span class="marquee__item">Université de Buea</span>
-    <span class="marquee__item" aria-hidden="true">Université de Douala</span><span class="marquee__item" aria-hidden="true">Polytech Yaoundé</span><span class="marquee__item" aria-hidden="true">Lycée Leclerc</span><span class="marquee__item" aria-hidden="true">UCAC</span><span class="marquee__item" aria-hidden="true">ESSEC Douala</span><span class="marquee__item" aria-hidden="true">Université de Dschang</span><span class="marquee__item" aria-hidden="true">Lycée Joss</span><span class="marquee__item" aria-hidden="true">Université de Buea</span>
+    <span class="marquee__item">Baccalauréat</span><span class="marquee__item">GCE O & A Level</span><span class="marquee__item">Probatoire</span><span class="marquee__item">BEPC</span><span class="marquee__item">Concours d'entrée</span><span class="marquee__item">BTS & HND</span><span class="marquee__item">Licence</span><span class="marquee__item">Master</span><span class="marquee__item">Classes prépa</span>
+    <span class="marquee__item" aria-hidden="true">Baccalauréat</span><span class="marquee__item" aria-hidden="true">GCE O & A Level</span><span class="marquee__item" aria-hidden="true">Probatoire</span><span class="marquee__item" aria-hidden="true">BEPC</span><span class="marquee__item" aria-hidden="true">Concours d'entrée</span><span class="marquee__item" aria-hidden="true">BTS & HND</span><span class="marquee__item" aria-hidden="true">Licence</span><span class="marquee__item" aria-hidden="true">Master</span><span class="marquee__item" aria-hidden="true">Classes prépa</span>
   </div>
 </div>
 
-<!-- ═══════════════════════════════ CHIFFRES ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ NOS ENGAGEMENTS ═══════════════════════════════
+     Pas de chiffres d'utilisateurs : seulement des promesses que le produit tient. -->
 <section class="rb-container" style="padding-block:clamp(2.5rem,2rem + 3vw,4.5rem)">
   <div class="stats" data-rb-stagger="90">
-    <div class="stat"><strong data-rb-count="500" data-rb-suffix="K+">0</strong><span>étudiants actifs</span></div>
-    <div class="stat"><strong data-rb-count="12" data-rb-suffix="M+">0</strong><span>questions générées</span></div>
-    <div class="stat"><strong>4,9<span style="color:var(--rb-amber);font-size:.6em">★</span></strong><span>note moyenne</span></div>
-    <div class="stat"><strong data-rb-count="3" data-rb-suffix="×">0</strong><span>plus rapide qu'en relisant</span></div>
+    <div class="stat"><strong>0 F</strong><span>pendant le lancement, sans carte bancaire</span></div>
+    <div class="stat"><strong>4 outils</strong><span>quiz, flashcards, résumés et tuteur IA, tirés de tes propres cours</span></div>
+    <div class="stat"><strong>SM-2</strong><span>la révision espacée : chaque notion revient juste avant l'oubli</span></div>
+    <div class="stat"><strong>100 %</strong><span>tes données : export et suppression de ton compte en un clic</span></div>
   </div>
+  <a class="school-band rb-reveal" href="relbrain-contact.html">
+    <span class="school-band__icon"><i class="fa-solid fa-building-columns"></i></span>
+    <span><strong>Utile au lycée comme à l'université.</strong> Ton établissement aimerait proposer RelBrain à ses élèves ou à ses étudiants ? Parlons-en.</span>
+    <i class="fa-solid fa-arrow-right rb-arrow"></i>
+  </a>
 </section>
 
 <!-- ═══════════════════════════════ 01 · LE PROBLÈME ═══════════════════════════════ -->
@@ -421,16 +479,36 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
   </div>
 </section>
 
-<!-- ═══════════════════════════════ TÉMOIGNAGES ═══════════════════════════════ -->
-<section class="rb-section rb-section--sunk" style="overflow:hidden">
+<!-- ═══════════════════════════════ AVIS VÉRIFIÉS ═══════════════════════════════
+     Uniquement de vrais avis d'élèves inscrits, validés dans la salle des profs.
+     Tant qu'il n'y en a pas, la section explique honnêtement comment ils arrivent. -->
+<section class="rb-section rb-section--sunk" style="overflow:hidden" id="avis">
   <div class="rb-container rb-section-head rb-reveal">
     <span class="rb-section-num">05</span>
-    <div><span class="rb-eyebrow">Ils révisent avec RelBrain</span><h2 class="rb-h1" style="margin-top:.5rem">Des notes qui <em>remontent</em>.</h2></div>
+    <div><span class="rb-eyebrow">Avis vérifiés</span><h2 class="rb-h1" style="margin-top:.5rem">La parole aux <em>élèves</em>.</h2></div>
     <div class="rb-section-head__rule"></div>
   </div>
-  <div class="notes-wrap">
+  <div class="rb-container" id="reviews-live" hidden>
+    <p class="reviews-score" id="reviews-score"></p>
+  </div>
+  <div class="notes-wrap" id="reviews-wall" hidden>
     <div class="notes-row" id="notes-1"></div>
     <div class="notes-row notes-row--rev" id="notes-2"></div>
+  </div>
+  <div class="rb-container">
+    <div class="promise rb-reveal" id="reviews-promise">
+      <div class="promise__text">
+        <span class="rb-annotation">promis, juré</span>
+        <h3>Ici, aucun avis n'est inventé.</h3>
+        <p>RelBrain vient d'ouvrir. Chaque avis publié sur cette page vient d'un élève inscrit, après avoir vraiment révisé avec RelBrain, et il est relu avant d'être affiché. Les premiers arrivent : le tien peut en faire partie.</p>
+        <a href="relbrain-signup.html" class="rb-btn rb-btn--ink"><i class="fa-solid fa-pen-nib"></i> Essayer, puis donner mon avis</a>
+      </div>
+      <ol class="promise__steps">
+        <li><b>1</b><span><strong>Tu crées ton compte</strong>gratuitement, en une minute.</span></li>
+        <li><b>2</b><span><strong>Tu révises quelques jours</strong>avec tes propres cours.</span></li>
+        <li><b>3</b><span><strong>RelBrain te demande ton avis</strong>Une note, un commentaire, publiés seulement si tu l'acceptes.</span></li>
+      </ol>
+    </div>
   </div>
 </section>
 
@@ -444,56 +522,65 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
   </div>
 </section>
 
-<!-- ═══════════════════════════════ TARIFS ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ TARIFS ═══════════════════════════════
+     Prix en FCFA d'abord (marché principal). Les montants réels sont dans la
+     table « plans » de Supabase (migration 0012) : si tu les changes, change
+     aussi les chiffres ci-dessous. Étude complète : ETUDE-PRIX.md            -->
 <section class="rb-section rb-section--white" id="pricing">
   <div class="rb-container">
     <div class="rb-section-head rb-reveal">
       <span class="rb-section-num">06</span>
-      <div><span class="rb-eyebrow">Tarifs</span><h2 class="rb-h1" style="margin-top:.5rem">Simple, transparent, <em>payable en Mobile Money</em>.</h2></div>
+      <div><span class="rb-eyebrow">Tarifs</span><h2 class="rb-h1" style="margin-top:.5rem">Le prix d'un forfait internet, <em>pas celui d'un répétiteur</em>.</h2></div>
       <div class="rb-section-head__rule"></div>
     </div>
+    <p class="launch-note rb-reveal" id="launch-note"><span aria-hidden="true">🚀</span> <span><strong>Pendant le lancement, tout est gratuit.</strong> Ces tarifs s'appliqueront à l'ouverture des abonnements, et tu seras prévenu·e avant.</span></p>
     <div class="pricing" data-rb-stagger="100">
       <article class="price rb-sheet">
         <span class="tier">Gratuit</span>
-        <div class="amount">0 €<small> /mois</small></div><span class="xaf">0 FCFA · pour toujours</span>
+        <div class="amount">0 F<small> /mois</small></div><span class="xaf">Pour toujours, sans carte bancaire</span>
         <ul>
-          <li><i class="fa-solid fa-check"></i> 5 documents / mois</li>
+          <li><i class="fa-solid fa-check"></i> 5 documents par mois</li>
           <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 10 questions</li>
           <li><i class="fa-solid fa-check"></i> Flashcards avec révision espacée</li>
-          <li><i class="fa-solid fa-check"></i> Résumé court & points clés</li>
+          <li><i class="fa-solid fa-check"></i> Résumé court et points clés</li>
           <li class="off"><i class="fa-solid fa-xmark"></i> IA adaptative</li>
           <li class="off"><i class="fa-solid fa-xmark"></i> Fiches détaillées</li>
         </ul>
         <a href="relbrain-signup.html" class="rb-btn rb-btn--ghost rb-btn--block">Commencer</a>
       </article>
       <article class="price price--featured rb-sheet">
-        <span class="tier">Pro · le plus choisi</span>
-        <div class="amount">9 €<small> /mois</small></div><span class="xaf">ou 5 900 FCFA / mois · 2 mois offerts à l'année</span>
+        <span class="tier">Pro · recommandé</span>
+        <div class="amount">3 000 F<small> /mois</small></div>
+        <span class="xaf">ou 30 000 F l'année : 2 mois offerts</span>
+        <span class="eur">4,90 € par carte depuis l'étranger</span>
         <ul>
           <li><i class="fa-solid fa-check"></i> Documents illimités</li>
           <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 30 questions</li>
           <li><i class="fa-solid fa-check"></i> IA adaptative sur tes points faibles</li>
           <li><i class="fa-solid fa-check"></i> Fiches de révision détaillées</li>
-          <li><i class="fa-solid fa-check"></i> 200 requêtes IA / jour</li>
+          <li><i class="fa-solid fa-check"></i> 200 requêtes IA par jour</li>
           <li><i class="fa-solid fa-check"></i> API pour tes propres outils</li>
         </ul>
         <a href="relbrain-signup.html" class="rb-btn rb-btn--paper rb-btn--block">Essayer Pro</a>
       </article>
       <article class="price rb-sheet">
-        <span class="tier">Premium · groupes & lycées</span>
-        <div class="amount">19 €<small> /mois</small></div><span class="xaf">ou 12 500 FCFA / mois</span>
+        <span class="tier">Premium · année d'examen</span>
+        <div class="amount">6 500 F<small> /mois</small></div>
+        <span class="xaf">ou 65 000 F l'année : 2 mois offerts</span>
+        <span class="eur">9,90 € par carte depuis l'étranger</span>
         <ul>
-          <li><i class="fa-solid fa-check"></i> Tout Pro, jusqu'à 50 questions</li>
-          <li><i class="fa-solid fa-check"></i> Jusqu'à 10 membres</li>
-          <li><i class="fa-solid fa-check"></i> Tableau de bord enseignant</li>
-          <li><i class="fa-solid fa-check"></i> Classement de groupe</li>
+          <li><i class="fa-solid fa-check"></i> Tout Pro, quiz jusqu'à 50 questions</li>
+          <li><i class="fa-solid fa-check"></i> 1 000 requêtes IA par jour</li>
           <li><i class="fa-solid fa-check"></i> Support prioritaire</li>
+          <li class="soon"><i class="fa-regular fa-clock"></i> Bientôt : espace de groupe jusqu'à 10 membres</li>
+          <li class="soon"><i class="fa-regular fa-clock"></i> Bientôt : suivi pour enseignants et répétiteurs</li>
         </ul>
-        <a href="relbrain-contact.html?sujet=partnership" class="rb-btn rb-btn--ghost rb-btn--block">Nous contacter</a>
+        <a href="relbrain-signup.html" class="rb-btn rb-btn--ghost rb-btn--block">Choisir Premium</a>
       </article>
     </div>
+    <p class="price-compare rb-reveal">Pour comparer : un répétiteur à domicile coûte souvent plusieurs dizaines de milliers de francs par mois. Pro coûte 100 F par jour.</p>
     <div class="pay-logos rb-reveal">
-      <span class="rb-tag rb-tag--outline">🟠 Orange Money</span><span class="rb-tag rb-tag--outline">🟡 MTN MoMo</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-visa"></i> Visa</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span><span class="rb-tag rb-tag--emerald">Sans engagement</span>
+      <span class="rb-tag rb-tag--outline">🟠 Orange Money</span><span class="rb-tag rb-tag--outline">🟡 MTN MoMo</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-visa"></i> Visa</span><span class="rb-tag rb-tag--outline"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span><span class="rb-tag rb-tag--emerald">Sans engagement ni prélèvement automatique</span>
     </div>
   </div>
 </section>
@@ -516,7 +603,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
     <div class="glyphs" aria-hidden="true"><span style="left:8%;top:18%">π</span><span style="right:10%;top:22%;animation-delay:1s">√</span><span style="left:14%;bottom:16%;animation-delay:2s">∑</span><span style="right:16%;bottom:20%;animation-delay:.5s">✦</span></div>
     <p class="rb-eyebrow" style="color:#c4b5fd;justify-content:center">Ton cerveau. Tes cours. Ton apprentissage.</p>
     <h2 class="rb-h1" style="margin:1rem auto 1.25rem;max-width:40rem">Prêt·e à apprendre <em style="color:#f9a8d4">autrement</em> ?</h2>
-    <p style="color:#cfc6e4;font-weight:550;margin-bottom:2rem">Rejoins les étudiants qui révisent moins longtemps, mais mieux.</p>
+    <p style="color:#cfc6e4;font-weight:550;margin-bottom:2rem">Crée ton compte en une minute : c'est gratuit pendant tout le lancement.</p>
     <div class="rb-row" style="justify-content:center">
       <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-rocket"></i> Commencer gratuitement</a>
       <a href="relbrain-documentation.html" class="rb-btn rb-btn--lg" style="--_bg:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)">Lire le guide</a>
@@ -530,28 +617,40 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  /* ── Témoignages ── */
-  var notes = [
-    ["J'ai eu 19/20 en algorithmique grâce à RelBrain. Incroyable !", 'Mohamed K.', '#7c3aed'],
-    ["Je prépare le BAC et RelBrain m'a sauvé la vie.", 'Chelsea M.', '#ec4899'],
-    ["Upload le PDF le soir, quiz le matin. Révolution totale.", 'Pharel F.', '#f59e0b'],
-    ["Les flashcards retournables sont vraiment addictives.", 'Sophie T.', '#10b981'],
-    ["Les résumés générés sont meilleurs que mes notes.", 'Amira D.', '#0ea5e9'],
-    ["Le mode adaptatif cible exactement mes lacunes.", 'Marie R.', '#a855f7'],
-    ["J'ai rattrapé deux semaines de cours en une soirée.", 'Nadia L.', '#ec4899'],
-    ["La révision espacée, c'est le vrai secret.", 'Sara H.', '#7c3aed'],
-    ["Je l'utilise pour mes partiels de médecine. Irremplaçable.", 'Samuel P.', '#10b981'],
-    ["L'IA comprend même mes notes manuscrites en photo.", 'Inès F.', '#f59e0b'],
-    ["Le classement de la semaine me motive énormément.", 'Ibrahim M.', '#0ea5e9'],
-    ["Payé en Orange Money en une minute. Enfin !", 'Fatima Z.', '#a855f7'],
-  ];
-  function row(list) {
-    return list.concat(list).map(function (n, i) {
-      return '<figure class="note" style="--r:' + ((i % 3) - 1) * 1.4 + 'deg"' + (i >= list.length ? ' aria-hidden="true"' : '') + '><p>« ' + n[0] + ' »</p><footer><i style="background:' + n[2] + '">' + n[1].charAt(0) + '</i>' + n[1] + ' <span style="margin-left:auto;color:var(--rb-amber)">★★★★★</span></footer></figure>';
-    }).join('');
-  }
-  document.getElementById('notes-1').innerHTML = row(notes.slice(0, 6));
-  document.getElementById('notes-2').innerHTML = row(notes.slice(6));
+  /* ── Tarifs : bandeau du lancement masqué dès que PAIEMENTS_ACTIFS vaut true (relbrain-config.js) ── */
+  if (window.RB_CONFIG && window.RB_CONFIG.PAIEMENTS_ACTIFS) { var ln = document.getElementById('launch-note'); if (ln) ln.remove(); }
+
+  /* ── Avis vérifiés : lus dans la base, uniquement ceux validés dans la salle des profs ── */
+  (function () {
+    var C = window.RB_CONFIG || {};
+    if (!C.SUPABASE_URL || !C.SUPABASE_ANON_KEY) return;
+    var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    var stars = function (n) { return '★★★★★'.slice(0, n) + '<span style="opacity:.25">' + '★★★★★'.slice(n) + '</span>'; };
+    var COLORS = ['#7c3aed', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9', '#a855f7'];
+    fetch(C.SUPABASE_URL + '/rest/v1/rpc/public_reviews', {
+      method: 'POST',
+      headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_limit: 18 }),
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || !d.count) return; // pas encore d'avis : la promesse reste affichée
+      var list = d.items, moving = list.length >= 6;
+      function note(n, i, hidden) {
+        return '<figure class="note" style="--r:' + ((i % 3) - 1) * 1.4 + 'deg"' + (hidden ? ' aria-hidden="true"' : '') + '><p>« ' + esc(n.comment) + ' »</p><footer><i style="background:' + COLORS[i % COLORS.length] + '">' + esc(n.display_name.charAt(0)) + '</i>' + esc(n.display_name) + ' <span style="margin-left:auto;color:var(--rb-amber)">' + stars(n.rating) + '</span></footer></figure>';
+      }
+      function row(part) { return part.map(function (n, i) { return note(n, i); }).join('') + (moving ? part.map(function (n, i) { return note(n, i, true); }).join('') : ''); }
+      var half = moving ? Math.ceil(list.length / 2) : list.length;
+      document.getElementById('notes-1').innerHTML = row(list.slice(0, half));
+      document.getElementById('notes-2').innerHTML = moving ? row(list.slice(half)) : '';
+      var wall = document.getElementById('reviews-wall');
+      wall.classList.toggle('is-static', !moving);
+      wall.hidden = false;
+      document.getElementById('reviews-score').innerHTML = '<b>' + String(d.average).replace('.', ',') + '</b><span class="stars">' + stars(Math.round(d.average)) + '</span><span>' + d.count + ' avis vérifié' + (d.count > 1 ? 's' : '') + ' d\'élèves inscrits</span>';
+      document.getElementById('reviews-live').hidden = false;
+      var pr = document.getElementById('reviews-promise');
+      pr.querySelector('h3').textContent = 'Des avis vrais, et rien d\'autre.';
+      pr.querySelector('p').textContent = 'Chaque avis vient d\'un élève inscrit, après avoir vraiment révisé avec RelBrain, et il est relu avant d\'être affiché.';
+    }).catch(function () {});
+  })();
 
   /* ── Matières ── */
   var subjects = [['Mathématiques', 'fa-square-root-variable'], ['Physique', 'fa-atom'], ['Chimie', 'fa-flask'], ['SVT / Biologie', 'fa-dna'], ['Informatique', 'fa-code'], ['Histoire', 'fa-landmark'], ['Géographie', 'fa-globe'], ['Économie', 'fa-chart-line'], ['Droit', 'fa-scale-balanced'], ['Médecine', 'fa-stethoscope'], ['Philosophie', 'fa-feather'], ['Anglais', 'fa-language']];
@@ -562,8 +661,8 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ── FAQ ── */
   var faqs = [
     ['Comment fonctionne la génération de quiz ?', "Tu importes un document. L'IA en extrait le texte, repère les notions clés et génère des questions adaptées au niveau choisi, avec une explication pour chacune. Tout est prêt en une trentaine de secondes."],
-    ['Mes documents sont-ils confidentiels ?', "Oui. Tes fichiers sont stockés dans un espace privé chiffré, accessible uniquement par ton compte. Ils ne sont ni vendus, ni publiés, ni utilisés pour entraîner des modèles. Détails dans notre politique de confidentialité."],
-    ['Puis-je payer avec Orange Money ou MTN MoMo ?', "Oui. Les forfaits Pro et Premium se paient en FCFA par Orange Money ou MTN Mobile Money, ou par carte bancaire en euros. Pas de prélèvement automatique : tu achètes 1 mois ou 12 mois (dont 2 offerts)."],
+    ['Mes documents sont-ils confidentiels ?', "Oui. Tes fichiers sont stockés dans un espace privé chiffré, accessible uniquement par ton compte. Ils ne sont ni vendus ni publiés. Pendant la phase de test, l'analyse utilise l'offre gratuite de l'IA Google Gemini : évite d'y importer des documents personnels. Détails dans notre politique de confidentialité."],
+    ['Puis-je payer avec Orange Money ou MTN MoMo ?', "Bientôt. Pendant le lancement, RelBrain est entièrement gratuit. Les forfaits Pro et Premium arriveront ensuite, payables en FCFA par Orange Money ou MTN Mobile Money, ou par carte bancaire, sans prélèvement automatique."],
     ['Quelle différence avec Quizlet ou Anki ?', "RelBrain génère automatiquement le contenu depuis TES cours et l'adapte à tes points faibles. Avec Quizlet ou Anki, tu dois créer toi-même tes cartes. RelBrain utilise le même algorithme de révision espacée (SM-2) qu'Anki."],
     ['Ça marche avec une connexion lente ?', "RelBrain est conçu pour le mobile et les connexions instables : pages légères, mise en cache hors-ligne des pages déjà visitées, et reprise automatique des sessions."],
     ['Le plan gratuit est-il vraiment gratuit ?', "Oui, sans carte bancaire et sans limite de durée : 5 documents par mois, quiz de 10 questions, flashcards et résumés courts. Tu passes à Pro quand tu veux."],

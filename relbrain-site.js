@@ -12,8 +12,8 @@
   /* 🔗 Liens officiels des communautés — à remplacer par les vrais liens
      (utilisés aussi par relbrain-communautes.html via RB.SOCIAL). */
   var SOCIAL = (window.RB = window.RB || {}).SOCIAL = {
-    discord: 'https://discord.gg/relbrain',
-    whatsappChannel: 'https://whatsapp.com/channel/relbrain',
+    discord: 'https://discord.gg/NFGe3Pann',
+    whatsappChannel: 'https://whatsapp.com/channel/0029VbDJjJLB4hdap5a3mK2g',
     whatsappGroup: 'https://chat.whatsapp.com/relbrain',
     tiktok: 'https://www.tiktok.com/@relbrain',
     instagram: 'https://www.instagram.com/relbrain',
@@ -31,7 +31,7 @@
   var LOGO =
     '<a href="index.html" class="rb-logo" aria-label="RelBrain, accueil">' +
       '<span class="rb-logo__mark"><i class="fa-solid fa-brain" aria-hidden="true"></i></span>' +
-      '<span class="rb-logo__word">RelBrain<b>.ai</b></span>' +
+      '<span class="rb-logo__word">RelBrain<b>.AI</b></span>' +
     '</a>';
 
   function header(el) {
@@ -65,8 +65,16 @@
       sb.auth.getSession().then(function (r) {
         if (!r.data.session) return;
         var g = el.querySelector('[data-rb-guest]'); if (g) g.remove();
+        var u = r.data.session.user, m = u.user_metadata || {};
+        var first = (m.first_name || m.full_name || m.name || (u.email || '').split('@')[0] || '').split(' ')[0];
+        var safe = String(first).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; });
         var cta = el.querySelector('[data-rb-guest-cta]');
-        if (cta) { cta.href = 'relbrain-accueil.html'; cta.innerHTML = 'Mon espace <i class="fa-solid fa-arrow-right"></i>'; }
+        if (cta) { cta.href = 'relbrain-accueil.html'; cta.innerHTML = (safe ? 'Mon espace · ' + safe : 'Mon espace') + ' <i class="fa-solid fa-arrow-right"></i>'; }
+        // Le profil (table profiles) est la source de vérité si le prénom a été modifié
+        sb.from('profiles').select('first_name').eq('id', u.id).maybeSingle().then(function (p) {
+          var f = p && p.data && p.data.first_name;
+          if (f && cta) cta.innerHTML = 'Mon espace · ' + String(f).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }) + ' <i class="fa-solid fa-arrow-right"></i>';
+        });
       });
     });
   }

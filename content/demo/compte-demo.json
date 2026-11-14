@@ -1,0 +1,106 @@
+{
+  "_lisez_moi": "Contenu du compte de démonstration. Modifie les textes librement (garde les guillemets et les virgules), puis lance : npm run demo. Le compte est remis à zéro à chaque fois.",
+
+  "profil": {
+    "prenom": "Awa",
+    "nom": "Démo",
+    "etablissement": "Lycée de démonstration",
+    "niveau": "lycee",
+    "filiere": "Terminale C",
+    "pays": "Cameroun",
+    "serie_de_jours": 6,
+    "xp": 1850
+  },
+
+  "documents": [
+    {
+      "titre": "Les suites numériques",
+      "matiere": "Mathématiques",
+      "resume": "Une suite arithmétique ajoute toujours la même raison r, une suite géométrique multiplie toujours par la même raison q. On sait calculer directement le terme de rang n et la somme des premiers termes.",
+      "notions": ["Suite arithmétique", "Suite géométrique", "Terme général", "Somme des termes"],
+      "texte": "Une suite arithmétique de raison r vérifie u(n+1) = u(n) + r. Son terme général est u(n) = u(0) + n × r. La somme de termes consécutifs vaut : nombre de termes × (premier terme + dernier terme) / 2.\n\nUne suite géométrique de raison q vérifie u(n+1) = q × u(n). Son terme général est u(n) = u(0) × q^n. Pour q différent de 1 : 1 + q + q² + … + q^n = (1 − q^(n+1)) / (1 − q).\n\nSi 0 < q < 1 et u(0) > 0, la suite géométrique est décroissante et tend vers 0. Si q > 1 et u(0) > 0, elle est croissante et tend vers l'infini."
+    },
+    {
+      "titre": "La photosynthèse",
+      "matiere": "SVT",
+      "resume": "Dans les chloroplastes, la plante utilise l'énergie lumineuse pour fabriquer du glucose à partir de dioxyde de carbone et d'eau, en rejetant du dioxygène.",
+      "notions": ["Chloroplaste", "Chlorophylle", "Phase claire", "Cycle de Calvin"],
+      "texte": "La photosynthèse a lieu dans les chloroplastes des cellules végétales chlorophylliennes. Bilan : 6 CO2 + 6 H2O → C6H12O6 + 6 O2, grâce à l'énergie lumineuse captée par la chlorophylle.\n\nLa phase claire se déroule dans les thylakoïdes : l'eau est décomposée (photolyse), du dioxygène est libéré, et de l'ATP et du NADPH sont produits.\n\nLa phase sombre, ou cycle de Calvin, se déroule dans le stroma : le CO2 est fixé et transformé en glucides grâce à l'ATP et au NADPH."
+    },
+    {
+      "titre": "Le Cameroun de l'indépendance à la réunification",
+      "matiere": "Histoire",
+      "resume": "Le Cameroun sous tutelle française devient indépendant le 1er janvier 1960. Le Southern Cameroons le rejoint le 1er octobre 1961 dans une République fédérale, qui devient un État unitaire le 20 mai 1972.",
+      "notions": ["1er janvier 1960", "Réunification de 1961", "Ahmadou Ahidjo", "20 mai 1972"],
+      "texte": "Le Cameroun placé sous tutelle française accède à l'indépendance le 1er janvier 1960. Ahmadou Ahidjo en devient le premier président.\n\nÀ l'issue du plébiscite de février 1961, le Southern Cameroons, sous tutelle britannique, choisit de rejoindre la République du Cameroun. La République fédérale du Cameroun naît le 1er octobre 1961.\n\nLe référendum du 20 mai 1972 met fin au fédéralisme : le pays devient la République unie du Cameroun. Le 20 mai est depuis la fête nationale."
+    }
+  ],
+
+  "flashcards": [
+    {
+      "paquet": "Suites numériques",
+      "document": "Les suites numériques",
+      "cartes": [
+        ["Terme général d'une suite arithmétique ?", "u(n) = u(0) + n × r"],
+        ["Terme général d'une suite géométrique ?", "u(n) = u(0) × q^n"],
+        ["Somme 1 + q + … + q^n (q ≠ 1) ?", "(1 − q^(n+1)) / (1 − q)"],
+        ["Limite de q^n si 0 < q < 1 ?", "0"]
+      ]
+    },
+    {
+      "paquet": "Photosynthèse",
+      "document": "La photosynthèse",
+      "cartes": [
+        ["Où a lieu la photosynthèse ?", "Dans les chloroplastes"],
+        ["Bilan de la photosynthèse ?", "6 CO2 + 6 H2O → C6H12O6 + 6 O2"],
+        ["Où se déroule le cycle de Calvin ?", "Dans le stroma du chloroplaste"]
+      ]
+    }
+  ],
+
+  "quiz": [
+    {
+      "titre": "Quiz express : histoire du Cameroun",
+      "document": "Le Cameroun de l'indépendance à la réunification",
+      "deja_fait": { "bonnes_reponses": 2 },
+      "questions": [
+        {
+          "question": "Quand le Cameroun sous tutelle française devient-il indépendant ?",
+          "choix": ["1er janvier 1960", "1er octobre 1961", "20 mai 1972", "11 février 1961"],
+          "bonne": 0,
+          "explication": "L'indépendance est proclamée le 1er janvier 1960."
+        },
+        {
+          "question": "Qui est le premier président du Cameroun ?",
+          "choix": ["Paul Biya", "Ahmadou Ahidjo", "Ruben Um Nyobè", "John Ngu Foncha"],
+          "bonne": 1,
+          "explication": "Ahmadou Ahidjo devient le premier président en 1960."
+        },
+        {
+          "question": "Que célèbre-t-on le 20 mai ?",
+          "choix": ["L'indépendance", "La réunification de 1961", "Le passage à l'État unitaire en 1972", "Le plébiscite"],
+          "bonne": 2,
+          "explication": "Le référendum du 20 mai 1972 crée la République unie du Cameroun."
+        }
+      ]
+    },
+    {
+      "titre": "Quiz : les suites numériques",
+      "document": "Les suites numériques",
+      "questions": [
+        {
+          "question": "u(0) = 3 et la suite est arithmétique de raison 2. Combien vaut u(5) ?",
+          "choix": ["10", "13", "15", "96"],
+          "bonne": 1,
+          "explication": "u(5) = 3 + 5 × 2 = 13."
+        },
+        {
+          "question": "u(0) = 1 et la suite est géométrique de raison 3. Combien vaut u(4) ?",
+          "choix": ["12", "13", "64", "81"],
+          "bonne": 3,
+          "explication": "u(4) = 1 × 3^4 = 81."
+        }
+      ]
+    }
+  ]
+}

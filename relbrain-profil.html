@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
 <script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.ai – Mon profil</title>
+<title>RelBrain.AI – Mon profil</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <style>
@@ -135,7 +138,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
       </div>
       <div>
-        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
       </div>
     </a>
@@ -152,12 +155,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
-      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
+      <a href="relbrain-concours.html" class="nav-item"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
@@ -210,7 +213,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-lg border-3 border-white flex items-center justify-center"><i class="fa-solid fa-check text-white text-[9px]"></i></span>
         </div>
         <div class="flex-1 text-center sm:text-left">
-          <h1 class="text-lg md:text-xl font-black text-slate-900 mb-0.5" id="prev-name">Pharel FOFE</h1>
+          <h1 class="text-lg md:text-xl font-black text-slate-900 mb-0.5" id="prev-name" data-rb="name">Pharel FOFE</h1>
           <p class="text-xs text-slate-500 font-semibold mb-2" id="prev-meta">pharel@relbrain.ai · Douala, Cameroun</p>
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
             <span class="text-[10px] font-black text-violet-700 bg-violet-100 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-star mr-1"></i> Niveau 7 · Scholar</span>
@@ -314,6 +317,21 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="badges-grid"></div>
         </div>
 
+        <!-- MES DOCUMENTS -->
+        <div class="rb-card p-4" id="mes-documents">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="font-black text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-folder-open text-violet-500 text-xs"></i> Mes documents</h2>
+              <p class="text-[10px] text-slate-400 font-semibold mt-0.5" id="pdocs-sub">Les cours que tu as importés</p>
+            </div>
+            <a href="relbrain-documents.html" class="text-[10px] font-black text-violet-600 hover:underline">Gérer →</a>
+          </div>
+          <div class="space-y-1.5" id="pdocs-list">
+            <div class="flex items-center gap-2.5 p-2 rounded-lg border border-[#f0e6d8]"><div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-file-pdf text-violet-500 text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-xs font-black text-slate-800 truncate">Algorithmique avancée</p><p class="text-[10px] text-slate-400 font-semibold">Informatique · il y a 2 jours</p></div><span class="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Prêt</span></div>
+            <div class="flex items-center gap-2.5 p-2 rounded-lg border border-[#f0e6d8]"><div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-file-pdf text-violet-500 text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-xs font-black text-slate-800 truncate">Physique Ch.4 — Ondes</p><p class="text-[10px] text-slate-400 font-semibold">Physique · il y a 5 jours</p></div><span class="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Prêt</span></div>
+          </div>
+        </div>
+
       </div>
 
       <!-- COLONNE STICKY -->
@@ -336,20 +354,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <div class="rb-card p-4">
             <p class="font-black text-slate-900 text-xs mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-chart-simple text-violet-500 text-xs"></i> Cette semaine</p>
             <div class="space-y-2">
-              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Quiz réalisés</span><span class="font-black text-slate-900">8</span></div>
-              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Flashcards</span><span class="font-black text-slate-900">124</span></div>
-              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Temps d'étude</span><span class="font-black text-slate-900">6h20</span></div>
-              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">XP gagnés</span><span class="font-black text-violet-600">+1 240</span></div>
-              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Rang hebdo</span><span class="font-black text-amber-600">#3</span></div>
+              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Quiz réalisés</span><span class="font-black text-slate-900" id="w-quiz">8</span></div>
+              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Flashcards</span><span class="font-black text-slate-900" id="w-cards">124</span></div>
+              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Temps d'étude</span><span class="font-black text-slate-900" id="w-time">6h20</span></div>
+              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">XP gagnés</span><span class="font-black text-violet-600" id="w-xp">+1 240</span></div>
+              <div class="flex items-center justify-between text-xs"><span class="font-semibold text-slate-600">Rang hebdo</span><a href="relbrain-classement.html" class="font-black text-amber-600" id="w-rank">#3</a></div>
             </div>
           </div>
 
           <!-- Membre depuis -->
           <div class="rb-card p-4">
             <p class="text-[9px] text-slate-400 mb-0.5 font-black uppercase tracking-wider">Membre depuis</p>
-            <p class="text-xs font-black text-slate-800 mb-2.5">14 mars 2025</p>
-            <p class="text-[9px] text-slate-400 mb-0.5 font-black uppercase tracking-wider">Total jours actifs</p>
-            <p class="text-xs font-black text-slate-800">198 jours</p>
+            <p class="text-xs font-black text-slate-800 mb-2.5" id="m-since">14 mars 2025</p>
+            <p class="text-[9px] text-slate-400 mb-0.5 font-black uppercase tracking-wider">Jours actifs (12 mois)</p>
+            <p class="text-xs font-black text-slate-800" id="m-days">198 jours</p>
           </div>
 
         </div>
@@ -494,6 +512,36 @@ document.addEventListener('DOMContentLoaded', function () {
       stats[1].textContent = quizzes;
       stats[3].textContent = mins >= 60 ? Math.round(mins / 60) + 'h' : Math.round(mins) + ' min';
       stats[1].nextElementSibling.textContent = 'Quiz terminés';
+      // Membre depuis + jours actifs
+      document.getElementById('m-since').textContent = new Date(p.created_at || ctx.user.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+      var active = (act.daily || []).filter(function (d) { return Number(d.minutes) > 0; }).length;
+      document.getElementById('m-days').textContent = active + ' jour' + (active > 1 ? 's' : '');
+      // Cette semaine (7 derniers jours)
+      var week = (act.daily || []).slice(-7), since = Date.now() - 7 * 864e5;
+      var wSess = (act.sessions || []).filter(function (s) { return new Date(s.started_at) > since; });
+      var wMin = week.reduce(function (n, d) { return n + Number(d.minutes || 0); }, 0);
+      document.getElementById('w-quiz').textContent = wSess.filter(function (s) { return s.kind === 'quiz'; }).length;
+      document.getElementById('w-cards').textContent = wSess.filter(function (s) { return s.kind === 'flashcards'; }).reduce(function (n, s) { return n + (s.items_count || 0); }, 0);
+      document.getElementById('w-time').textContent = wMin >= 60 ? Math.floor(wMin / 60) + 'h' + String(wMin % 60).padStart(2, '0') : wMin + ' min';
+      document.getElementById('w-xp').textContent = '+' + RB.formatNumber(week.reduce(function (n, d) { return n + Number(d.xp || 0); }, 0));
+    } catch (e) {}
+    var lg = g.league || {};
+    document.getElementById('w-rank').textContent = lg.rank ? '#' + lg.rank + (lg.size ? ' / ' + lg.size : '') : '—';
+
+    // Mes documents (page étudiant)
+    try {
+      var docs = await RB.data.documents.list();
+      var ST = { ready: ['Prêt', 'text-emerald-600 bg-emerald-50'], processing: ['Analyse…', 'text-violet-600 bg-violet-50'], pending: ['En attente', 'text-amber-600 bg-amber-50'], failed: ['Échec', 'text-rose-600 bg-rose-50'] };
+      var ICON = { 'application/pdf': 'fa-file-pdf', 'image/png': 'fa-file-image', 'image/jpeg': 'fa-file-image', 'image/webp': 'fa-file-image' };
+      document.getElementById('pdocs-sub').textContent = docs.length ? docs.length + ' cours importé' + (docs.length > 1 ? 's' : '') : 'Aucun cours importé pour l\'instant';
+      document.getElementById('pdocs-list').innerHTML = docs.length ? docs.slice(0, 8).map(function (d) {
+        var s = ST[d.status] || ST.pending;
+        return '<a href="relbrain-documents.html?doc=' + encodeURIComponent(d.id) + '" class="flex items-center gap-2.5 p-2 rounded-lg border border-[#f0e6d8] hover:border-violet-300 transition-colors">' +
+          '<div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid ' + (d.source === 'note' ? 'fa-pen-to-square' : ICON[d.mime_type] || 'fa-file-lines') + ' text-violet-500 text-xs"></i></div>' +
+          '<div class="flex-1 min-w-0"><p class="text-xs font-black text-slate-800 truncate">' + RB.escape(d.title) + '</p><p class="text-[10px] text-slate-400 font-semibold">' + RB.escape(d.subject || 'Général') + ' · ' + RB.timeAgo(d.created_at) + '</p></div>' +
+          '<span class="text-[9px] font-black px-2 py-0.5 rounded-full ' + s[1] + '">' + s[0] + '</span></a>';
+      }).join('') + (docs.length > 8 ? '<a href="dashboard.html#mes-documents" class="block text-center text-[10px] font-black text-violet-600 hover:underline pt-1">Voir les ' + docs.length + ' documents →</a>' : '')
+        : '<a href="relbrain-documents.html" class="block text-center p-4 rounded-lg border border-dashed border-[#e7d9c5] text-xs font-bold text-slate-500 hover:text-violet-600"><i class="fa-solid fa-cloud-arrow-up"></i> Importe ton premier cours</a>';
     } catch (e) {}
 
     // Carte niveau

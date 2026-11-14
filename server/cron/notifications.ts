@@ -1,4 +1,6 @@
-/* GET /api/cron/notifications — exécuté toutes les heures (vercel.json).
+/* GET /api/cron/notifications — exécuté une fois par jour à 17 h UTC, soit 18 h au
+   Cameroun (vercel.json → crons ; le plan gratuit de Vercel n'autorise pas plus).
+   Bonus : cet appel quotidien à la base empêche Supabase de mettre le projet en pause.
    1. Rappels intelligents : élèves qui n'ont pas encore étudié aujourd'hui,
       à leur heure habituelle (apprise) ou choisie, hors heures calmes.
    2. Livraison push / email des notifications in-app récentes non envoyées.
@@ -54,7 +56,10 @@ export default route({ methods: ['GET', 'POST'] }, async ({ req }) => {
   let emailed = 0;
 
   // 1. Rappels du moment
-  const { data: due, error } = await sb.rpc('users_due_for_reminder');
+  // REMINDERS_HOURLY=true (plan Vercel payant + cron horaire) : chaque élève reçoit
+  // son rappel à son heure. Sinon : un seul passage par jour, pour tout le monde.
+  const hourly = process.env.REMINDERS_HOURLY === 'true';
+  const { data: due, error } = await sb.rpc('users_due_for_reminder', { p_any_hour: !hourly });
   if (error) throw new HttpError(500, 'cron_failed', error.message);
   for (const u of (due || []) as DueUser[]) {
     const copy = reminderCopy(u);

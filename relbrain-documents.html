@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
 <script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.ai – Mes documents</title>
+<title>RelBrain.AI – Mes documents</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <style>
@@ -161,7 +164,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
       </div>
       <div>
-        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
       </div>
     </a>
@@ -178,12 +181,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
       <a href="relbrain-documents.html" class="nav-item active"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
-      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
+      <a href="relbrain-concours.html" class="nav-item"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
@@ -562,6 +565,9 @@ document.addEventListener('DOMContentLoaded', function () {
         res[0].forEach(function (d) { docs.push(map(d)); });
         updateStats(docs);
         render();
+        // Lien direct depuis le tableau de bord / le profil : ?doc=<id>
+        var wanted = new URLSearchParams(location.search).get('doc');
+        if (wanted && byId[wanted] && !refresh.opened) { refresh.opened = true; window.openDoc(wanted); }
         if (!docs.length) {
           document.getElementById('docs-grid').innerHTML =
             '<div class="col-span-full rb-sheet rb-ruled text-center" style="padding:3rem 1.5rem">' +
@@ -615,7 +621,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         var r = await job;
         RB.celebrate(r.xp, document.getElementById('docs-grid'));
-        toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        if (r.fallback) toast('« ' + (r.document ? r.document.title : file.name) + ' » est enregistré ✓ L\'analyse IA démarrera dès que le serveur IA sera en ligne.', 'success');
+        else toast('« ' + r.document.title + ' » est prêt ✨', 'success');
         if (r.warning) setTimeout(function () { toast(r.warning, 'info'); }, 1500);
         refresh();
       } catch (e) {
@@ -624,6 +631,17 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.classList.remove('is-loading'); btn.disabled = false;
       }
     };
+    document.addEventListener('click', async function (e) {
+      var b = e.target.closest('#doc-analyze'); if (!b) return;
+      var id = window.__rbDocId; if (!id) return;
+      b.disabled = true; b.textContent = 'Analyse en cours…';
+      try {
+        var r = await RB.data.documents.analyze(id);
+        document.getElementById('doc-modal').classList.remove('open');
+        toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        refresh();
+      } catch (err) { b.disabled = false; b.textContent = 'Réessayer l\'analyse'; RB.handleError(err); }
+    });
     function resetUpload() {
       chosen = null; input.value = '';
       document.getElementById('upload-label').textContent = 'Glisse ton fichier ici';
@@ -638,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
     window.openDoc = function (id) {
       var d = byId[id]; if (!d) return;
+      window.__rbDocId = id;
       RB.data.documents.markOpened(id);
       var concepts = (d.key_concepts || []).slice(0, 12);
       body.innerHTML =
@@ -648,6 +667,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '</div><button class="text-slate-400 hover:text-slate-700" aria-label="Fermer" onclick="document.getElementById(\'doc-modal\').classList.remove(\'open\')"><i class="fa-solid fa-xmark"></i></button></div>' +
         (d.status !== 'ready'
           ? '<div class="rb-callout mb-3"><i class="fa-solid fa-circle-info"></i><div>' + RB.escape(d.status_message || (d.status === 'failed' ? "L'analyse a échoué." : 'Analyse en cours…')) + '</div></div>'
+          + (d.status === 'processing' ? '' : '<button class="rb-btn rb-btn--ink rb-btn--sm mb-3" id="doc-analyze"><i class="fa-solid fa-wand-magic-sparkles"></i> Lancer l\'analyse IA</button>')
           : (d.summary_short ? '<p class="text-xs text-slate-600 font-semibold leading-relaxed mb-3" style="line-height:1.65">' + RB.escape(d.summary_short) + '</p>' : '') +
             (concepts.length ? '<p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5">Notions clés</p><div class="flex flex-wrap gap-1.5 mb-4">' +
               concepts.map(function (c) { return '<span class="rb-tag ' + (c.importance === 3 ? 'rb-tag--pink' : 'rb-tag--outline') + '" title="' + RB.escape(c.definition || '') + '">' + RB.escape(c.name) + '</span>'; }).join('') + '</div>' : '') +

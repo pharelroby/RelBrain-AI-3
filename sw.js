@@ -4,7 +4,7 @@
    · Mode hors-ligne léger pour connexions instables : les feuilles de style,
      scripts et pages déjà visitées restent disponibles sans réseau.
    ═══════════════════════════════════════════════════════════════════════════ */
-const VERSION = 'rb-v2.0.0';
+const VERSION = 'rb-v2.1.0';
 const CORE = [
   '/relbrain-design-system.css',
   '/relbrain-theme.css',
@@ -13,6 +13,10 @@ const CORE = [
   '/relbrain-config.js',
   '/relbrain-app.js',
   '/relbrain-site.js',
+  '/relbrain-loader.js',
+  '/relbrain-sound.js',
+  '/relbrain-maintenance.html',
+  '/icon.svg',
 ];
 
 self.addEventListener('install', (event) => {
@@ -40,7 +44,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match(req).then((r) => r || caches.match('/index.html'))),
+        .catch(() => caches.match(req).then((r) => r || caches.match('/relbrain-maintenance.html?reason=offline', { ignoreSearch: true }))),
     );
     return;
   }

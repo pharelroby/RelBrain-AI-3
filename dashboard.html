@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <script>
 (function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();
 </script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.ai – Dashboard</title>
+<title>RelBrain.AI – Tableau de bord</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -98,6 +101,20 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 .chart-h-line{height:150px;}
 .chart-h-doughnut{height:130px;}
 .chart-h-radar{height:150px;}
+/* ══════════════ HISTORIQUE ══════════════ */
+.h-chip{padding:.35rem .75rem;border-radius:9999px;font-size:.7rem;font-weight:800;border:1.5px solid #e7d9c5;background:#fff;color:#57534e;cursor:pointer;transition:all .15s}
+.h-chip:hover{border-color:#c4b5fd;color:#7c3aed}
+.h-chip.on{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);gap:3px;overflow-x:auto;padding-bottom:.25rem}
+.heat span{width:11px;height:11px;border-radius:3px;background:#f0e6d8}
+.heat span.l1{background:#ddd6fe}.heat span.l2{background:#c4b5fd}.heat span.l3{background:#a78bfa}.heat span.l4{background:#7c3aed}
+html.dark .heat span{background:#2a2145}
+.kpi p:first-child{font-size:1.5rem;font-weight:900;line-height:1}
+.h-table td,.h-table th{padding:.6rem .75rem;text-align:left;font-size:.72rem}
+.h-table th{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:#a8a29e;font-weight:800}
+.h-table tr+tr td{border-top:1px solid #f0e6d8}
+html.dark .h-table tr+tr td{border-color:rgba(255,255,255,.06)}
+a.qa-tile{text-decoration:none}
 </style>
 </head>
 <body data-rb-private>
@@ -129,7 +146,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
       </div>
       <div>
-        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
       </div>
     </a>
@@ -146,12 +163,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
-      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
+      <a href="relbrain-concours.html" class="nav-item"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
@@ -169,7 +186,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <div class="flex items-center gap-1 text-xs">
       <span class="text-slate-500 font-bold">RelBrain</span>
       <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
-      <span class="font-black text-slate-800">Dashboard</span>
+      <span class="font-black text-slate-800">Tableau de bord</span>
     </div>
     <div class="ml-auto flex items-center gap-1.5">
       <button type="button" class="rb-theme-toggle header-btn" onclick="RB.toggleTheme()"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
@@ -198,11 +215,14 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div>
         <h1 class="text-xl md:text-2xl font-black text-slate-900">Bonjour <span data-rb="first-name">Pharel</span> 👋</h1>
-        <p class="text-xs text-slate-500 mt-0.5 font-semibold">Voici ton résumé du jour. Continue sur ta lancée !</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-semibold" id="greet-sub">Ton tableau de bord : progrès du jour et tout ton historique d'étude.</p>
       </div>
-      <a href="relbrain-documents.html" class="gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200 hover:-translate-y-0.5 transition-all inline-flex items-center gap-1.5 self-start sm:self-auto">
-        <i class="fa-solid fa-cloud-arrow-up"></i> Importer un cours
-      </a>
+      <div class="flex gap-2 self-start sm:self-auto">
+        <a href="#historique" class="tab-btn inline-flex items-center gap-1.5" style="padding:.5rem .8rem"><i class="fa-solid fa-clock-rotate-left"></i> Historique</a>
+        <a href="relbrain-documents.html" class="gradient-bg text-white font-black px-4 py-2 rounded-lg text-xs shadow-md shadow-violet-200 hover:-translate-y-0.5 transition-all inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Importer un cours
+        </a>
+      </div>
     </div>
 
     <!-- 4 STATS -->
@@ -212,142 +232,73 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Niveau</p>
           <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-star text-violet-500 text-xs"></i></div>
         </div>
-        <p class="text-2xl font-black text-slate-900">7</p>
-        <div class="prog-bar mt-2"><div class="prog-fill gradient-bg" style="width:68%"></div></div>
-        <p class="text-[9px] text-slate-500 font-bold mt-1.5">660 XP → Niveau 8</p>
+        <p class="text-2xl font-black text-slate-900" id="s-level">—</p>
+        <div class="prog-bar mt-2"><div class="prog-fill gradient-bg" id="s-level-bar" style="width:0%"></div></div>
+        <p class="text-[9px] text-slate-500 font-bold mt-1.5" id="s-level-next">&nbsp;</p>
       </div>
       <div class="rb-card p-4">
         <div class="flex items-start justify-between mb-1.5">
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">XP Total</p>
           <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-bolt text-violet-500 text-xs"></i></div>
         </div>
-        <p class="text-2xl font-black text-slate-900">2 340</p>
-        <p class="text-[9px] text-emerald-600 font-black mt-2"><i class="fa-solid fa-arrow-up"></i> +320 aujourd'hui</p>
+        <p class="text-2xl font-black text-slate-900" id="s-xp" data-rb-xp-total="0">—</p>
+        <p class="text-[9px] text-emerald-600 font-black mt-2" id="s-xp-today">&nbsp;</p>
       </div>
       <div class="rb-card p-4 flex items-center justify-between">
         <div>
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-0.5">Série</p>
-          <p class="text-2xl font-black text-slate-900">12 <span class="text-xs">jours</span></p>
-          <p class="text-[9px] text-slate-500 font-bold mt-1.5">Continue ! 🔥</p>
+          <p class="text-2xl font-black text-slate-900" id="s-streak">—</p>
+          <p class="text-[9px] text-slate-500 font-bold mt-1.5" id="s-streak-sub">&nbsp;</p>
         </div>
-        <div class="streak-ring"><span>12j</span></div>
+        <div class="streak-ring" id="s-streak-ring"><span>0j</span></div>
       </div>
       <div class="rb-card p-4">
         <div class="flex items-start justify-between mb-1.5">
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Score moyen</p>
           <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center"><i class="fa-solid fa-chart-line text-emerald-500 text-xs"></i></div>
         </div>
-        <p class="text-2xl font-black text-slate-900">85%</p>
-        <p class="text-[9px] text-emerald-600 font-black mt-2"><i class="fa-solid fa-arrow-up"></i> +4% cette semaine</p>
+        <p class="text-2xl font-black text-slate-900" id="s-score">—</p>
+        <p class="text-[9px] text-emerald-600 font-black mt-2" id="s-score-sub">&nbsp;</p>
       </div>
     </div>
 
-    <!-- GRAPHIQUES -->
-    <div class="grid lg:grid-cols-3 gap-3">
-
-      <!-- Bar chart -->
-      <div class="rb-card p-4 lg:col-span-2">
-        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <div>
-            <h2 class="font-black text-slate-900 text-sm">Activité hebdomadaire</h2>
-            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Questions répondues par jour</p>
-          </div>
-          <div class="flex gap-1">
-            <button class="tab-btn active" id="tab-week" onclick="switchChart('week')">7j</button>
-            <button class="tab-btn" id="tab-month" onclick="switchChart('month')">30j</button>
-          </div>
-        </div>
-        <div class="chart-wrap chart-h-bar"><canvas id="activity-chart"></canvas></div>
-        <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-[#f0e6d8]">
-          <div class="text-center">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Total</p>
-            <p class="text-base font-black text-violet-600 mt-0.5">169</p>
-          </div>
-          <div class="text-center">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Moy./jour</p>
-            <p class="text-base font-black text-amber-500 mt-0.5">24</p>
-          </div>
-          <div class="text-center">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Record</p>
-            <p class="text-base font-black text-emerald-500 mt-0.5">Sam</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doughnut -->
-      <div class="rb-card p-4">
-        <h2 class="font-black text-slate-900 text-sm mb-3">Répartition matières</h2>
-        <div class="chart-wrap chart-h-doughnut"><canvas id="matters-chart"></canvas></div>
-        <div class="space-y-1.5 mt-3" id="matters-legend"></div>
-      </div>
-    </div>
-
-    <!-- LIGNE + RADAR -->
-    <div class="grid lg:grid-cols-2 gap-3">
-      <div class="rb-card p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="font-black text-slate-900 text-sm">Évolution XP</h2>
-            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">30 derniers jours</p>
-          </div>
-          <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">+1 240 XP</span>
-        </div>
-        <div class="chart-wrap chart-h-line"><canvas id="xp-chart"></canvas></div>
-      </div>
-
-      <div class="rb-card p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="font-black text-slate-900 text-sm">Radar des compétences</h2>
-            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Niveau par matière</p>
-          </div>
-          <span class="text-[9px] font-black text-violet-700 bg-violet-100 px-2 py-0.5 rounded-full">Hebdo</span>
-        </div>
-        <div class="chart-wrap chart-h-radar"><canvas id="radar-chart"></canvas></div>
-      </div>
-    </div>
-
-    <!-- OBJECTIF + QA -->
+    <!-- OBJECTIF + ACTIONS RAPIDES -->
     <div class="grid lg:grid-cols-3 gap-3">
       <div class="lg:col-span-2 rb-card p-4">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-target text-white text-sm"></i></div>
+            <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center"><i class="fa-solid fa-bullseye text-white text-sm"></i></div>
             <div>
               <p class="font-black text-slate-900 text-sm">Objectif du jour</p>
               <p class="text-[10px] text-slate-500 font-semibold">30 min d'étude quotidienne</p>
             </div>
           </div>
           <div class="text-right">
-            <p class="text-xl font-black gradient-text">65%</p>
-            <p class="text-[9px] text-slate-400 font-bold">19 / 30 min</p>
+            <p class="text-xl font-black gradient-text" id="goal-pct">0%</p>
+            <p class="text-[9px] text-slate-400 font-bold" id="goal-min">0 / 30 min</p>
           </div>
         </div>
-        <div class="prog-bar mb-3"><div class="prog-fill gradient-bg" style="width:65%"></div></div>
+        <div class="prog-bar mb-3"><div class="prog-fill gradient-bg" id="goal-bar" style="width:0%"></div></div>
         <div class="flex items-center justify-between">
-          <p class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Cette semaine</p>
-          <div class="flex gap-1">
-            <div class="heat-dot l4"></div><div class="heat-dot l3"></div><div class="heat-dot l4"></div>
-            <div class="heat-dot l2"></div><div class="heat-dot l4"></div><div class="heat-dot l3"></div>
-            <div class="heat-dot today"></div>
-          </div>
+          <p class="text-[10px] font-black text-slate-500 uppercase tracking-wider">7 derniers jours</p>
+          <div class="flex gap-1" id="goal-week"></div>
         </div>
       </div>
       <div class="rb-card p-4">
         <p class="font-black text-slate-900 text-sm mb-2.5">Actions rapides</p>
         <div class="grid grid-cols-2 gap-2">
-          <div class="qa-tile" onclick="location.href='relbrain-documents.html'">
+          <a class="qa-tile" href="relbrain-documents.html">
             <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-cloud-arrow-up text-violet-500 text-xs"></i></div>
             <p class="text-[10px] font-black text-slate-700">Importer</p>
-          </div>
-          <div class="qa-tile" onclick="location.href='relbrain-quiz-setup.html'">
+          </a>
+          <a class="qa-tile" href="relbrain-quiz-setup.html">
             <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center"><i class="fa-solid fa-circle-question text-emerald-500 text-xs"></i></div>
             <p class="text-[10px] font-black text-slate-700">Quiz</p>
-          </div>
-          <div class="qa-tile" onclick="location.href='relbrain-flashcards.html'">
+          </a>
+          <a class="qa-tile" href="relbrain-flashcards.html">
             <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center"><i class="fa-solid fa-layer-group text-amber-500 text-xs"></i></div>
             <p class="text-[10px] font-black text-slate-700">Flashcards</p>
-          </div>
+          </a>
           <div class="qa-tile" onclick="openNote()">
             <div class="w-7 h-7 rounded-lg bg-pink-50 flex items-center justify-center"><i class="fa-solid fa-pen-to-square text-pink-500 text-xs"></i></div>
             <p class="text-[10px] font-black text-slate-700">Note</p>
@@ -356,49 +307,97 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       </div>
     </div>
 
-    <!-- COURS -->
+    <!-- CONTINUER -->
     <div>
       <div class="flex items-center justify-between mb-2.5">
         <h2 class="text-base font-black text-slate-900">Continuer l'apprentissage</h2>
-        <a href="relbrain-documents.html" class="text-[10px] font-black text-violet-600 hover:underline">Voir tout →</a>
+        <a href="#mes-documents" class="text-[10px] font-black text-violet-600 hover:underline">Tous mes documents →</a>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="courses-grid"></div>
     </div>
 
-    <!-- BADGES + ACTIVITÉ -->
+    <!-- POINTS FAIBLES + BADGES -->
     <div class="grid lg:grid-cols-2 gap-3">
+      <div class="rb-card p-4">
+        <div class="flex items-center justify-between mb-2 gap-2">
+          <div><p class="font-black text-slate-900 text-sm">Points faibles détectés</p><p class="text-[10px] text-slate-500 font-semibold">Notions sous 70 % de réussite</p></div>
+          <a class="tab-btn hidden" id="weak-cta" href="relbrain-quiz-setup.html"><i class="fa-solid fa-bullseye"></i> Quiz ciblé</a>
+        </div>
+        <div id="weak"></div>
+      </div>
       <div class="rb-card p-4">
         <div class="flex items-center justify-between mb-3">
           <p class="font-black text-slate-900 text-sm">Badges récents</p>
-          <a href="relbrain-profil.html" class="text-[10px] font-black text-violet-600 hover:underline">Voir tous →</a>
+          <a href="relbrain-profil.html#badges" class="text-[10px] font-black text-violet-600 hover:underline">Voir tous →</a>
         </div>
-        <div class="flex flex-wrap gap-1.5">
-          <div class="ach-pill">🥇 Premier Quiz</div>
-          <div class="ach-pill">🔥 7 jours</div>
-          <div class="ach-pill">⚡ 500 XP</div>
-          <div class="ach-pill">💎 Expert Quiz</div>
-          <div class="ach-pill">🎯 100 Q</div>
-          <div class="ach-pill" style="opacity:.4">🔒 Maître Flashcards</div>
-        </div>
-      </div>
-      <div class="rb-card p-4">
-        <p class="font-black text-slate-900 text-sm mb-3">Activité récente</p>
-        <div class="space-y-2.5">
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i></div>
-            <div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800">Quiz Algorithmique — 18/20</p><p class="text-[9px] text-slate-400 font-semibold">Il y a 2h · +180 XP</p></div>
-          </div>
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-layer-group text-amber-500 text-xs"></i></div>
-            <div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800">24 flashcards révisées</p><p class="text-[9px] text-slate-400 font-semibold">Hier · +50 XP</p></div>
-          </div>
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-cloud-arrow-up text-violet-500 text-xs"></i></div>
-            <div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800">Physique Ch.4 importé</p><p class="text-[9px] text-slate-400 font-semibold">Hier · +25 XP</p></div>
-          </div>
-        </div>
+        <div class="flex flex-wrap gap-1.5" id="badges"></div>
       </div>
     </div>
+
+    <!-- ═════════════ HISTORIQUE & PROGRESSION ═════════════ -->
+    <section id="historique" class="space-y-3 pt-2" style="scroll-margin-top:70px">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <h2 class="text-lg md:text-xl font-black text-slate-900"><i class="fa-solid fa-clock-rotate-left text-violet-500 text-base"></i> Historique &amp; progression</h2>
+          <p class="text-xs text-slate-500 mt-0.5 font-semibold">Toutes tes sessions, tes progrès par matière et ta régularité.</p>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="f-period">
+          <button class="h-chip" data-days="7">7 jours</button><button class="h-chip on" data-days="30">30 jours</button><button class="h-chip" data-days="90">3 mois</button><button class="h-chip" data-days="365">1 an</button>
+        </div>
+      </div>
+
+      <div class="rb-card p-3.5 flex flex-wrap items-center gap-2">
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider mr-1">Activité</span>
+        <div class="flex flex-wrap gap-1.5" id="f-kind">
+          <button class="h-chip on" data-kind="">Toutes</button><button class="h-chip" data-kind="quiz">🎯 Quiz</button><button class="h-chip" data-kind="flashcards">🃏 Flashcards</button><button class="h-chip" data-kind="reading">📖 Lecture</button><button class="h-chip" data-kind="chat">💬 Coach</button><button class="h-chip" data-kind="summary">✨ Fiches</button>
+        </div>
+        <select class="rb-input ml-auto" id="f-subject" style="width:auto;min-width:11rem;padding:.4rem .7rem"><option value="">Toutes les matières</option></select>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="rb-card p-4 kpi"><p class="text-slate-900" id="k-min">—</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-1">Minutes d'étude</p></div>
+        <div class="rb-card p-4 kpi"><p class="text-slate-900" id="k-sess">—</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-1">Sessions</p></div>
+        <div class="rb-card p-4 kpi"><p class="gradient-text" id="k-xp">—</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-1">XP gagnés</p></div>
+        <div class="rb-card p-4 kpi"><p class="text-slate-900" id="k-days">—</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-1">Jours actifs</p></div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-3">
+        <div class="rb-card p-4 lg:col-span-2">
+          <div class="mb-3"><h3 class="font-black text-slate-900 text-sm">Temps d'étude et XP</h3><p class="text-[10px] text-slate-500 font-semibold">Minutes par jour (barres) · XP par jour (ligne)</p></div>
+          <div class="chart-wrap" style="height:220px"><canvas id="h-chart"></canvas></div>
+        </div>
+        <div class="rb-card p-4">
+          <h3 class="font-black text-slate-900 text-sm mb-3">Répartition par matière</h3>
+          <div class="chart-wrap chart-h-doughnut"><canvas id="matters-chart"></canvas></div>
+          <div class="space-y-1.5 mt-3" id="matters-legend"></div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-3">
+        <div class="rb-card p-4 lg:col-span-2">
+          <div class="flex items-center justify-between mb-3 flex-wrap gap-2"><h3 class="font-black text-slate-900 text-sm">Régularité sur un an</h3><span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">Moins <span class="heat" style="display:inline-grid;grid-template-rows:11px;grid-auto-flow:column"><span></span><span class="l1"></span><span class="l2"></span><span class="l3"></span><span class="l4"></span></span> Plus</span></div>
+          <div class="heat" id="heat" aria-label="Calendrier de régularité"></div>
+        </div>
+        <div class="rb-card p-4">
+          <h3 class="font-black text-slate-900 text-sm mb-3">Maîtrise par matière</h3>
+          <div class="space-y-2.5" id="mastery"></div>
+        </div>
+      </div>
+
+      <div class="rb-card overflow-hidden">
+        <div class="p-4 border-b border-[#f0e6d8] flex items-center justify-between"><h3 class="font-black text-slate-900 text-sm">Sessions d'étude</h3><span class="text-[10px] font-bold text-slate-400" id="sess-count"></span></div>
+        <div class="overflow-x-auto"><table class="w-full h-table"><thead><tr><th>Date</th><th>Activité</th><th>Matière</th><th>Durée</th><th>Éléments</th><th>XP</th></tr></thead><tbody id="h-rows"></tbody></table></div>
+        <div class="p-3 text-center hidden" id="sess-more-wrap"><button class="tab-btn" id="sess-more">Afficher plus</button></div>
+      </div>
+
+      <div class="rb-card overflow-hidden" id="mes-documents" style="scroll-margin-top:70px">
+        <div class="p-4 border-b border-[#f0e6d8] flex items-center justify-between gap-2 flex-wrap">
+          <div><h3 class="font-black text-slate-900 text-sm">Documents importés</h3><p class="text-[10px] text-slate-500 font-semibold" id="docs-sub">Tous les cours que tu as importés, du plus récent au plus ancien.</p></div>
+          <a href="relbrain-documents.html" class="tab-btn"><i class="fa-solid fa-folder-open"></i> Gérer</a>
+        </div>
+        <div class="overflow-x-auto"><table class="w-full h-table"><thead><tr><th>Document</th><th>Matière</th><th>Statut</th><th>Importé</th><th></th></tr></thead><tbody id="docs-rows"></tbody></table></div>
+      </div>
+    </section>
 
     <footer class="border-t border-[#e7d9c5] py-4">
       <p class="text-[10px] text-slate-500 font-semibold text-center">© 2026 RelBrain AI. Tous droits réservés.</p>
@@ -408,173 +407,6 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 </div>
 
 <script>
-const courses = [
-  {title:'Algorithmique avancée', subject:'Informatique', progress:78, color:'violet', icon:'fa-code'},
-  {title:'Physique Ch.4 — Ondes', subject:'Physique', progress:42, color:'blue', icon:'fa-atom'},
-  {title:'Maths — Probabilités', subject:'Maths', progress:35, color:'amber', icon:'fa-square-root-variable'},
-  {title:'Biologie cellulaire', subject:'SVT', progress:92, color:'emerald', icon:'fa-dna'},
-];
-document.getElementById('courses-grid').innerHTML = courses.map(c => `
-  <a href="relbrain-documents.html" class="rb-card card-lift p-4 cursor-pointer block">
-    <div class="flex items-start justify-between mb-2">
-      <div class="w-9 h-9 rounded-lg bg-${c.color}-50 flex items-center justify-center"><i class="fa-solid ${c.icon} text-${c.color}-500 text-sm"></i></div>
-      <i class="fa-solid fa-arrow-right text-slate-300 text-[10px]"></i>
-    </div>
-    <p class="text-xs font-black text-slate-800 truncate mb-0.5">${c.title}</p>
-    <p class="text-[10px] text-slate-500 font-semibold mb-2">${c.subject}</p>
-    <div class="flex items-center gap-1.5">
-      <div class="prog-bar flex-1"><div class="prog-fill bg-${c.color}-500" style="width:${c.progress}%"></div></div>
-      <span class="text-[9px] font-black text-slate-500">${c.progress}%</span>
-    </div>
-  </a>
-`).join('');
-
-function isDark(){ return document.documentElement.classList.contains('dark'); }
-function gridColor(){ return isDark()?'rgba(255,255,255,.06)':'rgba(240,230,216,.6)'; }
-function tickColor(){ return isDark()?'#a1a1aa':'#78716c'; }
-
-let activityChart, xpChart, mattersChart, radarChart;
-
-function initCharts(){
-  // Activity
-  const actx = document.getElementById('activity-chart').getContext('2d');
-  activityChart = new Chart(actx, {
-    type:'bar',
-    data:{
-      labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
-      datasets:[{
-        label:'Questions',
-        data:[24,18,32,12,28,35,20],
-        backgroundColor:(ctx) => {
-          const g = ctx.chart.ctx.createLinearGradient(0,0,0,170);
-          g.addColorStop(0,'rgba(124,58,237,.9)');
-          g.addColorStop(1,'rgba(236,72,153,.5)');
-          return g;
-        },
-        borderRadius:7,
-        borderSkipped:false,
-        hoverBackgroundColor:'rgba(124,58,237,1)',
-        barThickness:22,
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.parsed.y} questions`},backgroundColor:'#1e1b4b',titleFont:{size:11},bodyFont:{size:11,weight:'600'},padding:8,cornerRadius:8,displayColors:false}},
-      scales:{
-        x:{grid:{display:false},ticks:{font:{size:10,weight:'700'},color:tickColor()}},
-        y:{grid:{color:gridColor()},ticks:{font:{size:9,weight:'600'},color:tickColor()},beginAtZero:true}
-      }
-    }
-  });
-
-  // Doughnut
-  const mctx = document.getElementById('matters-chart').getContext('2d');
-  mattersChart = new Chart(mctx, {
-    type:'doughnut',
-    data:{
-      labels:['Informatique','Maths','Chimie','Physique'],
-      datasets:[{
-        data:[42,28,18,12],
-        backgroundColor:['#7c3aed','#a855f7','#ec4899','#f59e0b'],
-        borderWidth:0,
-        hoverOffset:5,
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}, tooltip:{backgroundColor:'#1e1b4b',padding:8,cornerRadius:8,bodyFont:{size:11}}},
-      cutout:'65%'
-    }
-  });
-
-  const matLegend = [
-    {label:'Info',color:'#7c3aed',pct:'42%',val:'72'},
-    {label:'Maths',color:'#a855f7',pct:'28%',val:'48'},
-    {label:'Chimie',color:'#ec4899',pct:'18%',val:'31'},
-    {label:'Physique',color:'#f59e0b',pct:'12%',val:'20'},
-  ];
-  document.getElementById('matters-legend').innerHTML = matLegend.map(l => `
-    <div class="flex items-center gap-1.5">
-      <div class="w-2 h-2 rounded-full shrink-0" style="background:${l.color}"></div>
-      <span class="text-[10px] font-semibold text-slate-600 flex-1">${l.label}</span>
-      <span class="text-[10px] font-black text-slate-800">${l.val}</span>
-      <span class="text-[9px] font-bold text-slate-400 w-7 text-right">${l.pct}</span>
-    </div>
-  `).join('');
-
-  // Line
-  const xctx = document.getElementById('xp-chart').getContext('2d');
-  const xGrad = xctx.createLinearGradient(0,0,0,150);
-  xGrad.addColorStop(0,'rgba(124,58,237,.35)');
-  xGrad.addColorStop(1,'rgba(124,58,237,0)');
-  xpChart = new Chart(xctx, {
-    type:'line',
-    data:{
-      labels:Array.from({length:30},(_,i)=>`J${i+1}`),
-      datasets:[{
-        label:'XP cumulés',
-        data:[0,60,120,180,240,290,360,420,500,580,650,720,800,880,950,1020,1100,1180,1250,1330,1420,1500,1580,1660,1750,1830,1920,2020,2180,2340],
-        borderColor:'#7c3aed',
-        backgroundColor:xGrad,
-        borderWidth:2.5,
-        tension:.4,
-        pointRadius:0,
-        pointHoverRadius:5,
-        pointHoverBackgroundColor:'#7c3aed',
-        pointHoverBorderColor:'#fff',
-        pointHoverBorderWidth:2,
-        fill:true,
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e1b4b',padding:8,cornerRadius:8,displayColors:false,bodyFont:{size:11},callbacks:{label:c=>`${c.parsed.y} XP`}}},
-      scales:{
-        x:{grid:{display:false},ticks:{font:{size:8},color:tickColor(),maxTicksLimit:6}},
-        y:{grid:{color:gridColor()},ticks:{font:{size:8,weight:'600'},color:tickColor()},beginAtZero:true}
-      },
-      interaction:{intersect:false,mode:'index'}
-    }
-  });
-
-  // Radar
-  const rctx = document.getElementById('radar-chart').getContext('2d');
-  radarChart = new Chart(rctx, {
-    type:'radar',
-    data:{
-      labels:['Info','Maths','Chimie','Physique','Bio','Histoire'],
-      datasets:[{
-        label:'Maîtrise',
-        data:[88,62,45,30,80,55],
-        backgroundColor:'rgba(124,58,237,.18)',
-        borderColor:'#7c3aed',
-        pointBackgroundColor:'#7c3aed',
-        pointBorderColor:'#fff',
-        pointBorderWidth:1.5,
-        pointRadius:3,
-        borderWidth:2,
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e1b4b',padding:8,cornerRadius:8,bodyFont:{size:11},callbacks:{label:c=>`${c.parsed.r}%`}}},
-      scales:{r:{beginAtZero:true,max:100,grid:{color:gridColor()},angleLines:{color:gridColor()},pointLabels:{font:{size:9,weight:'700'},color:tickColor()},ticks:{display:false,stepSize:25}}}
-    }
-  });
-}
-
-function switchChart(mode){
-  document.getElementById('tab-week').classList.toggle('active', mode==='week');
-  document.getElementById('tab-month').classList.toggle('active', mode==='month');
-  const weekLabels = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  const weekData = [24,18,32,12,28,35,20];
-  const monthLabels = Array.from({length:30},(_,i)=>`J${i+1}`);
-  const monthData = Array.from({length:30},(_,i)=>Math.floor(8+Math.random()*38));
-  activityChart.data.labels = mode==='week'?weekLabels:monthLabels;
-  activityChart.data.datasets[0].data = mode==='week'?weekData:monthData;
-  activityChart.update();
-}
-
 function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
 function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
 document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
@@ -583,166 +415,247 @@ function closeNote(){document.getElementById('note-modal').classList.remove('ope
 function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 document.getElementById('note-modal').addEventListener('click',e=>{if(e.target.id==='note-modal')closeNote();});
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
-
-window.addEventListener('DOMContentLoaded', initCharts);
 </script>
 <!-- ═══════════════════════════════════════════════════════════════════════
-     INTÉGRATION BACKEND — Dashboard
-     Statistiques réelles : niveau/XP/série (get_my_gamification), activité
-     et maîtrise par matière (get_activity), scores (quiz_attempts), badges,
-     points faibles détectés automatiquement (get_weak_points).
+     TABLEAU DE BORD + HISTORIQUE (page unique)
+     Mode réel : get_my_gamification · get_activity (filtres) · quiz_attempts
+     · documents · achievements · get_weak_points.
+     Mode démo (relbrain-config.js vide) : données d'exemple générées.
      ═══════════════════════════════════════════════════════════════════════ -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  RB.onReady(async function (ctx) {
-    var g = ctx.game || {};
-    var DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    var PALETTE = ['#7c3aed', '#a855f7', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9'];
-    var statCards = document.querySelectorAll('.grid.grid-cols-2.lg\\:grid-cols-4 > .rb-card');
+(function () {
+  var DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  var PALETTE = ['#7c3aed', '#a855f7', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9'];
+  var KIND = { quiz: ['🎯', 'Quiz'], flashcards: ['🃏', 'Flashcards'], reading: ['📖', 'Lecture'], chat: ['💬', 'Coach IA'], summary: ['✨', 'Fiche de révision'] };
+  var STATUS = { ready: ['Prêt', '#10b981', '#ecfdf5'], processing: ['Analyse…', '#7c3aed', '#f5f3ff'], pending: ['En attente', '#d97706', '#fffbeb'], failed: ['Échec', '#e11d48', '#fff1f2'] };
+  var state = { days: 30, kind: '', subject: '', shown: 10 }, hChart, mChart, year = null, sessionsAll = [];
 
-    // ─ Niveau / XP / série
-    var span = (g.next_level_xp - g.level_floor_xp) || 1;
-    var pct = Math.round(((g.xp - g.level_floor_xp) / span) * 100);
-    statCards[0].querySelector('.text-2xl').textContent = g.level || 1;
-    statCards[0].querySelector('.prog-fill').style.width = pct + '%';
-    statCards[0].querySelector('p.text-\\[9px\\]').textContent = RB.formatNumber(g.next_level_xp - g.xp) + ' XP → Niveau ' + ((g.level || 1) + 1);
-    var xpEl = statCards[1].querySelector('.text-2xl');
-    xpEl.setAttribute('data-rb-xp-total', g.xp || 0);
-    RB.motion.countUp(xpEl, g.xp || 0, { from: 0 });
-    statCards[2].querySelector('.text-2xl').innerHTML = (g.streak || 0) + ' <span class="text-xs">jour' + ((g.streak || 0) > 1 ? 's' : '') + '</span>';
-    statCards[2].querySelector('p.text-\\[9px\\]').innerHTML = g.studied_today ? 'Validée aujourd\'hui <span class="rb-flame">🔥</span>' : 'Étudie aujourd\'hui pour la garder';
-    statCards[2].querySelector('.streak-ring span').textContent = (g.streak || 0) + 'j';
-    statCards[2].querySelector('.streak-ring').style.background = 'conic-gradient(#f59e0b ' + Math.min(100, ((g.streak || 0) % 7) / 7 * 100 || (g.streak ? 100 : 0)) + '%, #fef3c7 0)';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return window.RB && RB.escape ? RB.escape(s) : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
+  function fmt(n) { return window.RB && RB.formatNumber ? RB.formatNumber(n || 0) : String(n || 0); }
+  function ago(d) { return window.RB && RB.timeAgo ? RB.timeAgo(d) : new Date(d).toLocaleDateString('fr-FR'); }
+  function fmtMin(m) { return m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'; }
+  function isDark() { return document.documentElement.classList.contains('dark'); }
+  function tick() { return isDark() ? '#a1a1aa' : '#78716c'; }
+  function grid() { return isDark() ? 'rgba(255,255,255,.06)' : 'rgba(240,230,216,.6)'; }
 
+  /* ─── Données d'exemple (mode démo uniquement) ─── */
+  var DEMO_SUBJECTS = ['Mathématiques', 'Physique', 'SVT', 'Informatique'];
+  function demoActivity(days, kind, subject) {
+    var daily = [], sessions = [], seed = 7;
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    for (var i = days - 1; i >= 0; i--) {
+      var d = new Date(Date.now() - i * 864e5), m = rnd() < .2 ? 0 : Math.round(8 + rnd() * 40);
+      var k = ['quiz', 'flashcards', 'reading', 'chat'][i % 4], s = DEMO_SUBJECTS[i % 4];
+      if ((kind && kind !== k) || (subject && subject !== s)) m = 0;
+      daily.push({ day: d.toISOString().slice(0, 10), minutes: m, xp: m ? Math.round(m * (3 + rnd() * 4)) : 0 });
+      if (m) sessions.push({ kind: k, subject: s, started_at: d.toISOString(), duration_seconds: m * 60, items_count: Math.round(m / 2), xp_earned: Math.round(m * 4) });
+    }
+    return { daily: daily, sessions: sessions.reverse(), subjects: DEMO_SUBJECTS.map(function (s, i) { return { subject: s, mastery: [78, 54, 66, 41][i], questions_answered: [72, 48, 31, 20][i], cards_reviewed: [30, 12, 44, 8][i] }; }) };
+  }
+  function demoOverview() {
+    var t = Date.now();
+    return {
+      game: { level: 7, xp: 2340, level_floor_xp: 1900, next_level_xp: 3000, streak: 12, studied_today: true },
+      attempts: [{ correct_count: 17, total_count: 20 }, { correct_count: 9, total_count: 10 }, { correct_count: 8, total_count: 10 }],
+      docs: [
+        { id: 'd1', title: 'Algorithmique avancée', subject: 'Informatique', status: 'ready', created_at: new Date(t - 2 * 864e5).toISOString(), page_count: 24 },
+        { id: 'd2', title: 'Physique Ch.4 — Ondes', subject: 'Physique', status: 'ready', created_at: new Date(t - 5 * 864e5).toISOString(), page_count: 12 },
+        { id: 'd3', title: 'Maths — Probabilités', subject: 'Mathématiques', status: 'processing', created_at: new Date(t - 36e5).toISOString(), page_count: 8 },
+        { id: 'd4', title: 'Biologie cellulaire', subject: 'SVT', status: 'ready', created_at: new Date(t - 12 * 864e5).toISOString(), page_count: 30 },
+      ],
+      badges: [{ icon: '🥇', name: 'Premier quiz', unlocked_at: '2026-01-02' }, { icon: '🔥', name: '7 jours', unlocked_at: '2026-01-03' }, { icon: '⚡', name: '500 XP', unlocked_at: '2026-01-04' }, { icon: '🗺️', name: 'Maître flashcards', description: 'Révise 500 cartes' }],
+      weak: [{ concept: 'Loi binomiale', subject: 'Mathématiques', accuracy: 38 }, { concept: 'Effet Doppler', subject: 'Physique', accuracy: 55 }],
+    };
+  }
+
+  /* ─── Partie « aujourd'hui » ─── */
+  function renderGame(g) {
+    var span = (g.next_level_xp - g.level_floor_xp) || 1, pct = Math.max(0, Math.min(100, Math.round(((g.xp - g.level_floor_xp) / span) * 100)));
+    $('s-level').textContent = g.level || 1;
+    $('s-level-bar').style.width = pct + '%';
+    $('s-level-next').textContent = fmt(Math.max(0, (g.next_level_xp || 0) - (g.xp || 0))) + ' XP → Niveau ' + ((g.level || 1) + 1);
+    $('s-xp').setAttribute('data-rb-xp-total', g.xp || 0);
+    if (window.RB && RB.motion) RB.motion.countUp($('s-xp'), g.xp || 0, { from: 0 }); else $('s-xp').textContent = fmt(g.xp);
+    var st = g.streak || 0;
+    $('s-streak').innerHTML = st + ' <span class="text-xs">jour' + (st > 1 ? 's' : '') + '</span>';
+    $('s-streak-sub').innerHTML = g.studied_today ? 'Validée aujourd\'hui 🔥' : (st ? 'Étudie aujourd\'hui pour la garder' : 'Commence ta série aujourd\'hui');
+    $('s-streak-ring').querySelector('span').textContent = st + 'j';
+    $('s-streak-ring').style.background = 'conic-gradient(#f59e0b ' + (st ? ((st % 7) / 7 * 100 || 100) : 0) + '%, #fef3c7 0)';
+  }
+
+  function renderScore(attempts) {
+    var avg = function (arr) { return arr.length ? Math.round(arr.reduce(function (n, a) { return n + a.correct_count / a.total_count; }, 0) / arr.length * 100) : null; };
+    var last = attempts.slice(0, 10), prev = attempts.slice(10, 20), now = avg(last), before = avg(prev);
+    $('s-score').textContent = now == null ? '—' : now + '%';
+    $('s-score-sub').innerHTML = now == null ? '<span class="text-slate-500">Fais ton premier quiz</span>' : before == null ? 'Sur tes ' + last.length + ' derniers quiz'
+      : '<i class="fa-solid fa-arrow-' + (now >= before ? 'up' : 'down') + '"></i> ' + (now >= before ? '+' : '') + (now - before) + ' pts vs avant';
+  }
+
+  function renderToday(yearAct) {
+    var daily = yearAct.daily || [], today = daily[daily.length - 1] || { xp: 0, minutes: 0 };
+    $('s-xp-today').innerHTML = '<i class="fa-solid fa-arrow-up"></i> +' + fmt(today.xp) + ' aujourd\'hui';
+    var mins = Number(today.minutes) || 0, gp = Math.min(100, Math.round(mins / 30 * 100));
+    $('goal-pct').textContent = gp + '%'; $('goal-min').textContent = mins + ' / 30 min'; $('goal-bar').style.width = gp + '%';
+    $('goal-week').innerHTML = daily.slice(-7).map(function (d, i, arr) {
+      var m = Number(d.minutes) || 0, lvl = m >= 30 ? 'l4' : m >= 15 ? 'l3' : m >= 5 ? 'l2' : m > 0 ? 'l1' : '';
+      return '<div class="heat-dot ' + lvl + (i === arr.length - 1 ? ' today' : '') + '" title="' + DAYS[new Date(d.day + 'T12:00:00').getDay()] + ' · ' + m + ' min"></div>';
+    }).join('');
+    // Calendrier annuel
+    var byDay = {}; daily.forEach(function (d) { byDay[d.day] = Number(d.minutes || 0); });
+    var cells = [], start = new Date(Date.now() - 364 * 864e5);
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+    for (var t = start.getTime(); t <= Date.now(); t += 864e5) {
+      var key = new Date(t).toISOString().slice(0, 10), m = byDay[key] || 0;
+      cells.push('<span class="' + (m >= 45 ? 'l4' : m >= 25 ? 'l3' : m >= 10 ? 'l2' : m > 0 ? 'l1' : '') + '" title="' + key + ' · ' + m + ' min"></span>');
+    }
+    var heat = $('heat'); heat.innerHTML = cells.join(''); heat.scrollLeft = heat.scrollWidth;
+  }
+
+  function renderCourses(docs, subjects) {
+    var mastery = {}; (subjects || []).forEach(function (s) { mastery[s.subject] = Math.round(Number(s.mastery)); });
+    var ready = docs.filter(function (d) { return d.status === 'ready'; }).slice(0, 4);
+    $('courses-grid').innerHTML = ready.length ? ready.map(function (d, i) {
+      var m = mastery[d.subject] || 0, c = ['violet', 'blue', 'amber', 'emerald'][i % 4];
+      return '<a href="relbrain-quiz-setup.html?doc=' + encodeURIComponent(d.id) + '" class="rb-card card-lift p-4 cursor-pointer block"><div class="flex items-start justify-between mb-2"><div class="w-9 h-9 rounded-lg bg-' + c + '-50 flex items-center justify-center"><i class="fa-solid fa-file-lines text-' + c + '-500 text-sm"></i></div><i class="fa-solid fa-arrow-right text-slate-300 text-[10px]"></i></div>' +
+        '<p class="text-xs font-black text-slate-800 truncate mb-0.5">' + esc(d.title) + '</p><p class="text-[10px] text-slate-500 font-semibold mb-2">' + esc(d.subject || 'Général') + '</p>' +
+        '<div class="flex items-center gap-1.5"><div class="prog-bar flex-1"><div class="prog-fill bg-' + c + '-500" style="width:' + m + '%"></div></div><span class="text-[9px] font-black text-slate-500">' + m + '%</span></div></a>';
+    }).join('') : '<a href="relbrain-documents.html" class="rb-card p-5 col-span-full block text-center card-lift"><p class="font-black text-slate-800 text-sm">Importe ton premier cours</p><p class="text-[11px] text-slate-500 font-semibold mt-1">PDF, Word, photo de notes — l\'IA prépare quiz, flashcards et résumé.</p></a>';
+  }
+
+  function renderDocs(docs) {
+    $('docs-sub').textContent = docs.length ? docs.length + ' document' + (docs.length > 1 ? 's' : '') + ' importé' + (docs.length > 1 ? 's' : '') + ', du plus récent au plus ancien.' : 'Aucun document pour l\'instant.';
+    $('docs-rows').innerHTML = docs.length ? docs.map(function (d) {
+      var s = STATUS[d.status] || STATUS.pending;
+      var actions = d.status === 'ready'
+        ? '<a class="text-violet-600 font-black hover:underline" href="relbrain-quiz-setup.html?doc=' + encodeURIComponent(d.id) + '">Quiz</a> · <a class="text-violet-600 font-black hover:underline" href="relbrain-flashcards.html">Cartes</a>'
+        : '<a class="text-slate-500 font-bold hover:underline" href="relbrain-documents.html">Voir</a>';
+      return '<tr><td><a href="relbrain-documents.html?doc=' + encodeURIComponent(d.id) + '" class="font-black text-slate-800 hover:text-violet-600"><i class="fa-solid fa-file-lines text-violet-400 mr-1"></i>' + esc(d.title) + '</a>' + (d.page_count ? '<span class="text-[10px] text-slate-400 font-semibold"> · ' + d.page_count + ' p.</span>' : '') + '</td>' +
+        '<td class="text-slate-500 font-semibold">' + esc(d.subject || 'Général') + '</td>' +
+        '<td><span style="color:' + s[1] + ';background:' + s[2] + ';padding:.15rem .5rem;border-radius:9999px;font-weight:800;font-size:.65rem">' + s[0] + '</span></td>' +
+        '<td class="text-slate-500 font-semibold" title="' + new Date(d.created_at).toLocaleString('fr-FR') + '">' + ago(d.created_at) + '</td><td class="text-right whitespace-nowrap">' + actions + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="text-center text-slate-400 font-semibold" style="padding:1.5rem">Tu n\'as encore importé aucun cours. <a href="relbrain-documents.html" class="text-violet-600 font-black">Importer →</a></td></tr>';
+  }
+
+  function renderBadges(badges) {
+    var got = badges.filter(function (b) { return b.unlocked_at; }).sort(function (a, b) { return new Date(b.unlocked_at) - new Date(a.unlocked_at); }).slice(0, 5);
+    var next = badges.find(function (b) { return !b.unlocked_at && !b.secret; });
+    $('badges').innerHTML = got.map(function (b) { return '<div class="ach-pill" title="' + esc(b.description || '') + '">' + b.icon + ' ' + esc(b.name) + '</div>'; }).join('') +
+      (next ? '<div class="ach-pill" style="opacity:.45" title="' + esc(next.description || '') + '">🔒 ' + esc(next.name) + '</div>' : '') +
+      (got.length ? '' : '<p class="text-[10px] text-slate-500 font-semibold">Ton premier badge t\'attend après ton premier quiz 🎯</p>');
+  }
+
+  function renderWeak(weak) {
+    if (weak.length) { $('weak-cta').classList.remove('hidden'); $('weak-cta').href = 'relbrain-quiz-setup.html?focus=' + encodeURIComponent(weak[0].concept); }
+    $('weak').innerHTML = weak.length ? weak.map(function (w) {
+      return '<div class="flex items-center gap-3 py-1.5"><span class="text-xs font-black text-slate-800" style="flex:1">' + esc(w.concept) + ' <span class="text-[10px] text-slate-400 font-semibold">· ' + esc(w.subject || 'Général') + '</span></span>' +
+        '<div class="prog-bar" style="width:6rem"><div class="prog-fill" style="width:' + w.accuracy + '%;background:' + (w.accuracy < 40 ? '#f43f5e' : '#f59e0b') + '"></div></div><span class="text-[10px] font-black text-slate-600" style="width:2.5rem;text-align:right">' + Math.round(w.accuracy) + '%</span></div>';
+    }).join('') : '<p class="text-xs text-slate-500 font-semibold">Aucun point faible repéré pour l\'instant. Continue les quiz : l\'IA les détecte automatiquement. ✨</p>';
+  }
+
+  /* ─── Partie « historique » (filtrable) ─── */
+  function renderHistory(act) {
+    var daily = act.daily || [], sessions = act.sessions || [];
+    var minutes = daily.reduce(function (n, d) { return n + Number(d.minutes || 0); }, 0);
+    var xp = daily.reduce(function (n, d) { return n + Number(d.xp || 0); }, 0);
+    $('k-min').textContent = fmtMin(minutes);
+    $('k-sess').textContent = sessions.length;
+    $('k-xp').textContent = '+' + fmt(xp);
+    $('k-days').textContent = daily.filter(function (d) { return Number(d.minutes) > 0; }).length + ' / ' + daily.length;
+
+    var labels = daily.map(function (d) { var t = new Date(d.day + 'T12:00:00'); return daily.length <= 7 ? DAYS[t.getDay()] : t.getDate() + '/' + (t.getMonth() + 1); });
+    var data = { labels: labels, datasets: [
+      { type: 'bar', label: 'Minutes', data: daily.map(function (d) { return Number(d.minutes || 0); }), backgroundColor: 'rgba(124,58,237,.75)', borderRadius: 5, maxBarThickness: 22, yAxisID: 'y' },
+      { type: 'line', label: 'XP', data: daily.map(function (d) { return Number(d.xp || 0); }), borderColor: '#ec4899', backgroundColor: '#ec4899', tension: .35, pointRadius: 0, borderWidth: 2, yAxisID: 'y1' },
+    ] };
+    if (hChart) { hChart.data = data; hChart.update(); }
+    else hChart = new Chart($('h-chart'), { data: data, options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e1b4b', padding: 8, cornerRadius: 8 } },
+      scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 10, font: { size: 9 }, color: tick() } }, y: { beginAtZero: true, grid: { color: grid() }, ticks: { font: { size: 9 }, color: tick() } }, y1: { beginAtZero: true, position: 'right', grid: { display: false }, ticks: { font: { size: 9 }, color: tick() } } } } });
+
+    // Répartition + maîtrise
+    var subj = (act.subjects || []).slice().sort(function (a, b) { return (b.questions_answered + b.cards_reviewed) - (a.questions_answered + a.cards_reviewed); }).slice(0, 6);
+    var vol = subj.map(function (s) { return (Number(s.questions_answered) || 0) + (Number(s.cards_reviewed) || 0); }), sum = vol.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var mData = { labels: subj.map(function (s) { return s.subject; }), datasets: [{ data: vol, backgroundColor: PALETTE, borderWidth: 0, hoverOffset: 5 }] };
+    if (mChart) { mChart.data = mData; mChart.update(); }
+    else mChart = new Chart($('matters-chart'), { type: 'doughnut', data: mData, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e1b4b', padding: 8, cornerRadius: 8 } } } });
+    $('matters-legend').innerHTML = subj.length ? subj.map(function (s, i) {
+      return '<div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full shrink-0" style="background:' + PALETTE[i] + '"></div><span class="text-[10px] font-semibold text-slate-600 flex-1">' + esc(s.subject) + '</span><span class="text-[10px] font-black text-slate-800">' + vol[i] + '</span><span class="text-[9px] font-bold text-slate-400 w-7 text-right">' + Math.round(vol[i] / sum * 100) + '%</span></div>';
+    }).join('') : '<p class="text-[10px] text-slate-500 font-semibold text-center">Tes matières apparaîtront après ton premier quiz.</p>';
+
+    var bym = (act.subjects || []).slice().sort(function (a, b) { return b.mastery - a.mastery; });
+    $('mastery').innerHTML = bym.length ? bym.map(function (s) {
+      var m = Math.round(Number(s.mastery)), c = m >= 80 ? '#10b981' : m >= 50 ? '#7c3aed' : '#f59e0b';
+      return '<div><div class="flex justify-between text-[11px] font-black text-slate-700 mb-1"><span>' + esc(s.subject) + '</span><span>' + m + ' %</span></div><div class="prog-bar" style="height:6px"><div class="prog-fill" style="width:' + m + '%;background:' + c + '"></div></div></div>';
+    }).join('') : '<p class="text-[11px] text-slate-500 font-semibold">Tes matières apparaîtront après tes premiers quiz.</p>';
+
+    var sel = $('f-subject');
+    if (sel.options.length <= 1) (act.subjects || []).forEach(function (s) { var o = document.createElement('option'); o.value = o.textContent = s.subject; sel.appendChild(o); });
+
+    sessionsAll = sessions; state.shown = 10; renderSessions();
+  }
+
+  function renderSessions() {
+    var list = sessionsAll.slice(0, state.shown);
+    $('sess-count').textContent = sessionsAll.length ? sessionsAll.length + ' session' + (sessionsAll.length > 1 ? 's' : '') : '';
+    $('h-rows').innerHTML = list.length ? list.map(function (s) {
+      var k = KIND[s.kind] || ['•', s.kind];
+      return '<tr><td class="font-bold text-slate-700 whitespace-nowrap">' + new Date(s.started_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</td><td class="whitespace-nowrap">' + k[0] + ' ' + k[1] + '</td><td class="text-slate-500 font-semibold">' + (s.subject ? esc(s.subject) : '—') + '</td><td>' + fmtMin(Math.max(1, Math.round((s.duration_seconds || 0) / 60))) + '</td><td>' + (s.items_count || '—') + '</td><td class="font-black text-violet-600">' + (s.xp_earned ? '+' + s.xp_earned : '—') + '</td></tr>';
+    }).join('') : '<tr><td colspan="6" class="text-center text-slate-400 font-semibold" style="padding:1.5rem">Aucune session sur cette période.</td></tr>';
+    $('sess-more-wrap').classList.toggle('hidden', sessionsAll.length <= state.shown);
+  }
+
+  async function loadHistory() {
+    if (!window.RB || RB.demo) return renderHistory(demoActivity(state.days, state.kind, state.subject));
     try {
-      var res = await Promise.all([
-        RB.data.activity(30), RB.data.quiz.recent(20), RB.data.documents.list(), RB.data.achievements(), RB.data.weakPoints(5),
-      ]);
-      var act = res[0], quizzes = res[1], docs = res[2], badges = res[3], weak = res[4];
+      // La période « 1 an » sans filtre réutilise les données déjà chargées
+      var act = (state.days === 365 && !state.kind && !state.subject && year) ? year : await RB.data.activity(state.days, state.kind || null, state.subject || null);
+      renderHistory(act);
+    } catch (e) { RB.handleError(e, 'Historique indisponible.'); }
+  }
 
-      // ─ Score moyen (10 dernières tentatives terminées)
+  function bindFilters() {
+    function chips(id, key) {
+      $(id).addEventListener('click', function (e) {
+        var b = e.target.closest('.h-chip'); if (!b) return;
+        this.querySelectorAll('.h-chip').forEach(function (x) { x.classList.toggle('on', x === b); });
+        state[key] = key === 'days' ? Number(b.dataset.days) : b.dataset.kind;
+        loadHistory();
+      });
+    }
+    chips('f-period', 'days'); chips('f-kind', 'kind');
+    $('f-subject').addEventListener('change', function () { state.subject = this.value; loadHistory(); });
+    $('sess-more').addEventListener('click', function () { state.shown += 20; renderSessions(); });
+  }
+
+  async function loadReal(ctx) {
+    renderGame(ctx.game || {});
+    try {
+      var r = await Promise.all([RB.data.activity(365), RB.data.quiz.recent(20), RB.data.documents.list(), RB.data.achievements(), RB.data.weakPoints(5)]);
+      year = r[0];
       var attempts = [];
-      quizzes.forEach(function (q) { (q.quiz_attempts || []).forEach(function (a) { if (a.completed_at && a.total_count) attempts.push(a); }); });
+      (r[1] || []).forEach(function (q) { (q.quiz_attempts || []).forEach(function (a) { if (a.completed_at && a.total_count) attempts.push(a); }); });
       attempts.sort(function (a, b) { return new Date(b.completed_at) - new Date(a.completed_at); });
-      var last = attempts.slice(0, 10), prev = attempts.slice(10, 20);
-      var avg = function (arr) { return arr.length ? Math.round(arr.reduce(function (n, a) { return n + a.correct_count / a.total_count; }, 0) / arr.length * 100) : null; };
-      var avgNow = avg(last), avgPrev = avg(prev);
-      statCards[3].querySelector('.text-2xl').textContent = avgNow == null ? '—' : avgNow + '%';
-      statCards[3].querySelector('p.text-\\[9px\\]').innerHTML = avgNow == null ? 'Fais ton premier quiz' : avgPrev == null ? 'Sur tes ' + last.length + ' derniers quiz'
-        : '<i class="fa-solid fa-arrow-' + (avgNow >= avgPrev ? 'up' : 'down') + '"></i> ' + (avgNow >= avgPrev ? '+' : '') + (avgNow - avgPrev) + ' pts vs avant';
-
-      // ─ XP du jour
-      var today = act.daily[act.daily.length - 1] || { xp: 0, minutes: 0 };
-      statCards[1].querySelector('p.text-\\[9px\\]').innerHTML = '<i class="fa-solid fa-arrow-up"></i> +' + RB.formatNumber(today.xp) + ' aujourd\'hui';
-
-      // ─ Activité (minutes / jour)
-      var head = document.getElementById('activity-chart').closest('.rb-card');
-      head.querySelector('h2 + p, p.text-\\[10px\\]').textContent = 'Minutes d\'étude par jour';
-      function series(n) {
-        var d = act.daily.slice(-n);
-        return { labels: d.map(function (x) { var dt = new Date(x.day); return n <= 7 ? DAYS[dt.getDay()] : dt.getDate() + '/' + (dt.getMonth() + 1); }), data: d.map(function (x) { return Number(x.minutes) || 0; }), raw: d };
-      }
-      function applySeries(n) {
-        var s = series(n);
-        activityChart.data.labels = s.labels; activityChart.data.datasets[0].data = s.data; activityChart.data.datasets[0].label = 'Minutes';
-        activityChart.options.plugins.tooltip.callbacks.label = function (c) { return c.parsed.y + ' min'; };
-        activityChart.data.datasets[0].barThickness = n <= 7 ? 22 : 8;
-        activityChart.update();
-        var total = s.data.reduce(function (a, b) { return a + b; }, 0), best = s.data.indexOf(Math.max.apply(null, s.data));
-        var cells = head.querySelectorAll('.grid.grid-cols-3 p.text-base');
-        cells[0].textContent = total + ' min'; cells[1].textContent = Math.round(total / n) + ' min';
-        cells[2].textContent = total ? s.labels[best] : '—';
-      }
-      window.switchChart = function (mode) {
-        document.getElementById('tab-week').classList.toggle('active', mode === 'week');
-        document.getElementById('tab-month').classList.toggle('active', mode === 'month');
-        applySeries(mode === 'week' ? 7 : 30);
-      };
-      applySeries(7);
-
-      // ─ Matières (doughnut + radar)
-      var subj = (act.subjects || []).slice().sort(function (a, b) { return (b.questions_answered + b.cards_reviewed) - (a.questions_answered + a.cards_reviewed); });
-      var top = subj.slice(0, 6);
-      if (top.length) {
-        var vol = top.map(function (s) { return s.questions_answered + s.cards_reviewed; }), sum = vol.reduce(function (a, b) { return a + b; }, 0) || 1;
-        mattersChart.data.labels = top.map(function (s) { return s.subject; });
-        mattersChart.data.datasets[0].data = vol;
-        mattersChart.data.datasets[0].backgroundColor = PALETTE;
-        mattersChart.update();
-        document.getElementById('matters-legend').innerHTML = top.map(function (s, i) {
-          return '<div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full shrink-0" style="background:' + PALETTE[i] + '"></div><span class="text-[10px] font-semibold text-slate-600 flex-1">' + RB.escape(s.subject) + '</span><span class="text-[10px] font-black text-slate-800">' + vol[i] + '</span><span class="text-[9px] font-bold text-slate-400 w-7 text-right">' + Math.round(vol[i] / sum * 100) + '%</span></div>';
-        }).join('');
-        radarChart.data.labels = top.map(function (s) { return s.subject.length > 12 ? s.subject.slice(0, 11) + '…' : s.subject; });
-        radarChart.data.datasets[0].data = top.map(function (s) { return Number(s.mastery); });
-        radarChart.update();
-      } else {
-        document.getElementById('matters-legend').innerHTML = '<p class="text-[10px] text-slate-500 font-semibold text-center">Tes matières apparaîtront après ton premier quiz.</p>';
-      }
-
-      // ─ Évolution XP (cumul 30 jours)
-      var cum = 0, base = (g.xp || 0) - act.daily.reduce(function (n, d) { return n + Number(d.xp || 0); }, 0);
-      xpChart.data.labels = act.daily.map(function (d) { var dt = new Date(d.day); return dt.getDate() + '/' + (dt.getMonth() + 1); });
-      xpChart.data.datasets[0].data = act.daily.map(function (d) { cum += Number(d.xp || 0); return base + cum; });
-      xpChart.update();
-      var xpBadge = document.getElementById('xp-chart').closest('.rb-card').querySelector('span.text-emerald-600');
-      if (xpBadge) xpBadge.textContent = '+' + RB.formatNumber(cum) + ' XP';
-
-      // ─ Objectif du jour (30 min) + semaine
-      var goal = document.querySelector('.fa-target').closest('.rb-card');
-      var mins = Number(today.minutes) || 0, gp = Math.min(100, Math.round(mins / 30 * 100));
-      goal.querySelector('.gradient-text').textContent = gp + '%';
-      goal.querySelector('.text-right p:last-child').textContent = mins + ' / 30 min';
-      goal.querySelector('.prog-fill').style.width = gp + '%';
-      goal.querySelector('.flex.gap-1').innerHTML = act.daily.slice(-7).map(function (d, i, arr) {
-        var m = Number(d.minutes) || 0, lvl = m >= 30 ? 'l4' : m >= 15 ? 'l3' : m >= 5 ? 'l2' : m > 0 ? 'l1' : '';
-        return '<div class="heat-dot ' + lvl + (i === arr.length - 1 ? ' today' : '') + '" title="' + m + ' min"></div>';
-      }).join('');
-
-      // ─ Continuer l'apprentissage
-      var mastery = {}; (act.subjects || []).forEach(function (s) { mastery[s.subject] = Math.round(Number(s.mastery)); });
-      var ready = docs.filter(function (d) { return d.status === 'ready'; }).slice(0, 4);
-      document.getElementById('courses-grid').innerHTML = ready.length ? ready.map(function (d, i) {
-        var m = mastery[d.subject] || 0, c = ['violet', 'blue', 'amber', 'emerald'][i % 4];
-        return '<a href="relbrain-quiz-setup.html?doc=' + d.id + '" class="rb-card card-lift p-4 cursor-pointer block"><div class="flex items-start justify-between mb-2"><div class="w-9 h-9 rounded-lg bg-' + c + '-50 flex items-center justify-center"><i class="fa-solid fa-file-lines text-' + c + '-500 text-sm"></i></div><i class="fa-solid fa-arrow-right text-slate-300 text-[10px]"></i></div>' +
-          '<p class="text-xs font-black text-slate-800 truncate mb-0.5">' + RB.escape(d.title) + '</p><p class="text-[10px] text-slate-500 font-semibold mb-2">' + RB.escape(d.subject || 'Général') + '</p>' +
-          '<div class="flex items-center gap-1.5"><div class="prog-bar flex-1"><div class="prog-fill bg-' + c + '-500" style="width:' + m + '%"></div></div><span class="text-[9px] font-black text-slate-500">' + m + '%</span></div></a>';
-      }).join('') : '<a href="relbrain-documents.html" class="rb-sheet rb-ruled p-5 col-span-full block text-center"><p style="font-family:var(--rb-font-display);font-weight:650;font-size:1.1rem">Importe ton premier cours</p><p class="text-[11px] text-slate-500 font-semibold">PDF, Word, photo de notes — l\'IA prépare quiz, flashcards et résumé.</p></a>';
-
-      // ─ Badges récents
-      var got = badges.filter(function (b) { return b.unlocked_at; }).sort(function (a, b) { return new Date(b.unlocked_at) - new Date(a.unlocked_at); }).slice(0, 5);
-      var nextLocked = badges.find(function (b) { return !b.unlocked_at && !b.secret; });
-      var badgeBox = document.querySelector('.ach-pill').parentElement;
-      badgeBox.innerHTML = got.map(function (b) { return '<div class="ach-pill" title="' + RB.escape(b.description) + '">' + b.icon + ' ' + RB.escape(b.name) + '</div>'; }).join('') +
-        (nextLocked ? '<div class="ach-pill" style="opacity:.45" title="' + RB.escape(nextLocked.description) + '">🔒 ' + RB.escape(nextLocked.name) + '</div>' : '') +
-        (got.length ? '' : '<p class="text-[10px] text-slate-500 font-semibold">Ton premier badge t\'attend après ton premier quiz 🎯</p>');
-
-      // ─ Activité récente
-      var KIND = { quiz: ['fa-circle-check', 'emerald', 'Quiz terminé'], flashcards: ['fa-layer-group', 'amber', 'Révision de flashcards'], reading: ['fa-book-open', 'violet', 'Lecture'], chat: ['fa-comments', 'violet', 'Discussion avec le coach'], summary: ['fa-wand-magic-sparkles', 'pink', 'Fiche de révision'] };
-      var recentBox = Array.from(document.querySelectorAll('.rb-card p.font-black')).find(function (p) { return p.textContent === 'Activité récente'; }).nextElementSibling;
-      var sessions = (act.sessions || []).slice(0, 4);
-      recentBox.innerHTML = sessions.length ? sessions.map(function (s) {
-        var k = KIND[s.kind] || KIND.reading;
-        return '<div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded-lg bg-' + k[1] + '-50 flex items-center justify-center shrink-0"><i class="fa-solid ' + k[0] + ' text-' + k[1] + '-500 text-xs"></i></div>' +
-          '<div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800 truncate">' + k[2] + (s.subject ? ' — ' + RB.escape(s.subject) : '') + (s.items_count ? ' · ' + s.items_count + (s.kind === 'quiz' ? ' questions' : ' cartes') : '') + '</p>' +
-          '<p class="text-[9px] text-slate-400 font-semibold">' + RB.timeAgo(s.started_at) + (s.xp_earned ? ' · +' + s.xp_earned + ' XP' : '') + '</p></div></div>';
-      }).join('') + '<a href="relbrain-historique.html" class="text-[10px] font-black text-violet-600 hover:underline">Tout l\'historique →</a>'
-        : '<p class="text-[11px] text-slate-500 font-semibold">Aucune activité pour l\'instant.</p>';
-
-      // ─ Points faibles (détection automatique)
-      var footer = document.querySelector('.main-content footer');
-      var wp = document.createElement('div');
-      wp.className = 'rb-sheet rb-ruled';
-      wp.style.padding = '1.1rem 1.25rem 1.1rem 2.9rem';
-      wp.innerHTML = '<div class="flex items-center justify-between mb-2 flex-wrap gap-2"><div><p class="rb-eyebrow">Points faibles détectés</p><p class="text-[10px] text-slate-500 font-semibold mt-1">Notions sous 70 % de réussite sur tes dernières réponses</p></div>' +
-        (weak.length ? '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-quiz-setup.html?focus=' + encodeURIComponent(weak[0].concept) + '"><i class="fa-solid fa-bullseye"></i> Quiz ciblé</a>' : '') + '</div>' +
-        (weak.length ? weak.map(function (w) {
-          return '<div class="flex items-center gap-3 py-1.5"><span class="text-xs font-black text-slate-800" style="flex:1">' + RB.escape(w.concept) + ' <span class="text-[10px] text-slate-400 font-semibold">· ' + RB.escape(w.subject || 'Général') + '</span></span>' +
-            '<div class="prog-bar" style="width:7rem"><div class="prog-fill" style="width:' + w.accuracy + '%;background:' + (w.accuracy < 40 ? '#f43f5e' : '#f59e0b') + '"></div></div><span class="text-[10px] font-black text-slate-600" style="width:2.5rem;text-align:right">' + Math.round(w.accuracy) + '%</span></div>';
-        }).join('') : '<p class="text-xs text-slate-500 font-semibold">Aucun point faible repéré pour l\'instant. Continue les quiz : l\'IA les détecte automatiquement. ✨</p>');
-      footer.insertAdjacentElement('beforebegin', wp);
+      renderScore(attempts); renderToday(year); renderCourses(r[2] || [], year.subjects); renderDocs(r[2] || []);
+      renderBadges(r[3] || []); renderWeak(r[4] || []);
+      loadHistory();
+      // Les documents en cours d'analyse se mettent à jour en direct
+      if (RB.data.documents.subscribe) RB.data.documents.subscribe(function () { RB.data.documents.list().then(function (d) { renderDocs(d); renderCourses(d, year.subjects); }); });
     } catch (e) { RB.handleError(e, 'Certaines statistiques sont indisponibles.'); }
+  }
+
+  function loadDemo() {
+    var o = demoOverview(); year = demoActivity(365);
+    renderGame(o.game); renderScore(o.attempts); renderToday(year); renderCourses(o.docs, year.subjects); renderDocs(o.docs);
+    renderBadges(o.badges); renderWeak(o.weak); loadHistory();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    bindFilters();
+    if (location.hash === '#historique' || location.hash === '#mes-documents') setTimeout(function () { var t = $(location.hash.slice(1)); if (t) t.scrollIntoView(); }, 300);
+    if (window.RB && !RB.demo) RB.onReady(loadReal); else loadDemo();
   });
-});
+})();
 </script>
 
 </body>

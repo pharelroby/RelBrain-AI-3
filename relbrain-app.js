@@ -140,7 +140,7 @@
     try { return await apiCall(); }
     catch (e) {
       // Fonctions /api absentes (hébergement purement statique) → appel direct à Supabase
-      if (e && (e.status === 404 || e.status === 405 || e.code === 'network' || e.code === 'config_missing')) return direct();
+      if (e && (e.status === 404 || e.status === 405 || e.status === 501 || e.code === 'network' || e.code === 'config_missing' || e.code === 'ai_not_configured')) return direct();
       throw e;
     }
   }
@@ -233,6 +233,16 @@
   async function uid() { var u = await RB.auth.user(); if (!u) throw new ApiError(401, 'unauthenticated', 'Connecte-toi pour continuer.'); return u.id; }
   function unwrap(r) { if (r.error) throw new ApiError(400, r.error.code || 'db_error', r.error.message); return r.data; }
   async function rpc(name, args) { await RB.ready; return unwrap(await RB.sb.rpc(name, args || {})); }
+  async function registerDoc(args) {
+    await RB.ready;
+    var r = await RB.sb.rpc('register_document', args);
+    if (r.error) {
+      var m = r.error.message || '';
+      throw new ApiError(400, m, /rate_limited/.test(m) ? 'Trop d\'imports en peu de temps. Réessaie dans un moment.'
+        : /empty_document/.test(m) ? 'Écris au moins quelques lignes (100 caractères).' : "L'enregistrement du document a échoué.");
+    }
+    return { document_id: r.data.document_id, document: { id: r.data.document_id, title: args.p_title, status: 'pending' }, status: 'pending', xp: r.data.xp, fallback: true };
+  }
 
   var ALLOWED = {
     'application/pdf': 'pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
@@ -293,9 +303,21 @@
         var up = await RB.sb.storage.from('documents').upload(path, file, { contentType: mime, upsert: false });
         if (up.error) throw new ApiError(400, 'upload_failed', /mime|type/i.test(up.error.message) ? 'Format refusé par le stockage.' : /size|large/i.test(up.error.message) ? 'Fichier trop volumineux (20 Mo maximum).' : "L'envoi du fichier a échoué. Réessaie.");
         if (o.onStage) o.onStage('process');
-        return RB.api('/api/documents/process', { body: { path: path, file_name: file.name, title: o.title || undefined, subject: o.subject || undefined } });
+        var title = o.title || file.name.replace(/\.[^.]+$/, '');
+        return directOr(
+          function () { return RB.api('/api/documents/process', { body: { path: path, file_name: file.name, title: o.title || undefined, subject: o.subject || undefined } }); },
+          // Sans fonctions /api (hébergement statique) : le document est enregistré, l'analyse IA attendra
+          function () { return registerDoc({ p_title: title, p_path: path, p_file_name: file.name, p_mime: mime, p_size: file.size, p_subject: o.subject || null }); }
+        );
       },
-      saveNote: function (title, text) { return RB.api('/api/documents/process', { body: { title: title, text: text, source: 'note' } }); },
+      /** Relance l'analyse d'un document resté en attente ou en échec. */
+      analyze: function (id) { return RB.api('/api/documents/process', { body: { document_id: id } }); },
+      saveNote: function (title, text) {
+        return directOr(
+          function () { return RB.api('/api/documents/process', { body: { title: title, text: text, source: 'note' } }); },
+          function () { return registerDoc({ p_title: title, p_text: text }); }
+        );
+      },
       remove: function (id) { return RB.api('/api/documents/delete', { body: { id: id } }); },
       toggleFavorite: async function (id, value) { await RB.ready; return unwrap(await RB.sb.from('documents').update({ is_favorite: value }).eq('id', id)); },
       markOpened: async function (id) { await RB.ready; return RB.sb.from('documents').update({ last_opened_at: new Date().toISOString() }).eq('id', id); },
@@ -361,6 +383,46 @@
     leagues: {
       mine: function () { return rpc('get_league_leaderboard'); },
       global: function (limit) { return rpc('get_global_leaderboard', { p_limit: limit || 50 }); },
+      history: function () { return rpc('get_my_league_history'); },
+      /** scope : global | country | institution · period : all | week */
+      board: function (scope, period, limit) { return rpc('get_leaderboard', { p_scope: scope || 'global', p_period: period || 'all', p_limit: limit || 50 }); },
+    },
+
+    concours: {
+      /** Catalogue : chaque concours avec ses niveaux et le nombre d'épreuves par niveau */
+      list: async function () {
+        await RB.ready;
+        return unwrap(await RB.sb.from('concours')
+          .select('id,slug,short_name,abbr,name,category,city,description,website,color,sort_order,levels:concours_levels(id,code,label,requirement,sort_order,annales:concours_annales(count))')
+          .order('sort_order'));
+      },
+      get: async function (slug) {
+        await RB.ready;
+        return unwrap(await RB.sb.from('concours')
+          .select('*,levels:concours_levels(id,code,label,requirement,sort_order)')
+          .eq('slug', slug).single());
+      },
+      /** Épreuves d'un niveau, de la plus récente à la plus ancienne */
+      annales: async function (levelId) {
+        await RB.ready;
+        return unwrap(await RB.sb.from('concours_annales')
+          .select('id,year,session,subject,format,duration_minutes,coefficient,sujet_path,corrige_path,has_text')
+          .eq('level_id', levelId).order('year', { ascending: false }).order('subject'));
+      },
+      /** Lien temporaire (10 min) vers un PDF du bucket privé « annales » */
+      fileUrl: async function (path) {
+        await RB.ready;
+        var r = await RB.sb.storage.from('annales').createSignedUrl(path, 600);
+        if (r.error) throw new ApiError(404, 'file_not_found', 'Ce fichier n\'est pas encore disponible.');
+        return r.data.signedUrl;
+      },
+      /** Copie le texte de l'épreuve dans « Mes documents » pour en tirer un quiz */
+      practice: async function (annaleId, title) {
+        await RB.ready;
+        var a = unwrap(await RB.sb.from('concours_annales').select('content_text').eq('id', annaleId).single());
+        if (!a.content_text) throw new ApiError(404, 'no_text', 'Cette épreuve n\'est pas encore prête pour l\'entraînement.');
+        return RB.data.documents.saveNote(title, a.content_text);
+      },
     },
 
     achievements: async function () {
@@ -500,14 +562,15 @@
     if (xp && xp.awarded > 0 && RB.motion) {
       var span = (xp.next_level_xp - xp.level_floor_xp) || 1;
       RB.motion.xp(xp.awarded, originEl, { progress: Math.max(0, Math.min(100, ((xp.xp - xp.level_floor_xp) / span) * 100)) });
+      if (xp.awarded >= 10 && RB.sound) RB.sound.play('xp');
     }
     var delay = 900;
     if (xp && xp.leveled_up && RB.motion) {
-      setTimeout(function () { RB.motion.levelUp(xp.level, { perks: (xp.rewards || []).map(function (r) { return '🎁 ' + r.name; }).concat(xp.level % 5 === 0 ? ['❄️ +1 gel de série'] : []) }); }, delay);
+      setTimeout(function () { if (RB.sound) RB.sound.play('levelup'); RB.motion.levelUp(xp.level, { perks: (xp.rewards || []).map(function (r) { return '🎁 ' + r.name; }).concat(xp.level % 5 === 0 ? ['❄️ +1 gel de série'] : []) }); }, delay);
       delay += 600;
     }
     (xp && xp.achievements || []).forEach(function (a, i) {
-      setTimeout(function () { toast(a.icon + ' Badge débloqué : ' + a.name + (a.xp ? ' · +' + a.xp + ' XP' : ''), 'success'); }, delay + i * 1200);
+      setTimeout(function () { if (RB.sound) RB.sound.play('badge'); toast(a.icon + ' Badge débloqué : ' + a.name + (a.xp ? ' · +' + a.xp + ' XP' : ''), 'success'); }, delay + i * 1200);
     });
     (xp && xp.challenges || []).forEach(function (c, i) {
       setTimeout(function () { toast('🎯 Défi réussi · +' + c.xp + ' XP', 'success'); }, delay + 400 + i * 1200);
@@ -545,6 +608,12 @@
     });
     document.querySelectorAll('[data-rb-xp-total]').forEach(function (el) { el.setAttribute('data-rb-xp-total', g.xp || 0); });
     setBadge(g.unread_notifications || 0);
+    document.documentElement.classList.remove('rb-loading');
+    try { if (p.is_admin) localStorage.setItem('rb-admin', '1'); else localStorage.removeItem('rb-admin'); } catch (e) {}
+    if (p.is_admin && !document.querySelector('[data-rb-admin-link]')) {
+      var nav = document.querySelector('.sidebar nav');
+      if (nav) nav.insertAdjacentHTML('beforeend', '<a href="relbrain-admin.html" class="nav-item" data-rb-admin-link><i class="fa-solid fa-shield-halved nav-icon"></i> Administration</a>');
+    }
   }
 
   function setBadge(n) {
@@ -634,11 +703,86 @@
     }
   }
 
+  /* ─── Avis des élèves ─────────────────────────────────────────────────
+     RelBrain propose à l'élève de donner son avis seulement après une vraie
+     utilisation (2 quiz, ou 15 cartes révisées… voir should_ask_review en base).
+     L'avis reste en attente jusqu'à sa validation dans la salle des profs,
+     puis il apparaît sur la page d'accueil si l'élève l'a accepté.          */
+  var REVIEW_SNOOZE_DAYS = 7;          // « Plus tard » : on redemande dans 7 jours
+  var REVIEW_DELAY_MS = 20000;         // la fenêtre s'ouvre après 20 s sur la page
+  var REVIEW_SKIP = /admin|parametres|quiz-interface|maintenance/;
+  RB.review = {
+    open: async function () {
+      var ctx = shellCtx; if (!ctx) return;
+      var p = ctx.profile || {}, mine = null;
+      try { mine = (await RB.sb.from('reviews').select('rating,comment,display_name,allow_publish,status').eq('user_id', ctx.user.id).maybeSingle()).data; } catch (e) {}
+      var name = mine ? mine.display_name : [p.first_name || (ctx.user.email || '').split('@')[0], p.field || p.institution].filter(Boolean).join(', ');
+      var rating = mine ? mine.rating : 0;
+      var ov = document.createElement('div');
+      ov.className = 'rb-overlay open';
+      ov.innerHTML = '<div class="rb-modal" role="dialog" aria-modal="true" aria-labelledby="rv-title" style="max-width:26rem">' +
+        '<p class="rb-eyebrow">Ton avis compte</p>' +
+        '<h2 id="rv-title" style="font-family:var(--rb-font-display);font-weight:650;font-size:1.45rem;line-height:1.2;margin:.4rem 0 .3rem">Que penses-tu de RelBrain ?</h2>' +
+        '<p class="rb-caption" style="margin-bottom:1rem">' + (mine ? 'Tu peux modifier ton avis : il sera relu à nouveau avant publication.' : 'Ton retour nous aide à améliorer RelBrain, et il aide d\'autres élèves à se décider.') + '</p>' +
+        '<div id="rv-stars" role="radiogroup" aria-label="Ta note" style="display:flex;gap:.3rem;margin-bottom:1rem">' +
+          [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" role="radio" data-n="' + n + '" aria-label="' + n + ' sur 5" style="font-size:2rem;line-height:1;background:none;border:0;cursor:pointer;padding:0 .1rem;transition:transform var(--rb-dur-fast) var(--rb-ease-spring)">★</button>'; }).join('') +
+        '</div>' +
+        '<div class="rb-field" style="margin-bottom:.75rem"><label class="rb-field-label" for="rv-text">Ton avis</label><textarea class="rb-control" id="rv-text" maxlength="500" rows="4" style="min-height:6rem" placeholder="Ce qui t\'aide, ce qui manque…"></textarea><span class="rb-field-hint" id="rv-count">10 caractères minimum</span></div>' +
+        '<div class="rb-field" style="margin-bottom:.75rem"><label class="rb-field-label" for="rv-name">Signé</label><input class="rb-control" id="rv-name" maxlength="60"/><span class="rb-field-hint">Ton prénom et ta classe suffisent, par exemple « Awa, Terminale C ».</span></div>' +
+        '<label class="rb-check" style="margin-bottom:1.1rem"><input type="checkbox" id="rv-pub" checked/> J\'accepte que cet avis soit publié sur le site RelBrain.</label>' +
+        '<div style="display:flex;gap:.5rem"><button type="button" class="rb-btn rb-btn--ghost rb-btn--sm" style="flex:1" data-later>Plus tard</button><button type="button" class="rb-btn rb-btn--ink rb-btn--sm" style="flex:1.4" data-send>Envoyer mon avis</button></div>' +
+      '</div>';
+      document.body.appendChild(ov);
+      var stars = ov.querySelectorAll('#rv-stars button'), text = ov.querySelector('#rv-text');
+      ov.querySelector('#rv-name').value = name || '';
+      text.value = mine ? mine.comment : '';
+      ov.querySelector('#rv-pub').checked = mine ? mine.allow_publish : true;
+      function paint(n) { stars.forEach(function (b, i) { b.style.color = i < n ? 'var(--rb-amber)' : 'var(--rb-line)'; b.setAttribute('aria-checked', i + 1 === rating ? 'true' : 'false'); }); }
+      stars.forEach(function (b) {
+        b.onclick = function () { rating = +b.dataset.n; paint(rating); b.style.transform = 'scale(1.25)'; setTimeout(function () { b.style.transform = ''; }, 160); };
+        b.onmouseenter = function () { paint(+b.dataset.n); };
+      });
+      ov.querySelector('#rv-stars').onmouseleave = function () { paint(rating); };
+      paint(rating);
+      text.oninput = function () { var n = text.value.trim().length; ov.querySelector('#rv-count').textContent = n < 10 ? (10 - n) + ' caractère(s) encore' : n + ' / 500'; };
+      text.oninput();
+      function close() { ov.remove(); }
+      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+      ov.querySelector('[data-later]').onclick = function () {
+        try { localStorage.setItem('rb-review-snooze', String(Date.now() + REVIEW_SNOOZE_DAYS * 864e5)); } catch (e) {}
+        close();
+      };
+      ov.querySelector('[data-send]').onclick = async function () {
+        var comment = text.value.trim(), who = ov.querySelector('#rv-name').value.trim();
+        if (!rating) { if (RB.motion) RB.motion.shake(ov.querySelector('#rv-stars')); return toast('Choisis une note de 1 à 5 étoiles', 'error'); }
+        if (comment.length < 10) { if (RB.motion) RB.motion.shake(text); return toast('Écris au moins une phrase (10 caractères)', 'error'); }
+        if (who.length < 2) return toast('Indique comment signer ton avis', 'error');
+        var btn = this; btn.classList.add('is-loading');
+        try {
+          var r = await RB.sb.from('reviews').upsert({ user_id: ctx.user.id, rating: rating, comment: comment, display_name: who, allow_publish: ov.querySelector('#rv-pub').checked }, { onConflict: 'user_id' });
+          if (r.error) throw r.error;
+          if (RB.sound) RB.sound.play('correct');
+          if (RB.motion) RB.motion.burst(btn, { set: 'stars' });
+          close();
+          toast('Merci ! Ton avis sera publié après relecture ✨', 'success');
+        } catch (e) { btn.classList.remove('is-loading'); RB.handleError(e); }
+      };
+    },
+    maybeAsk: async function () {
+      if (REVIEW_SKIP.test(location.pathname)) return;
+      try { if (Number(localStorage.getItem('rb-review-snooze') || 0) > Date.now()) return; } catch (e) {}
+      try {
+        var r = await RB.sb.rpc('should_ask_review');
+        if (r.data === true && !document.querySelector('.rb-overlay.open')) RB.review.open();
+      } catch (e) {}
+    },
+  };
+
   async function bootShell() {
     var isPrivate = document.body && (document.body.hasAttribute('data-rb-private') || document.querySelector('.sidebar, #sidebar'));
     // Service worker : hors-ligne léger + push
     if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/sw.js').catch(function () {});
-    if (!isPrivate || RB.demo) return;
+    if (!isPrivate || RB.demo) { document.documentElement.classList.remove('rb-loading'); return; }
 
     var session = await RB.auth.require();
     if (!session) return;
@@ -650,12 +794,21 @@
       fill(shellCtx);
     } catch (e) {
       console.warn('[RelBrain] profil indisponible', e);
-      shellCtx = { user: session.user, profile: {}, game: {} };
+      var meta = session.user.user_metadata || {};
+      shellCtx = { user: session.user, profile: { first_name: meta.first_name, last_name: meta.last_name }, game: {} };
+      fill(shellCtx);
     }
     readyCallbacks.splice(0).forEach(function (fn) { try { fn(shellCtx); } catch (e) { console.error(e); } });
     document.dispatchEvent(new CustomEvent('rb:ready', { detail: shellCtx }));
 
+    // Avis : le lien « Donner mon avis » du badge ouvre la fenêtre d'avis ; proposition automatique après usage
+    document.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-rb-avis]')) { e.preventDefault(); RB.review.open(); }
+    });
+    setTimeout(RB.review.maybeAsk, REVIEW_DELAY_MS);
+
     RB.data.notifications.subscribe(function (n) {
+      if (RB.sound) RB.sound.play('notif');
       toast((n.icon ? n.icon + ' ' : '') + n.title, 'info');
       RB.data.gamification().then(function (g) { shellCtx.game = g; fill(shellCtx); });
     });

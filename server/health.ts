@@ -9,7 +9,7 @@ export default route({ methods: ['GET'] }, async () => ({
   time: new Date().toISOString(),
   integrations: {
     supabase: has('SUPABASE_URL') && has('SUPABASE_ANON_KEY') && has('SUPABASE_SERVICE_ROLE_KEY'),
-    openai: has('OPENAI_API_KEY'),
+    ai: has('GEMINI_API_KEY') ? 'gemini' : has('OPENAI_API_KEY') ? 'openai' : false,
     push: has('VAPID_PUBLIC_KEY') && has('VAPID_PRIVATE_KEY'),
     email: has('RESEND_API_KEY'),
     stripe: has('STRIPE_SECRET_KEY') && has('STRIPE_WEBHOOK_SECRET'),

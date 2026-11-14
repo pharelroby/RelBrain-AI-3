@@ -1,16 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/ai/*.ts": { "maxDuration": 120 },
-    "api/documents/*.ts": { "maxDuration": 300 },
-    "api/cron/*.ts": { "maxDuration": 300 }
+    "api/router.ts": { "maxDuration": 300 }
   },
   "crons": [
-    { "path": "/api/cron/notifications", "schedule": "0 * * * *" },
+    { "path": "/api/cron/notifications", "schedule": "0 17 * * *" },
     { "path": "/api/cron/subscriptions", "schedule": "0 7 * * *" }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/router?__route=:path*" }
   ],
   "redirects": [
     { "source": "/Dashboard.html", "destination": "/dashboard.html", "permanent": true },
+    { "source": "/relbrain-historique.html", "destination": "/dashboard.html#historique", "permanent": true },
+    { "source": "/relbrain-historique", "destination": "/dashboard.html#historique", "permanent": true },
     { "source": "/signup.html", "destination": "/relbrain-signup.html", "permanent": true },
     { "source": "/relbrain-discord.html", "destination": "/relbrain-communautes.html", "permanent": true },
     { "source": "/relbrain-landing.html", "destination": "/", "permanent": true }

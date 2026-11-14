@@ -39,6 +39,8 @@ interface ProcessInput {
   mime?: string;
   text?: string;
   title: string;
+  /** Document déjà récompensé (enregistré avant que l'IA soit disponible) */
+  skipXp?: boolean;
 }
 
 export async function processDocument(input: ProcessInput) {
@@ -67,7 +69,13 @@ export async function processDocument(input: ProcessInput) {
     await setState(docId, { progress: 45, status_message: 'Indexation sémantique…' });
 
     // 3. Embeddings (recherche sémantique pour le chat et les quiz ciblés)
-    const vectors = await embed(chunks.map((c) => c.content), userId, 'document_embed');
+    // Sans vecteurs (quota gratuit atteint…), le document reste exploitable : seule la recherche ciblée s'en passe.
+    let vectors: (number[] | null)[] = chunks.map(() => null);
+    try {
+      vectors = await embed(chunks.map((c) => c.content), userId, 'document_embed');
+    } catch (e) {
+      console.warn('[documents] indexation sémantique ignorée', (e as Error).message);
+    }
     await admin().from('document_chunks').delete().eq('document_id', docId);
     for (let i = 0; i < chunks.length; i += 100) {
       const rows = chunks.slice(i, i + 100).map((c, j) => ({
@@ -103,7 +111,7 @@ export async function processDocument(input: ProcessInput) {
     const sb = admin();
     await sb.rpc('touch_streak', { p_user: userId });
     await sb.rpc('bump_challenges', { p_user: userId, p_metric: 'documents_uploaded', p_amount: 1 });
-    const { data: xp } = await sb.rpc('add_xp', { p_user: userId, p_base: 15, p_reason: 'document', p_source: docId, p_bonus: 1, p_check: true });
+    const { data: xp } = input.skipXp ? { data: null } : await sb.rpc('add_xp', { p_user: userId, p_base: 15, p_reason: 'document', p_source: docId, p_bonus: 1, p_check: true });
     await sb.rpc('notify', {
       p_user: userId,
       p_category: 'ai',

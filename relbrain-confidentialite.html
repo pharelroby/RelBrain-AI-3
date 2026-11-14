@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
 <script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -13,6 +14,7 @@
 <link rel="stylesheet" href="relbrain-design-system.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <script src="relbrain-site.js" defer></script>
@@ -34,7 +36,7 @@
     <aside><nav class="rb-docs-nav" data-rb-toc aria-label="Sommaire"></nav></aside>
     <article class="rb-prose">
 <div class="rb-callout rb-callout--warn"><i class="fa-solid fa-scale-balanced"></i><div><strong>Modèle à faire valider.</strong> Ce texte est une base rédigée pour RelBrain. Complète les champs <span class="rb-fill">surlignés</span> et fais-le relire par un juriste avant publication.</div></div>
-<div class="rb-callout rb-callout--tip"><i class="fa-solid fa-heart"></i><div><strong>L'essentiel en 30 secondes.</strong> On collecte le minimum pour te faire réviser : ton compte, tes documents et ta progression. On ne vend jamais tes données. Tes cours sont envoyés à notre prestataire d'IA uniquement pour générer tes révisions, et ne servent pas à entraîner ses modèles. Tu peux tout télécharger ou tout supprimer en deux clics depuis <a href="relbrain-parametres.html#danger">Paramètres</a>.</div></div>
+<div class="rb-callout rb-callout--tip"><i class="fa-solid fa-heart"></i><div><strong>L'essentiel en 30 secondes.</strong> On collecte le minimum pour te faire réviser : ton compte, tes documents et ta progression. On ne vend jamais tes données. Tes cours sont envoyés à notre prestataire d'IA pour générer tes révisions. <strong>Pendant la phase de test</strong>, nous utilisons l'offre gratuite de Google Gemini, dont les conditions permettent à Google de réutiliser ces contenus : n'importe pas de documents personnels ou confidentiels. Tu peux tout télécharger ou tout supprimer en deux clics depuis <a href="relbrain-parametres.html#danger">Paramètres</a>.</div></div>
 
 <h2 id="responsable">1. Responsable du traitement</h2>
 <p><span class="rb-fill">[Nom de la société]</span>, éditeur de RelBrain (voir les <a href="relbrain-mentions-legales.html">mentions légales</a>), est responsable du traitement de tes données personnelles. Délégué à la protection des données (DPO) : <a href="mailto:privacy@relbrain.ai">privacy@relbrain.ai</a>.</p>
@@ -72,7 +74,7 @@
 <h2 id="partage">4. Partage avec des tiers</h2>
 <p>Tes données ne sont transmises qu'aux sous-traitants strictement nécessaires, liés par contrat et tenus à la confidentialité :</p>
 <ul>
-<li><strong>OpenAI</strong> (États-Unis) — génération des quiz, flashcards, résumés, réponses du coach et lecture des photos de notes. Seuls les extraits utiles de tes documents et tes messages sont transmis. Selon les conditions de l'API OpenAI en vigueur, ces données <strong>ne sont pas utilisées pour entraîner ses modèles</strong> et sont conservées au maximum 30 jours à des fins de détection d'abus.</li>
+<li><strong>Google (API Gemini)</strong> — génération des quiz, flashcards, résumés, réponses du coach et lecture des photos de notes. Seuls les extraits utiles de tes documents et tes messages sont transmis. <strong>Phase de test :</strong> nous utilisons l'offre gratuite de l'API. Selon les <a href="https://ai.google.dev/gemini-api/terms" rel="noopener" target="_blank">conditions de Google</a>, les contenus envoyés à cette offre peuvent servir à améliorer les produits et les modèles de Google, et être lus par des relecteurs humains après suppression des informations qui t'identifient. N'y envoie donc rien de personnel ou de confidentiel. Quand RelBrain passera à l'offre payante, ces contenus ne seront plus utilisés pour améliorer les produits de Google, et cette page sera mise à jour.</li>
 <li><strong>Supabase</strong> — base de données, authentification, stockage chiffré des fichiers.</li>
 <li><strong>Vercel</strong> — hébergement du site et des fonctions serveur.</li>
 <li><strong>Stripe</strong>, <strong>Orange Money</strong>, <strong>MTN Mobile Money</strong> — traitement des paiements.</li>

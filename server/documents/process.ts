@@ -11,6 +11,7 @@ import { admin } from '../../lib/supabase';
 import { assertQuota, assertAiBurst } from '../../lib/quota';
 import { ALLOWED_MIME, MAX_BYTES, sniffMime } from '../../lib/extract';
 import { processDocument } from '../../lib/documents';
+import { aiConfigured } from '../../lib/ai/openai';
 
 const Body = z
   .object({
@@ -20,13 +21,40 @@ const Body = z
     subject: z.string().max(60).optional(),
     text: z.string().max(400_000).optional(),
     source: z.enum(['upload', 'note', 'text']).default('upload'),
+    document_id: z.string().uuid().optional(),
   })
-  .refine((b) => !!b.path || !!b.text, { message: 'path ou text requis' });
+  .refine((b) => !!b.path || !!b.text || !!b.document_id, { message: 'path, text ou document_id requis' });
+
+/** Relance l'analyse d'un document resté en attente ou en échec. */
+async function relaunch(id: string, userId: string) {
+  const sb = admin();
+  const { data: doc } = await sb.from('documents').select('*').eq('id', id).eq('user_id', userId).maybeSingle();
+  if (!doc) throw new HttpError(404, 'document_not_found', 'Document introuvable.');
+  if (doc.status === 'ready' || doc.status === 'processing') throw new HttpError(409, 'already_processed', 'Ce document est déjà analysé.');
+  let buffer: Buffer | undefined;
+  let mime: string | undefined;
+  let text: string | undefined;
+  if (doc.file_path) {
+    const { data: blob, error } = await sb.storage.from('documents').download(doc.file_path);
+    if (error || !blob) throw new HttpError(404, 'file_not_found', 'Fichier introuvable dans ton espace de stockage.');
+    buffer = Buffer.from(await blob.arrayBuffer());
+    mime = sniffMime(buffer, doc.file_name || doc.file_path) || undefined;
+  } else {
+    const { data: chunks } = await sb.from('document_chunks').select('content').eq('document_id', id).order('chunk_index');
+    text = (chunks || []).map((c) => c.content).join('\n\n');
+  }
+  const result = await processDocument({ docId: id, userId, buffer, mime, text, title: doc.title, skipXp: true });
+  const { data: fresh } = await sb.from('documents').select('id, title, subject, status, status_message, progress, page_count, word_count, summary_short, key_concepts, created_at').eq('id', id).single();
+  return { document: fresh, analysis: result.analysis, xp: result.xp, warning: result.warning };
+}
 
 export default route(
   { methods: ['POST'], auth: true, rateLimit: { key: (c) => `doc:${c.user!.id}`, max: 30, windowSec: 3600 } },
   async ({ req, user }) => {
     const body = parse(Body, req.body);
+    // Sans clé IA : le navigateur enregistre le document « en attente » (register_document)
+    if (!aiConfigured()) throw new HttpError(503, 'ai_not_configured', "L'IA n'est pas encore configurée.");
+    if (body.document_id) return relaunch(body.document_id, user.id);
     const quota = await assertQuota(user.id, 'documents');
     await assertAiBurst(user.id, quota.plan);
     const sb = admin();

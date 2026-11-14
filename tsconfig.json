@@ -11,5 +11,5 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
   },
-  "include": ["api/**/*.ts", "lib/**/*.ts", "middleware.ts"]
+  "include": ["api/**/*.ts", "server/**/*.ts", "lib/**/*.ts", "scripts/**/*.ts", "middleware.ts"]
 }

@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
 <script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RelBrain.ai – Classement</title>
+<title>RelBrain.AI – Classement</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-theme.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
+<script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
 <style>
@@ -105,6 +108,30 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 .rb-toast{display:flex;align-items:center;gap:.5rem;padding:.625rem .875rem;border-radius:.625rem;font-size:.75rem;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
 @keyframes toastIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
+/* ══════════════ CLASSEMENT (v2) ══════════════ */
+.seg{display:flex;gap:.25rem;padding:.25rem;background:#fff;border:1px solid #e7d9c5;border-radius:.75rem;overflow-x:auto;scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{white-space:nowrap;padding:.4rem .7rem;border-radius:.55rem;font-size:.7rem;font-weight:800;color:#78716c;display:inline-flex;align-items:center;gap:.35rem;transition:all .15s;background:transparent;border:0;cursor:pointer}
+.seg button:hover{color:#7c3aed;background:#faf5ff}
+.seg button.on{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.22)}
+.me-card{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.875rem;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(236,72,153,.07));border:1.5px solid #c4b5fd;position:sticky;top:64px;z-index:20;backdrop-filter:blur(10px)}
+.me-avatar{width:42px;height:42px;border-radius:.7rem;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.me-rank{font-size:1.6rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tiers{position:relative;z-index:1;display:flex;justify-content:center;gap:.4rem;margin-top:1rem}
+.tiers span{width:30px;height:30px;border-radius:.6rem;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:.95rem;opacity:.55;filter:grayscale(.6)}
+.tiers span.done{opacity:.85;filter:none}
+.tiers span.cur{opacity:1;filter:none;background:#fff;transform:scale(1.18);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.podium{margin-top:4.25rem}
+.podium-crown{top:-4.1rem;z-index:2;font-size:1.25rem}
+.podium-avatar{position:relative;z-index:1}
+.podium-user.first .podium-avatar{width:56px;height:56px}
+.podium-user.is-me{border-color:#c4b5fd!important;box-shadow:0 0 0 2px rgba(124,58,237,.15)}
+.zone-line{margin:.35rem .75rem;padding:.15rem .6rem;font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#a8a29e;text-align:center;border-top:2px dashed #e7d9c5}
+.zone-line.promote{color:#047857;border-color:#10b981}
+.zone-line.demote{color:#be123c;border-color:#f43f5e}
+.tab-btn{padding:.4rem .75rem;font-size:.7rem;font-weight:800;border-radius:.5rem;color:#6d28d9;background:#f5f3ff;border:1px solid #ddd6fe;text-decoration:none}
+html.dark .seg{background:#1c1730;border-color:rgba(255,255,255,.08)}
+html.dark .me-card{background:rgba(124,58,237,.14)}
 </style>
 </head>
 <body data-rb-private>
@@ -137,7 +164,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
       </div>
       <div>
-        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.ai</span></p>
+        <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
       </div>
     </a>
@@ -154,12 +181,12 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
     <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1">Menu</p>
     <nav class="space-y-0.5 mb-3">
       <a href="relbrain-accueil.html" class="nav-item"><i class="fa-solid fa-house nav-icon"></i> Accueil</a>
-      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge nav-icon"></i> Tableau de bord</a>
       <a href="relbrain-documents.html" class="nav-item"><i class="fa-solid fa-file-lines nav-icon"></i> Mes documents</a>
       <a href="relbrain-quiz-setup.html" class="nav-item"><i class="fa-solid fa-circle-question nav-icon"></i> Mes Quiz</a>
       <a href="relbrain-flashcards.html" class="nav-item"><i class="fa-solid fa-layer-group nav-icon"></i> Flashcards</a>
       <a href="relbrain-classement.html" class="nav-item active"><i class="fa-solid fa-trophy nav-icon"></i> Classement</a>
-      <a href="relbrain-historique.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left nav-icon"></i> Historique</a>
+      <a href="relbrain-concours.html" class="nav-item"><i class="fa-solid fa-graduation-cap nav-icon"></i> Concours</a>
     </nav>
 
     <a href="relbrain-parametres.html" class="nav-item mb-3"><i class="fa-solid fa-gear nav-icon"></i> Paramètres</a>
@@ -202,163 +229,101 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 
   <div class="p-4 md:p-5 max-w-4xl mx-auto w-full space-y-3">
 
-    <!-- TITRE -->
-    <div class="text-center">
-      <h1 class="text-xl md:text-2xl font-black text-slate-900">Classement</h1>
-      <p class="text-xs text-slate-500 mt-0.5 font-semibold">Compétition hebdomadaire · Gagne de l'XP pour monter de ligue</p>
+    <!-- TITRE + ONGLETS -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+      <div>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900">Classement</h1>
+        <p class="text-xs text-slate-500 mt-0.5 font-semibold">Chaque quiz, chaque carte révisée te rapporte de l'XP. Monte de ligue chaque semaine.</p>
+      </div>
+      <div class="seg" id="tabs" role="tablist" aria-label="Type de classement">
+        <button role="tab" data-tab="league" class="on"><i class="fa-solid fa-shield-halved"></i> Ma ligue</button>
+        <button role="tab" data-tab="week"><i class="fa-solid fa-calendar-week"></i> Semaine</button>
+        <button role="tab" data-tab="global"><i class="fa-solid fa-earth-africa"></i> Général</button>
+        <button role="tab" data-tab="country"><i class="fa-solid fa-flag"></i> Mon pays</button>
+        <button role="tab" data-tab="institution"><i class="fa-solid fa-building-columns"></i> Mon école</button>
+      </div>
     </div>
 
-    <!-- HERO LIGUE -->
-    <div class="league-hero">
+    <!-- MA POSITION -->
+    <div class="me-card" id="me-card">
+      <div class="me-avatar" data-rb="avatar">K</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[10px] font-black uppercase tracking-widest text-violet-500" id="me-scope">Ma ligue</p>
+        <p class="text-sm font-black text-slate-900 truncate"><span data-rb="name">Pharel FOFE</span></p>
+        <p class="text-[10px] text-slate-500 font-semibold" id="me-hint">&nbsp;</p>
+      </div>
+      <div class="text-right shrink-0">
+        <p class="me-rank" id="me-rank">—</p>
+        <p class="text-[10px] font-black text-violet-600" id="me-score">&nbsp;</p>
+      </div>
+    </div>
+
+    <!-- HERO LIGUE (onglet « Ma ligue ») -->
+    <div class="league-hero" id="league-hero">
       <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left">
-        <div class="league-crest">🥇</div>
+        <div class="league-crest" id="lg-crest">🥉</div>
         <div class="flex-1 text-white">
           <p class="text-[10px] font-black uppercase tracking-widest opacity-90 mb-0.5">Ligue actuelle</p>
-          <h2 class="text-xl font-black mb-1">Gold League</h2>
-          <p class="text-xs font-semibold opacity-90 mb-2 max-w-md">Top 5 montent en Platinum League. Fais partie des 5 meilleurs cette semaine.</p>
+          <h2 class="text-xl font-black mb-1" id="lg-name">Ligue Bronze</h2>
+          <p class="text-xs font-semibold opacity-90 mb-2 max-w-md" id="lg-desc">Le top 7 monte de ligue dimanche soir.</p>
           <div class="flex flex-wrap items-center gap-1.5 justify-center md:justify-start">
-            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full"><i class="fa-solid fa-clock mr-1"></i> 3j 14h</span>
-            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full">👥 30 participants</span>
-            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full">⭐ Semaine 12</span>
+            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full" id="lg-left"><i class="fa-solid fa-clock mr-1"></i> —</span>
+            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full" id="lg-size">👥 —</span>
+            <span class="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full" id="lg-week">⭐ —</span>
           </div>
         </div>
-        <div class="bg-white/15 backdrop-blur rounded-xl p-3 text-center min-w-[110px]">
-          <p class="text-white text-[10px] font-black uppercase tracking-wider mb-0.5">Ton rang</p>
-          <p class="text-white text-3xl font-black mb-0.5">#3</p>
-          <p class="text-white text-[10px] font-bold opacity-90">1 240 XP</p>
+        <div class="bg-white/15 backdrop-blur rounded-xl p-3 text-center min-w-[150px]" id="lg-zone">
+          <p class="text-white text-[10px] font-black uppercase tracking-wider mb-1">Ta zone</p>
+          <p class="text-white text-sm font-black" id="lg-zone-label">—</p>
+          <div class="h-1.5 bg-white/25 rounded-full overflow-hidden my-2"><div class="h-full bg-white rounded-full" id="lg-zone-bar" style="width:0%;transition:width .6s"></div></div>
+          <p class="text-white text-[10px] font-bold opacity-90" id="lg-zone-gap">&nbsp;</p>
         </div>
       </div>
+      <div class="tiers" id="lg-tiers" aria-label="Échelle des ligues"></div>
     </div>
 
-    <!-- PODIUM TOP 3 -->
-    <div class="rb-card p-4">
+    <!-- PODIUM -->
+    <div class="rb-card p-4" id="podium-card">
       <div class="text-center mb-3">
-        <p class="font-black text-slate-900 text-sm">🏆 Top 3 de la semaine</p>
-        <p class="text-[10px] text-slate-500 font-semibold">Félicitations aux meilleurs !</p>
+        <p class="font-black text-slate-900 text-sm" id="podium-title">🏆 Top 3</p>
+        <p class="text-[10px] text-slate-500 font-semibold" id="podium-sub">&nbsp;</p>
       </div>
-
-      <div class="podium">
-        <div class="podium-user second">
-          <span class="podium-crown">🥈</span>
-          <div class="podium-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b);">M</div>
-          <p class="text-xs font-black text-slate-800 truncate">Marie L.</p>
-          <p class="text-[9px] text-slate-500 font-semibold mb-0.5">Niveau 8</p>
-          <p class="text-base font-black text-slate-700">1 380</p>
-          <p class="text-[8px] text-slate-400 font-bold">XP</p>
-        </div>
-        <div class="podium-user first">
-          <span class="podium-crown">👑</span>
-          <div class="podium-avatar" style="background:linear-gradient(135deg,#fbbf24,#d97706);">A</div>
-          <p class="text-xs font-black text-slate-800 truncate">Amira D.</p>
-          <p class="text-[9px] text-slate-500 font-semibold mb-0.5">Niveau 9</p>
-          <p class="text-lg font-black text-amber-600">1 620</p>
-          <p class="text-[8px] text-amber-500 font-bold">XP</p>
-        </div>
-        <div class="podium-user third" style="border-color:#c4b5fd;">
-          <span class="podium-crown">🥉</span>
-          <div class="podium-avatar">K</div>
-          <p class="text-xs font-black text-slate-800 truncate">Toi</p>
-          <p class="text-[9px] text-violet-600 font-black mb-0.5">Niveau 7</p>
-          <p class="text-base font-black text-violet-600">1 240</p>
-          <p class="text-[8px] text-violet-500 font-bold">XP</p>
-        </div>
-      </div>
+      <div class="podium" id="podium"></div>
     </div>
 
-    <!-- INFO LIGUE -->
-    <div class="grid md:grid-cols-2 gap-3">
-      <div class="rb-card p-4">
-        <div class="flex items-center justify-between mb-2">
-          <p class="font-black text-slate-900 text-xs">Ta zone</p>
-          <span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">✓ Promotion</span>
-        </div>
-        <p class="text-[11px] text-slate-500 font-semibold mb-2">Tu es dans le top 5. Continue pour sécuriser ta place !</p>
-        <div class="prog-bar mb-1.5"><div class="prog-fill bg-emerald-500" style="width:80%"></div></div>
-        <div class="flex items-center justify-between text-[10px] font-bold text-slate-500">
-          <span>Position 3/30</span>
-          <span class="text-emerald-600 font-black">+120 XP d'avance</span>
-        </div>
-      </div>
-      <div class="rb-card p-4">
-        <div class="flex items-center justify-between mb-2">
-          <p class="font-black text-slate-900 text-xs">Prochaine ligue</p>
-          <span class="text-[9px] font-black text-violet-700 bg-violet-50 border border-violet-100 px-2 py-0.5 rounded-full">💎 Platinum</span>
-        </div>
-        <p class="text-[11px] text-slate-500 font-semibold mb-2">La Platinum donne accès à :</p>
-        <ul class="space-y-1 text-[10px] font-semibold text-slate-600">
-          <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Multiplicateur XP ×1.5</li>
-          <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Badges exclusifs Platinum</li>
-          <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Thèmes visuels premium</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- LEADERBOARD -->
+    <!-- LISTE -->
     <div class="rb-card overflow-hidden">
-      <div class="p-4 border-b border-[#f0e6d8] flex items-center justify-between">
+      <div class="p-4 border-b border-[#f0e6d8] flex items-center justify-between gap-2 flex-wrap">
         <div>
-          <p class="font-black text-slate-900 text-sm">🏅 Classement complet</p>
-          <p class="text-[10px] text-slate-500 font-semibold mt-0.5">30 participants · Semaine 12</p>
+          <p class="font-black text-slate-900 text-sm" id="list-title">🏅 Classement complet</p>
+          <p class="text-[10px] text-slate-500 font-semibold mt-0.5" id="list-sub">&nbsp;</p>
         </div>
-        <span class="text-[10px] font-black text-slate-500 bg-[#fdf4e8] border border-[#e7d9c5] px-2.5 py-1 rounded-full"><i class="fa-solid fa-clock mr-1"></i> 3j 14h</span>
-      </div>
-
-      <div class="p-2 promote-zone" id="promote-zone"></div>
-      <div class="p-2" id="middle-zone"></div>
-      <div class="p-2 demote-zone" id="demote-zone"></div>
-    </div>
-
-    <!-- COMMENT GAGNER XP -->
-    <div class="rb-card p-4">
-      <p class="font-black text-slate-900 text-sm mb-3">💡 Comment gagner de l'XP</p>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <div class="text-center p-3 rounded-lg bg-[#fdf4e8] border border-[#e7d9c5]">
-          <div class="text-lg mb-0.5">🎯</div>
-          <p class="text-[10px] font-black text-slate-800">Quiz terminé</p>
-          <p class="text-[10px] font-bold text-violet-600 mt-0.5">+100 XP</p>
-        </div>
-        <div class="text-center p-3 rounded-lg bg-[#fdf4e8] border border-[#e7d9c5]">
-          <div class="text-lg mb-0.5">🃏</div>
-          <p class="text-[10px] font-black text-slate-800">10 flashcards</p>
-          <p class="text-[10px] font-bold text-violet-600 mt-0.5">+50 XP</p>
-        </div>
-        <div class="text-center p-3 rounded-lg bg-[#fdf4e8] border border-[#e7d9c5]">
-          <div class="text-lg mb-0.5">🔥</div>
-          <p class="text-[10px] font-black text-slate-800">Série du jour</p>
-          <p class="text-[10px] font-bold text-violet-600 mt-0.5">+25 XP</p>
-        </div>
-        <div class="text-center p-3 rounded-lg bg-[#fdf4e8] border border-[#e7d9c5]">
-          <div class="text-lg mb-0.5">🏆</div>
-          <p class="text-[10px] font-black text-slate-800">Défi hebdo</p>
-          <p class="text-[10px] font-bold text-violet-600 mt-0.5">+300 XP</p>
+        <div class="flex items-center gap-2">
+          <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i><input id="search" class="rb-input" style="padding:.4rem .7rem .4rem 1.8rem;width:10rem;font-size:.72rem" placeholder="Chercher un nom" aria-label="Chercher un nom"/></div>
+          <button class="header-btn" id="refresh" aria-label="Actualiser" title="Actualiser"><i class="fa-solid fa-rotate"></i></button>
         </div>
       </div>
+      <div class="p-2" id="rows"></div>
     </div>
 
-    <!-- HISTORIQUE LIGUES -->
-    <div class="rb-card p-4">
-      <p class="font-black text-slate-900 text-sm mb-3">📊 Ton historique de ligues</p>
-      <div class="space-y-1.5">
-        <div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]">
-          <div class="league-badge" style="background:#fef3c7;">🥇</div>
-          <div class="flex-1"><p class="text-xs font-black text-slate-800">Gold League</p><p class="text-[10px] text-slate-500 font-semibold">Semaine actuelle · en cours</p></div>
-          <span class="text-[10px] font-black text-violet-700 bg-violet-50 px-2 py-0.5 rounded-full">#3</span>
+    <div class="grid md:grid-cols-2 gap-3">
+      <!-- BARÈME -->
+      <div class="rb-card p-4">
+        <p class="font-black text-slate-900 text-sm mb-3">💡 Comment gagner de l'XP</p>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">🎯 Bonne réponse en quiz</span><span class="font-black text-violet-600">+6 à +20 XP</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">💯 Quiz sans faute</span><span class="font-black text-violet-600">bonus ×1,5</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">🃏 Flashcard révisée</span><span class="font-black text-violet-600">+2 XP</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">📄 Cours importé</span><span class="font-black text-violet-600">+15 XP</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">📖 Lecture / coach (par min)</span><span class="font-black text-violet-600">+1 XP</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">🎁 Défis du jour / de la semaine</span><span class="font-black text-violet-600">+15 à +250 XP</span></div>
+          <div class="flex justify-between"><span class="font-semibold text-slate-600">🔥 Chaque semaine de série</span><span class="font-black text-violet-600">+5 % (max ×1,5)</span></div>
         </div>
-        <div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]">
-          <div class="league-badge" style="background:#f3f4f6;">🥈</div>
-          <div class="flex-1"><p class="text-xs font-black text-slate-800">Silver League</p><p class="text-[10px] text-slate-500 font-semibold">Semaine précédente · promotion</p></div>
-          <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">#2 ⬆</span>
-        </div>
-        <div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]">
-          <div class="league-badge" style="background:#f3f4f6;">🥈</div>
-          <div class="flex-1"><p class="text-xs font-black text-slate-800">Silver League</p><p class="text-[10px] text-slate-500 font-semibold">Il y a 2 semaines</p></div>
-          <span class="text-[10px] font-black text-slate-600 bg-slate-50 px-2 py-0.5 rounded-full">#8</span>
-        </div>
-        <div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]">
-          <div class="league-badge" style="background:#fed7aa;">🥉</div>
-          <div class="flex-1"><p class="text-xs font-black text-slate-800">Bronze League</p><p class="text-[10px] text-slate-500 font-semibold">Il y a 3 semaines · promotion</p></div>
-          <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">#1 ⬆</span>
-        </div>
+      </div>
+      <!-- HISTORIQUE LIGUES -->
+      <div class="rb-card p-4">
+        <p class="font-black text-slate-900 text-sm mb-3">📊 Ton historique de ligues</p>
+        <div class="space-y-1.5" id="history"></div>
       </div>
     </div>
 
@@ -370,51 +335,6 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 </div>
 
 <script>
-const users = [
-  {rank:1, name:'Amira D.', level:9, xp:1620, me:false, avatar:'A', gradient:'linear-gradient(135deg,#fbbf24,#d97706)'},
-  {rank:2, name:'Marie L.', level:8, xp:1380, me:false, avatar:'M', gradient:'linear-gradient(135deg,#94a3b8,#64748b)'},
-  {rank:3, name:'Toi', level:7, xp:1240, me:true, avatar:'K', gradient:'linear-gradient(135deg,#7c3aed,#ec4899)'},
-  {rank:4, name:'Ibrahim M.', level:7, xp:1180, me:false, avatar:'I', gradient:'linear-gradient(135deg,#3b82f6,#1d4ed8)'},
-  {rank:5, name:'Sophie T.', level:6, xp:1120, me:false, avatar:'S', gradient:'linear-gradient(135deg,#ec4899,#be185d)'},
-  {rank:6, name:'Samuel P.', level:6, xp:1050, me:false, avatar:'S', gradient:'linear-gradient(135deg,#10b981,#047857)'},
-  {rank:7, name:'Nadia L.', level:6, xp:980, me:false, avatar:'N', gradient:'linear-gradient(135deg,#8b5cf6,#6d28d9)'},
-  {rank:8, name:'Pharel F.', level:5, xp:920, me:false, avatar:'P', gradient:'linear-gradient(135deg,#f59e0b,#b45309)'},
-  {rank:9, name:'Fatima Z.', level:5, xp:850, me:false, avatar:'F', gradient:'linear-gradient(135deg,#06b6d4,#0e7490)'},
-  {rank:10, name:'Yann B.', level:5, xp:790, me:false, avatar:'Y', gradient:'linear-gradient(135deg,#f43f5e,#be123c)'},
-  {rank:11, name:'Chloé R.', level:4, xp:740, me:false, avatar:'C', gradient:'linear-gradient(135deg,#84cc16,#4d7c0f)'},
-  {rank:12, name:'Karim E.', level:4, xp:680, me:false, avatar:'K', gradient:'linear-gradient(135deg,#a855f7,#7c3aed)'},
-  {rank:13, name:'Sarah M.', level:4, xp:620, me:false, avatar:'S', gradient:'linear-gradient(135deg,#f472b6,#db2777)'},
-  {rank:14, name:'Mehdi A.', level:3, xp:560, me:false, avatar:'M', gradient:'linear-gradient(135deg,#fb923c,#c2410c)'},
-  {rank:15, name:'Inès F.', level:3, xp:500, me:false, avatar:'I', gradient:'linear-gradient(135deg,#22d3ee,#0891b2)'},
-  {rank:26, name:'Léo V.', level:2, xp:180, me:false, avatar:'L', gradient:'linear-gradient(135deg,#94a3b8,#475569)'},
-  {rank:27, name:'Jade H.', level:2, xp:150, me:false, avatar:'J', gradient:'linear-gradient(135deg,#94a3b8,#475569)'},
-  {rank:28, name:'Tom N.', level:2, xp:120, me:false, avatar:'T', gradient:'linear-gradient(135deg,#94a3b8,#475569)'},
-  {rank:29, name:'Emma K.', level:1, xp:80, me:false, avatar:'E', gradient:'linear-gradient(135deg,#94a3b8,#475569)'},
-  {rank:30, name:'Lucas B.', level:1, xp:50, me:false, avatar:'L', gradient:'linear-gradient(135deg,#94a3b8,#475569)'},
-];
-
-function renderLeaderRow(u){
-  return `
-    <div class="leader-row ${u.me?'me':''}">
-      <div class="leader-rank ${u.rank<=3?'top':''}">${u.rank<=3?['🥇','🥈','🥉'][u.rank-1]:'#'+u.rank}</div>
-      <div style="width:32px;height:32px;border-radius:.5rem;background:${u.gradient};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.75rem;flex-shrink:0;">${u.avatar}</div>
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-1.5">
-          <p class="text-xs font-black text-slate-800 truncate">${u.name}</p>
-          ${u.me?'<span class="text-[9px] font-black text-violet-700 bg-violet-100 px-1.5 py-0.5 rounded-full shrink-0">TOI</span>':''}
-        </div>
-        <p class="text-[10px] text-slate-500 font-semibold">Niveau ${u.level}</p>
-      </div>
-      <p class="text-xs font-black text-slate-900 shrink-0">${u.xp.toLocaleString()} <span class="text-[9px] text-slate-400">XP</span></p>
-    </div>`;
-}
-
-if (!(window.RB_CONFIG && RB_CONFIG.SUPABASE_URL)) {
-document.getElementById('promote-zone').innerHTML = users.filter(u => u.rank <= 5).map(renderLeaderRow).join('');
-document.getElementById('middle-zone').innerHTML = users.filter(u => u.rank > 5 && u.rank <= 25).map(renderLeaderRow).join('');
-document.getElementById('demote-zone').innerHTML = users.filter(u => u.rank > 25).map(renderLeaderRow).join('');
-}
-
 function toggleSidebar(){const sb=document.getElementById('sidebar'),mc=document.getElementById('main-content');if(window.innerWidth>900){sb.classList.toggle('collapsed');mc.style.marginLeft=sb.classList.contains('collapsed')?'0':'240px';}else{sb.classList.toggle('open');}}
 function toggleAvatarMenu(){document.getElementById('avatar-menu').classList.toggle('open');}
 document.addEventListener('click',e=>{const w=document.getElementById('avatar-wrap'),b=w?.querySelector('.avatar-btn');if(w&&b&&!w.contains(e.target)&&!b.contains(e.target))document.getElementById('avatar-menu').classList.remove('open');});
@@ -425,138 +345,234 @@ function saveNote(){closeNote();toast('Note enregistrée ! ✨','success');}
 function toast(msg,type){const h=document.getElementById('rb-toast-host');const c={info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};const ic={info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};const el=document.createElement('div');el.className='rb-toast '+c[type];el.innerHTML='<i class="fa-solid '+ic[type]+'"></i><span>'+msg+'</span>';h.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),300);},3000);}
 </script>
 <!-- ═══════════════════════════════════════════════════════════════════════
-     INTÉGRATION BACKEND — Classement (ligues hebdomadaires)
-     Groupes de 30 · top 7 promus · 5 derniers relégués · clôture dimanche
-     23:59 (heure de Douala). Données : get_league_leaderboard(),
-     get_global_leaderboard(), get_my_league_history().
+     CLASSEMENT
+     · Ma ligue  : get_league_leaderboard() — groupes de 30, top 7 promus,
+                   5 derniers relégués, clôture dimanche 23:59 (Douala)
+     · Semaine / Général / Pays / École : get_leaderboard(scope, period)
+       → top 50 + TA position même hors du top (rang, percentile, écart)
+     · Cache 30 s par onglet, actualisation auto toutes les 60 s quand la
+       page est visible, et instantanée quand tu gagnes de l'XP.
      ═══════════════════════════════════════════════════════════════════════ -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  RB.onReady(async function () {
-    var TIERS = {
-      bronze: ['Bronze', '🥉', '#fed7aa'], argent: ['Argent', '🥈', '#f3f4f6'], or: ['Or', '🥇', '#fef3c7'],
-      platine: ['Platine', '💎', '#e0f2fe'], diamant: ['Diamant', '💠', '#ede9fe'], maitre: ['Maître', '👑', '#fce7f3'],
-    };
-    var ORDER = ['bronze', 'argent', 'or', 'platine', 'diamant', 'maitre'];
-    var GRADS = ['#7c3aed,#ec4899', '#3b82f6,#1d4ed8', '#10b981,#047857', '#f59e0b,#b45309', '#06b6d4,#0e7490', '#f43f5e,#be123c', '#84cc16,#4d7c0f', '#a855f7,#7c3aed'];
-    function grad(name) { var h = 0; for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0; return 'linear-gradient(135deg,' + GRADS[h % GRADS.length] + ')'; }
-    function countdown(end) {
-      var ms = new Date(end) - Date.now(); if (ms < 0) return 'Clôture…';
-      var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
-      return d ? d + 'j ' + h + 'h' : h + 'h ' + m + 'min';
+(function () {
+  var TIERS = {
+    bronze: ['Bronze', '🥉', '#fed7aa', 'linear-gradient(135deg,#fdba74,#c2410c)'],
+    argent: ['Argent', '🥈', '#f3f4f6', 'linear-gradient(135deg,#cbd5e1,#64748b)'],
+    or: ['Or', '🥇', '#fef3c7', 'linear-gradient(135deg,#fbbf24,#f59e0b 50%,#d97706)'],
+    platine: ['Platine', '💎', '#e0f2fe', 'linear-gradient(135deg,#38bdf8,#0369a1)'],
+    diamant: ['Diamant', '💠', '#ede9fe', 'linear-gradient(135deg,#a78bfa,#6d28d9)'],
+    maitre: ['Maître', '👑', '#fce7f3', 'linear-gradient(135deg,#f472b6,#7c3aed)'],
+  };
+  var ORDER = ['bronze', 'argent', 'or', 'platine', 'diamant', 'maitre'];
+  var SCOPE = {
+    league: ['Ma ligue', 'XP de la semaine dans ton groupe'],
+    week: ['Semaine · tout RelBrain', 'XP gagnés depuis lundi'],
+    global: ['Général · tout RelBrain', 'XP totale depuis l\'inscription'],
+    country: ['Mon pays', 'XP totale des élèves de ton pays'],
+    institution: ['Mon école', 'XP totale des élèves de ton établissement'],
+  };
+  var GRADS = ['#7c3aed,#ec4899', '#3b82f6,#1d4ed8', '#10b981,#047857', '#f59e0b,#b45309', '#06b6d4,#0e7490', '#f43f5e,#be123c', '#84cc16,#4d7c0f', '#a855f7,#7c3aed'];
+  var tab = 'league', cache = {}, current = null, timer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return window.RB && RB.escape ? RB.escape(s) : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
+  function fmt(n) { return window.RB && RB.formatNumber ? RB.formatNumber(n || 0) : Number(n || 0).toLocaleString('fr-FR'); }
+  function grad(name) { var h = 0; name = name || ''; for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0; return 'linear-gradient(135deg,' + GRADS[h % GRADS.length] + ')'; }
+  function countdown(end) {
+    var ms = new Date(end) - Date.now(); if (ms < 0) return 'Clôture…';
+    var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+    return d ? d + 'j ' + h + 'h' : h + 'h ' + m + 'min';
+  }
+  function isoWeek(date) { var d = new Date(date); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7); var w1 = new Date(d.getFullYear(), 0, 4); return 1 + Math.round(((d - w1) / 864e5 - 3 + (w1.getDay() + 6) % 7) / 7); }
+  function avatar(m, size) {
+    var st = 'width:' + size + 'px;height:' + size + 'px;border-radius:.55rem;background:' + (m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name)) + ';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:' + Math.round(size / 2.6) + 'px;flex-shrink:0;overflow:hidden';
+    return '<div style="' + st + '">' + (m.avatar_url ? '<img src="' + esc(m.avatar_url) + '" alt="" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : esc((m.initial || m.name || '?').charAt(0).toUpperCase())) + '</div>';
+  }
+
+  /* ─── Données d'exemple (mode démo) ─── */
+  var DEMO_NAMES = ['Amira D.', 'Marie L.', 'Ibrahim M.', 'Sophie T.', 'Samuel P.', 'Nadia L.', 'Fatima Z.', 'Yann B.', 'Chloé R.', 'Karim E.', 'Sarah M.', 'Mehdi A.', 'Inès F.', 'Junior K.', 'Aïcha N.', 'Boris T.', 'Grâce E.', 'Moussa S.', 'Linda O.', 'Paul N.'];
+  function demo(t) {
+    var n = t === 'league' ? 20 : t === 'institution' ? 14 : 20, base = t === 'league' || t === 'week' ? 1700 : 9800, meRank = t === 'global' ? 63 : t === 'league' ? 3 : 5;
+    var top = DEMO_NAMES.slice(0, n).map(function (nm, i) { return { rank: i + 1, name: nm, level: 12 - Math.floor(i / 2), score: Math.round(base * Math.pow(.9, i)), me: false, league_tier: ORDER[Math.max(0, 4 - Math.floor(i / 4))], streak: (i * 7) % 30 }; });
+    var me = { rank: meRank, name: 'Toi', level: 7, score: t === 'league' || t === 'week' ? 1240 : 2340, me: true, league_tier: 'or', streak: 12 };
+    if (meRank <= n) top.splice(meRank - 1, 1, me); top.forEach(function (m, i) { m.rank = i + 1; });
+    var total = t === 'global' ? 1840 : t === 'country' ? 412 : t === 'institution' ? 38 : n;
+    if (t === 'league') return { kind: 'league', tier: 'or', size: n, promote_until: 7, demote_from: n - 4, ends_at: new Date(Date.now() + 3 * 864e5 + 5 * 36e5).toISOString(), members: top };
+    return { kind: 'board', scope: t === 'week' ? 'global' : t, label: t === 'country' ? 'Cameroun' : t === 'institution' ? 'Université de Douala' : 'RelBrain', total: total, top: top,
+      me: { rank: meRank, score: me.score, percentile: Math.round(100 * (total - meRank + 1) / total), gap_to_next: 40 } };
+  }
+
+  async function fetchTab(t, force) {
+    var c = cache[t];
+    if (!force && c && Date.now() - c.at < 30000) return c.data;
+    var data;
+    if (!window.RB || RB.demo) data = demo(t);
+    else if (t === 'league') { data = await RB.data.leagues.mine(); data.kind = 'league'; }
+    else { data = await RB.data.leagues.board(t === 'week' ? 'global' : t, t === 'week' ? 'week' : 'all', 50); data.kind = 'board'; }
+    cache[t] = { at: Date.now(), data: data };
+    return data;
+  }
+
+  /* ─── Rendu ─── */
+  function normalize(d) {
+    // Format commun : { list:[{rank,name,level,score,me,…}], me:{rank,score}, total }
+    if (d.kind === 'league') {
+      var list = (d.members || []).map(function (m) { return Object.assign({}, m, { score: m.xp != null ? m.xp : m.score }); });
+      var me = list.find(function (m) { return m.me; }) || { rank: d.size, score: 0 };
+      return { list: list, me: me, total: d.size };
     }
-    function isoWeek(date) { var d = new Date(date); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7); var w1 = new Date(d.getFullYear(), 0, 4); return 1 + Math.round(((d - w1) / 864e5 - 3 + (w1.getDay() + 6) % 7) / 7); }
+    return { list: d.top || [], me: d.me || {}, total: d.total || 0 };
+  }
 
-    var hero = document.querySelector('.league-hero');
-    var board, mode = 'league';
-
-    function toRow(m) {
-      return { rank: m.rank, name: RB.escape(m.name), level: m.level, xp: m.xp, me: m.me, avatar: RB.escape((m.name || '?').charAt(0).toUpperCase()), gradient: m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name || '') };
+  function renderMe(t, d, n) {
+    $('me-scope').textContent = SCOPE[t][0] + (d.label && t !== 'global' && t !== 'week' ? ' · ' + d.label : '');
+    if (d.missing) {
+      $('me-rank').textContent = '—'; $('me-score').innerHTML = '&nbsp;';
+      $('me-hint').innerHTML = 'Renseigne ' + (d.missing === 'country' ? 'ton pays' : 'ton établissement') + ' dans <a href="relbrain-profil.html" class="text-violet-600 font-black underline">ton profil</a> pour voir ce classement.';
+      return;
     }
+    var me = n.me || {};
+    $('me-rank').textContent = me.rank ? '#' + me.rank : '—';
+    $('me-score').textContent = fmt(me.score) + ' XP';
+    var hint = [];
+    if (n.total) hint.push('sur ' + fmt(n.total) + ' élève' + (n.total > 1 ? 's' : ''));
+    if (me.percentile && n.total > 10) hint.push('top ' + Math.max(1, 100 - me.percentile + 1) + ' %');
+    var gap = me.gap_to_next;
+    if (gap == null && t === 'league' && me.rank > 1) { var ahead = n.list[me.rank - 2]; if (ahead) gap = ahead.score - me.score + 1; }
+    if (me.rank === 1) hint.push('tu es en tête 👑'); else if (gap) hint.push(fmt(gap) + ' XP pour gagner une place');
+    $('me-hint').textContent = hint.join(' · ') || ' ';
+  }
 
-    function renderLeague(b) {
-      var t = TIERS[b.tier] || TIERS.bronze, next = ORDER[ORDER.indexOf(b.tier) + 1];
-      var me = b.members.find(function (m) { return m.me; }) || { rank: b.size, xp: 0 };
-      var left = countdown(b.ends_at);
-      hero.querySelector('.league-crest').textContent = t[1];
-      hero.querySelector('h2').textContent = 'Ligue ' + t[0];
-      hero.querySelector('p.text-xs').textContent = next ? 'Le top 7 monte en ligue ' + TIERS[next][0] + '. Chaque XP gagnée cette semaine compte.' : 'Tu es au sommet : défends ta place parmi les Maîtres.';
-      var chips = hero.querySelectorAll('.flex-wrap span');
-      chips[0].innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + left;
-      chips[1].textContent = '👥 ' + b.size + ' participant' + (b.size > 1 ? 's' : '');
-      chips[2].textContent = '⭐ Semaine ' + isoWeek(new Date());
-      var rankBox = hero.querySelector('.bg-white\\/15');
-      rankBox.querySelector('.text-3xl').textContent = '#' + me.rank;
-      rankBox.querySelector('p:last-child').textContent = RB.formatNumber(me.xp) + ' XP';
+  function renderLeague(d, n) {
+    var t = TIERS[d.tier] || TIERS.bronze, next = ORDER[ORDER.indexOf(d.tier) + 1], me = n.me;
+    var hero = $('league-hero'); hero.style.background = t[3];
+    $('lg-crest').textContent = t[1];
+    $('lg-name').textContent = 'Ligue ' + t[0];
+    $('lg-desc').textContent = next ? 'Le top ' + d.promote_until + ' monte en ligue ' + TIERS[next][0] + ' dimanche soir. Chaque XP gagnée cette semaine compte.' : 'Tu es au sommet : défends ta place parmi les Maîtres.';
+    $('lg-left').innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + countdown(d.ends_at);
+    $('lg-size').textContent = '👥 ' + d.size + ' participant' + (d.size > 1 ? 's' : '');
+    $('lg-week').textContent = '⭐ Semaine ' + isoWeek(new Date());
+    var promote = next && me.rank <= d.promote_until, demote = d.demote_from && me.rank >= d.demote_from;
+    $('lg-zone-label').textContent = promote ? '⬆ Promotion' : demote ? '⬇ Relégation' : '= Maintien';
+    $('lg-zone-bar').style.width = Math.max(5, Math.round((1 - (me.rank - 1) / Math.max(d.size, 1)) * 100)) + '%';
+    var cut = n.list[d.promote_until] || null, target = n.list[d.promote_until - 1] || null;
+    $('lg-zone-gap').textContent = promote ? (cut ? '+' + fmt(Math.max(0, me.score - cut.score)) + ' XP d\'avance' : 'Place sécurisée') : target ? fmt(Math.max(1, target.score - me.score + 1)) + ' XP pour le top ' + d.promote_until : '';
+    $('lg-tiers').innerHTML = ORDER.map(function (k) { return '<span class="' + (k === d.tier ? 'cur' : ORDER.indexOf(k) < ORDER.indexOf(d.tier) ? 'done' : '') + '" title="Ligue ' + TIERS[k][0] + '">' + TIERS[k][1] + '</span>'; }).join('');
+  }
 
-      // Podium
-      var top = b.members.slice(0, 3);
-      var slot = function (m, cls, crown, big) {
-        if (!m) return '<div class="podium-user ' + cls + '" style="opacity:.4"><span class="podium-crown">' + crown + '</span><div class="podium-avatar">?</div><p class="text-xs font-black text-slate-800">—</p></div>';
-        return '<div class="podium-user ' + cls + '"' + (m.me ? ' style="border-color:#c4b5fd;"' : '') + '><span class="podium-crown">' + crown + '</span>' +
-          '<div class="podium-avatar" style="background:' + (m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name)) + '">' + RB.escape(m.name.charAt(0).toUpperCase()) + '</div>' +
-          '<p class="text-xs font-black text-slate-800 truncate">' + (m.me ? 'Toi' : RB.escape(m.name)) + '</p><p class="text-[9px] text-slate-500 font-semibold mb-0.5">Niveau ' + m.level + '</p>' +
-          '<p class="' + (big ? 'text-lg font-black text-amber-600' : 'text-base font-black text-slate-700') + '">' + RB.formatNumber(m.xp) + '</p><p class="text-[8px] text-slate-400 font-bold">XP</p></div>';
-      };
-      document.querySelector('.podium').innerHTML = slot(top[1], 'second', '🥈') + slot(top[0], 'first', '👑', true) + slot(top[2], 'third', '🥉');
-
-      // Ta zone
-      var zoneCard = document.querySelector('.grid.md\\:grid-cols-2 .rb-card');
-      var promote = me.rank <= b.promote_until && next, demote = b.demote_from && me.rank >= b.demote_from;
-      var target = b.members[Math.max(0, (promote ? b.promote_until : b.promote_until) - 1)];
-      var gap = promote ? (me.xp - ((b.members[b.promote_until] || {}).xp || 0)) : ((target ? target.xp : 0) - me.xp + 1);
-      zoneCard.querySelector('span').outerHTML = promote ? '<span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">✓ Promotion</span>'
-        : demote ? '<span class="text-[9px] font-black text-rose-700 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-full">⚠ Relégation</span>'
-        : '<span class="text-[9px] font-black text-slate-600 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">Maintien</span>';
-      zoneCard.querySelector('p.text-\\[11px\\]').textContent = promote ? 'Tu es dans le top ' + b.promote_until + '. Continue pour sécuriser ta place !'
-        : demote ? 'Attention : tu es en zone de relégation. Un quiz suffit pour remonter.' : 'Encore un effort pour entrer dans le top ' + b.promote_until + '.';
-      zoneCard.querySelector('.prog-fill').style.width = Math.max(5, Math.round((1 - (me.rank - 1) / Math.max(b.size, 1)) * 100)) + '%';
-      var foot = zoneCard.querySelectorAll('.flex.items-center.justify-between span');
-      foot[0].textContent = 'Position ' + me.rank + '/' + b.size;
-      foot[1].textContent = promote ? '+' + RB.formatNumber(Math.max(gap, 0)) + ' XP d\'avance' : RB.formatNumber(Math.max(gap, 1)) + ' XP pour le top ' + b.promote_until;
-      var nextCard = document.querySelectorAll('.grid.md\\:grid-cols-2 .rb-card')[1];
-      nextCard.querySelector('span').textContent = next ? TIERS[next][1] + ' ' + TIERS[next][0] : '👑 Sommet atteint';
-      nextCard.querySelector('p.text-\\[11px\\]').textContent = next ? 'La ligue ' + TIERS[next][0] + ' débloque :' : 'Tu as atteint la plus haute ligue :';
-      nextCard.querySelector('ul').innerHTML = ['Un badge de ligue exclusif', 'Des adversaires de ton niveau', 'Ton nom dans le classement général'].map(function (x) { return '<li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> ' + x + '</li>'; }).join('');
-
-      // Tableau complet
-      var rows = b.members.map(toRow);
-      document.querySelector('#promote-zone').previousElementSibling.querySelector('p.text-\\[10px\\]').textContent = b.size + ' participants · Semaine ' + isoWeek(new Date());
-      document.querySelector('#promote-zone').previousElementSibling.querySelector('span').innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + left;
-      document.getElementById('promote-zone').innerHTML = rows.filter(function (u) { return u.rank <= b.promote_until; }).map(renderLeaderRow).join('');
-      document.getElementById('middle-zone').innerHTML = rows.filter(function (u) { return u.rank > b.promote_until && (!b.demote_from || u.rank < b.demote_from); }).map(renderLeaderRow).join('');
-      document.getElementById('demote-zone').innerHTML = rows.filter(function (u) { return b.demote_from && u.rank >= b.demote_from; }).map(renderLeaderRow).join('');
-      if (b.size < 2) document.getElementById('middle-zone').innerHTML = '<p class="text-center text-xs text-slate-500 font-semibold py-4">Tu es le premier de ta ligue cette semaine ! D\'autres élèves te rejoindront dès leur première activité.</p>';
+  function renderPodium(t, n) {
+    var top = n.list.slice(0, 3);
+    $('podium-title').textContent = t === 'league' ? '🏆 Top 3 de ta ligue' : t === 'week' ? '🏆 Top 3 de la semaine' : '🏆 Top 3 · ' + SCOPE[t][0];
+    $('podium-sub').textContent = SCOPE[t][1];
+    function slot(m, cls, crown, big) {
+      if (!m) return '<div class="podium-user ' + cls + '" style="opacity:.4"><span class="podium-crown">' + crown + '</span><div class="podium-avatar">?</div><p class="text-xs font-black text-slate-800">Place libre</p></div>';
+      return '<div class="podium-user ' + cls + (m.me ? ' is-me' : '') + '"><span class="podium-crown">' + crown + '</span>' +
+        '<div class="podium-avatar" style="background:' + (m.me ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : grad(m.name)) + '">' + (m.avatar_url ? '<img src="' + esc(m.avatar_url) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>' : esc((m.initial || m.name || '?').charAt(0).toUpperCase())) + '</div>' +
+        '<p class="text-xs font-black text-slate-800 truncate">' + (m.me ? 'Toi' : esc(m.name)) + '</p><p class="text-[9px] text-slate-500 font-semibold mb-0.5">Niveau ' + (m.level || 1) + '</p>' +
+        '<p class="' + (big ? 'text-lg font-black text-amber-600' : 'text-base font-black text-slate-700') + '">' + fmt(m.score) + '</p><p class="text-[8px] text-slate-400 font-bold">XP</p></div>';
     }
+    $('podium').innerHTML = slot(top[1], 'second', '🥈') + slot(top[0], 'first', '👑', true) + slot(top[2], 'third', '🥉');
+  }
 
-    async function renderGlobal() {
-      var list = await RB.data.leagues.global(50);
-      document.getElementById('promote-zone').innerHTML = list.slice(0, 3).map(toRow).map(renderLeaderRow).join('');
-      document.getElementById('middle-zone').innerHTML = list.slice(3).map(toRow).map(renderLeaderRow).join('');
-      document.getElementById('demote-zone').innerHTML = '';
+  function row(m) {
+    var tier = TIERS[m.league_tier];
+    return '<div class="leader-row' + (m.me ? ' me' : '') + '" data-name="' + esc((m.name || '').toLowerCase()) + '">' +
+      '<div class="leader-rank' + (m.rank <= 3 ? ' top' : '') + '">' + (m.rank <= 3 ? ['🥇', '🥈', '🥉'][m.rank - 1] : '#' + m.rank) + '</div>' + avatar(m, 32) +
+      '<div class="flex-1 min-w-0"><div class="flex items-center gap-1.5"><p class="text-xs font-black text-slate-800 truncate">' + esc(m.name) + '</p>' +
+      (m.me ? '<span class="text-[9px] font-black text-violet-700 bg-violet-100 px-1.5 py-0.5 rounded-full shrink-0">TOI</span>' : '') + '</div>' +
+      '<p class="text-[10px] text-slate-500 font-semibold">Niveau ' + (m.level || 1) + (tier && tab !== 'league' ? ' · ' + tier[1] + ' ' + tier[0] : '') + (m.streak ? ' · 🔥' + m.streak : '') + (tab === 'global' && m.country ? ' · ' + esc(m.country) : '') + '</p></div>' +
+      '<p class="text-xs font-black text-slate-900 shrink-0">' + fmt(m.score) + ' <span class="text-[9px] text-slate-400">XP</span></p></div>';
+  }
+
+  function renderList(t, d, n) {
+    $('list-title').textContent = t === 'league' ? '🏅 Ta ligue cette semaine' : '🏅 ' + SCOPE[t][0];
+    $('list-sub').textContent = d.missing ? '' : t === 'league' ? d.size + ' participants · clôture dans ' + countdown(d.ends_at) : fmt(n.total) + ' élève' + (n.total > 1 ? 's' : '') + ' classé' + (n.total > 1 ? 's' : '') + (n.total > n.list.length ? ' · top ' + n.list.length + ' affiché' : '');
+    if (d.missing) {
+      $('rows').innerHTML = '<div class="text-center py-8"><p class="text-3xl mb-2">' + (d.missing === 'country' ? '🌍' : '🏫') + '</p><p class="text-xs text-slate-600 font-bold mb-3">Ajoute ' + (d.missing === 'country' ? 'ton pays' : 'ton établissement') + ' à ton profil pour te comparer aux élèves ' + (d.missing === 'country' ? 'de ton pays' : 'de ton école') + '.</p><a href="relbrain-profil.html" class="tab-btn" style="display:inline-flex;gap:.4rem"><i class="fa-solid fa-user-pen"></i> Compléter mon profil</a></div>';
+      return;
     }
-
-    // Bascule Ligue / Général
-    var head = document.querySelector('#promote-zone').previousElementSibling;
-    head.insertAdjacentHTML('afterend', '<div class="px-4 pt-3 flex gap-1.5"><button class="rb-tag" data-mode="league" style="cursor:pointer">Ma ligue</button><button class="rb-tag rb-tag--outline" data-mode="global" style="cursor:pointer">Classement général</button></div>');
-    head.nextElementSibling.querySelectorAll('[data-mode]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        mode = b.getAttribute('data-mode');
-        head.nextElementSibling.querySelectorAll('[data-mode]').forEach(function (x) { x.className = 'rb-tag' + (x === b ? '' : ' rb-tag--outline'); });
-        (mode === 'global' ? renderGlobal() : Promise.resolve(renderLeague(board))).catch(function (e) { RB.handleError(e); });
-      });
+    if (!n.list.length) { $('rows').innerHTML = '<p class="text-center text-xs text-slate-500 font-semibold py-6">Personne n\'est encore classé ici. Fais un quiz pour ouvrir le bal ! 🎯</p>'; return; }
+    var html = '';
+    n.list.forEach(function (m) {
+      if (t === 'league' && d.demote_from && m.rank === d.demote_from) html += '<div class="zone-line demote">⬇ Zone de relégation</div>';
+      html += row(m);
+      if (t === 'league' && m.rank === d.promote_until && n.list.length > d.promote_until) html += '<div class="zone-line promote">⬆ Zone de promotion</div>';
     });
-
-    // Barème réel
-    var guide = document.querySelectorAll('.grid.grid-cols-2.md\\:grid-cols-4 > div');
-    var scale = [['Bonne réponse', '+6 à +20 XP'], ['Flashcard révisée', '+2 XP'], ['Série de 7 jours', 'XP ×1,05'], ['Défi hebdo', '+150 à +250 XP']];
-    guide.forEach(function (g, i) { if (!scale[i]) return; var ps = g.querySelectorAll('p'); ps[0].textContent = scale[i][0]; ps[1].textContent = scale[i][1]; });
-
-    // Historique des ligues
-    async function renderHistory() {
-      var hist = await RB.ready.then(function (sb) { return sb.rpc('get_my_league_history'); }).then(function (r) { return r.data || []; });
-      var box = document.querySelectorAll('.rb-card')[document.querySelectorAll('.rb-card').length - 1].querySelector('.space-y-1\\.5');
-      if (!box) return;
-      if (!hist.length) { box.innerHTML = '<p class="text-xs text-slate-500 font-semibold">Ton historique apparaîtra après ta première semaine de compétition.</p>'; return; }
-      box.innerHTML = hist.map(function (h, i) {
-        var t = TIERS[h.tier] || TIERS.bronze;
-        var label = !h.finished ? 'Semaine actuelle · en cours' : 'Semaine du ' + new Date(h.week_start).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + (h.outcome === 'promoted' ? ' · promotion' : h.outcome === 'demoted' ? ' · relégation' : '');
-        var badge = h.final_rank ? '#' + h.final_rank + (h.outcome === 'promoted' ? ' ⬆' : h.outcome === 'demoted' ? ' ⬇' : '') : RB.formatNumber(h.weekly_xp) + ' XP';
-        var cls = h.outcome === 'promoted' ? 'text-emerald-700 bg-emerald-50' : h.outcome === 'demoted' ? 'text-rose-700 bg-rose-50' : 'text-violet-700 bg-violet-50';
-        return '<div class="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#f0e6d8]"><div class="league-badge" style="background:' + t[2] + ';">' + t[1] + '</div>' +
-          '<div class="flex-1"><p class="text-xs font-black text-slate-800">Ligue ' + t[0] + '</p><p class="text-[10px] text-slate-500 font-semibold">' + label + '</p></div>' +
-          '<span class="text-[10px] font-black ' + cls + ' px-2 py-0.5 rounded-full">' + badge + '</span></div>';
-      }).join('');
+    // Toi, hors du top affiché
+    if (n.me && n.me.rank && !n.list.some(function (m) { return m.me; })) {
+      html += '<div class="zone-line">⋯</div>' + row({ rank: n.me.rank, name: 'Toi', level: n.me.level, score: n.me.score, me: true });
     }
+    $('rows').innerHTML = html;
+    if (t === 'league' && n.list.length < 2) $('rows').insertAdjacentHTML('beforeend', '<p class="text-center text-xs text-slate-500 font-semibold py-4">Tu es le premier de ta ligue cette semaine ! D\'autres élèves te rejoindront dès leur première activité.</p>');
+    applySearch();
+  }
 
+  function applySearch() {
+    var q = ($('search').value || '').trim().toLowerCase();
+    document.querySelectorAll('#rows .leader-row').forEach(function (r) { r.style.display = !q || r.dataset.name.indexOf(q) > -1 || r.classList.contains('me') ? '' : 'none'; });
+    document.querySelectorAll('#rows .zone-line').forEach(function (z) { z.style.display = q ? 'none' : ''; });
+  }
+
+  function skeleton() {
+    $('rows').innerHTML = [1, 2, 3, 4, 5].map(function () { return '<div class="leader-row"><div class="rb-skeleton" style="width:28px;height:14px"></div><div class="rb-skeleton" style="width:32px;height:32px;border-radius:.5rem"></div><div class="flex-1"><div class="rb-skeleton rb-skeleton-line" style="width:40%"></div></div></div>'; }).join('');
+  }
+
+  async function show(t, force) {
+    tab = t;
+    document.querySelectorAll('#tabs button').forEach(function (b) { var on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    $('league-hero').style.display = t === 'league' ? '' : 'none';
+    if (!cache[t] || force) skeleton();
     try {
-      board = await RB.data.leagues.mine();
-      renderLeague(board);
-      renderHistory();
-      setInterval(function () { if (mode === 'league') { var c = hero.querySelector('.flex-wrap span'); if (c) c.innerHTML = '<i class="fa-solid fa-clock mr-1"></i> ' + countdown(board.ends_at); } }, 60000);
-    } catch (e) { RB.handleError(e, 'Classement indisponible.'); }
+      var d = await fetchTab(t, force);
+      if (tab !== t) return; // l'élève a changé d'onglet entre-temps
+      current = d;
+      var n = normalize(d);
+      renderMe(t, d, n);
+      if (t === 'league') renderLeague(d, n);
+      $('podium-card').style.display = d.missing ? 'none' : '';
+      if (!d.missing) renderPodium(t, n);
+      renderList(t, d, n);
+      try { history.replaceState(null, '', t === 'league' ? location.pathname : '#' + t); } catch (e) {}
+    } catch (e) {
+      if (window.RB && RB.handleError) RB.handleError(e, 'Classement indisponible.');
+      $('rows').innerHTML = '<p class="text-center text-xs text-rose-600 font-bold py-6">Impossible de charger le classement. <button class="underline" onclick="location.reload()">Réessayer</button></p>';
+    }
+  }
+
+  async function renderHistory() {
+    var box = $('history');
+    var hist = (!window.RB || RB.demo)
+      ? [{ tier: 'or', finished: false, weekly_xp: 1240 }, { tier: 'argent', finished: true, final_rank: 2, outcome: 'promoted', week_start: new Date(Date.now() - 7 * 864e5).toISOString() }, { tier: 'bronze', finished: true, final_rank: 1, outcome: 'promoted', week_start: new Date(Date.now() - 14 * 864e5).toISOString() }]
+      : await RB.data.leagues.history().catch(function () { return []; });
+    if (!hist.length) { box.innerHTML = '<p class="text-xs text-slate-500 font-semibold">Ton historique apparaîtra après ta première semaine de compétition.</p>'; return; }
+    box.innerHTML = hist.map(function (h) {
+      var t = TIERS[h.tier] || TIERS.bronze;
+      var label = !h.finished ? 'Semaine actuelle · en cours' : 'Semaine du ' + new Date(h.week_start).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + (h.outcome === 'promoted' ? ' · promotion' : h.outcome === 'demoted' ? ' · relégation' : '');
+      var badge = h.final_rank ? '#' + h.final_rank + (h.outcome === 'promoted' ? ' ⬆' : h.outcome === 'demoted' ? ' ⬇' : '') : fmt(h.weekly_xp) + ' XP';
+      var cls = h.outcome === 'promoted' ? 'text-emerald-700 bg-emerald-50' : h.outcome === 'demoted' ? 'text-rose-700 bg-rose-50' : 'text-violet-700 bg-violet-50';
+      return '<div class="flex items-center gap-2.5 p-2 rounded-lg border border-[#f0e6d8]"><div class="league-badge" style="background:' + t[2] + ';">' + t[1] + '</div>' +
+        '<div class="flex-1"><p class="text-xs font-black text-slate-800">Ligue ' + t[0] + '</p><p class="text-[10px] text-slate-500 font-semibold">' + label + '</p></div>' +
+        '<span class="text-[10px] font-black ' + cls + ' px-2 py-0.5 rounded-full">' + badge + '</span></div>';
+    }).join('');
+  }
+
+  function start() {
+    $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-tab]'); if (b && b.dataset.tab !== tab) show(b.dataset.tab); });
+    $('search').addEventListener('input', applySearch);
+    $('refresh').addEventListener('click', function () { show(tab, true); });
+    var first = (location.hash || '').slice(1);
+    show(SCOPE[first] ? first : 'league');
+    window.addEventListener('hashchange', function () { var h = location.hash.slice(1); if (SCOPE[h] && h !== tab) show(h); });
+    renderHistory();
+    // Actualisation automatique (seulement si l'onglet du navigateur est visible)
+    timer = setInterval(function () { if (!document.hidden) show(tab, true); }, 60000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && cache[tab] && Date.now() - cache[tab].at > 30000) show(tab, true); });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.RB && !RB.demo) RB.onReady(start); else start();
   });
-});
+})();
 </script>
 
 </body>

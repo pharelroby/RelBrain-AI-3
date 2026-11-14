@@ -19,6 +19,10 @@ const Body = z.object({
 export default route(
   { methods: ['POST'], auth: true, rateLimit: { key: (c) => `checkout:${c.user!.id}`, max: 10, windowSec: 3600 } },
   async ({ req, user }) => {
+    // Phase de lancement : aucun encaissement tant que PAYMENTS_ENABLED n'est pas « true »
+    if (process.env.PAYMENTS_ENABLED !== 'true') {
+      throw new HttpError(503, 'payments_disabled', 'Les abonnements payants ouvrent bientôt. Pendant le lancement, RelBrain est gratuit.');
+    }
     const body = parse(Body, req.body);
     const provider = await getProvider(body.provider);
     const amount = await priceFor(body.plan, body.months, provider.currency);
