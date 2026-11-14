@@ -219,7 +219,20 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   var card = document.querySelector('main .rounded-3xl');
     // Déjà connecté → page suivante
-  RB.auth.session().then(function (s) { if (s) location.replace(safeNext()); });
+  // Déjà connecté : on file vers la page demandée. Garde-fou anti-boucle : si le serveur
+  // nous renvoie ici aussitôt (session refusée), on reste sur la page et on demande de se reconnecter.
+  RB.auth.session().then(function (s) {
+    if (!s) return;
+    var last = 0;
+    try { last = Number(sessionStorage.getItem('rb-bounce') || 0); } catch (e) {}
+    if (params.get('next') && Date.now() - last < 15000) {
+      try { sessionStorage.removeItem('rb-bounce'); } catch (e) {}
+      showToast('Ta session doit être renouvelée : reconnecte-toi 🔑', 'info');
+      return;
+    }
+    try { sessionStorage.setItem('rb-bounce', String(Date.now())); } catch (e) {}
+    location.replace(safeNext());
+  });
 
   window.doLogin = async function () {
     var email = document.getElementById('email'), password = document.getElementById('password');

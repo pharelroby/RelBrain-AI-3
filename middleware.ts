@@ -10,7 +10,7 @@
    renvoie aucune donnée.
    ═══════════════════════════════════════════════════════════════════════════ */
 import { next } from '@vercel/edge';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createRemoteJWKSet, jwtVerify, decodeProtectedHeader } from 'jose';
 
 export const config = {
   matcher: [
@@ -67,7 +67,10 @@ export default async function middleware(request: Request) {
     // ═══════════════════════════════════════════════════════════════
     const secret = process.env.SUPABASE_JWT_SECRET; // ⬅️ LE SECRET JWT EST ICI (optionnel)
     const options = { clockTolerance: 7 * 24 * 3600 };
-    if (secret) {
+    // On regarde comment le jeton est signé : le secret partagé ne sert qu'aux jetons HS256.
+    // Les projets récents signent en ES256/RS256 : vérification par la clé publique (JWKS).
+    const alg = String(decodeProtectedHeader(token).alg || '');
+    if (secret && alg.startsWith('HS')) {
       await jwtVerify(token, new TextEncoder().encode(secret), options);
     } else {
       jwks = jwks || createRemoteJWKSet(new URL('/auth/v1/.well-known/jwks.json', supabaseUrl));
