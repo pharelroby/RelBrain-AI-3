@@ -30,7 +30,7 @@
 
   var LOGO =
     '<a href="index.html" class="rb-logo" aria-label="RelBrain, accueil">' +
-      '<span class="rb-logo__mark"><i class="fa-solid fa-brain" aria-hidden="true"></i></span>' +
+      '<img class="rb-logo__img" src="/icon.svg" alt="" width="36" height="36"/>' +
       '<span class="rb-logo__word">RelBrain<b>.AI</b></span>' +
     '</a>';
 

@@ -230,6 +230,9 @@ html.dark{
    aux icônes Font Awesome (leurs classes restent prioritaires).            */
 html{ -webkit-text-size-adjust:100%; text-rendering:optimizeLegibility; }
 body{ background:var(--rb-bg); color:var(--rb-ink); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+/* Filet de sécurité téléphone : la page ne peut jamais glisser ni s'élargir sur le côté
+   (overflow-x:clip ne casse pas les éléments « sticky », contrairement à hidden). */
+html, body{ max-width:100%; overflow-x:clip; }
 body, body *{ font-family:var(--rb-font-ui); }
 body code, body pre, body kbd, body .rb-mono{ font-family:var(--rb-font-mono); }
 ::selection{ background:var(--rb-highlight-amber); color:inherit; }
@@ -840,6 +843,10 @@ select.rb-control{ appearance:none; background-image:url("data:image/svg+xml,%3C
 .rb-logo{ display:inline-flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--rb-ink); }
 .rb-logo__mark{ position:relative; width:2.25rem; height:2.25rem; border-radius:.7rem .7rem .7rem .25rem; background:var(--rb-violet); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:3px 3px 0 0 var(--rb-pink); transition:transform var(--rb-dur-base) var(--rb-ease-spring), box-shadow var(--rb-dur-base); }
 .rb-logo:hover .rb-logo__mark{ transform:rotate(-6deg); box-shadow:4px 4px 0 0 var(--rb-amber); }
+/* Logo officiel (icon.svg, généré depuis brand/icon-master.svg) */
+.rb-logo__img{ width:2.25rem; height:2.25rem; border-radius:.7rem; box-shadow:3px 3px 0 0 var(--rb-pink); transition:transform var(--rb-dur-base) var(--rb-ease-spring), box-shadow var(--rb-dur-base); }
+.rb-logo:hover .rb-logo__img{ transform:rotate(-6deg); box-shadow:4px 4px 0 0 var(--rb-amber); }
+.rb-app-mark{ display:block; flex-shrink:0; border-radius:.6rem; box-shadow:0 4px 12px -4px rgba(124,58,237,.45); }
 .rb-logo__word{ font-family:var(--rb-font-display); font-weight:700; font-size:1.3rem; letter-spacing:-.03em; font-variation-settings:'SOFT' 80,'opsz' 48; }
 .rb-logo__word b{ color:var(--rb-violet); font-weight:700; font-style:italic; }
 .rb-site-links{ display:flex; align-items:center; gap:.25rem; margin-left:auto; }

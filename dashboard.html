@@ -105,7 +105,9 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 .h-chip{padding:.35rem .75rem;border-radius:9999px;font-size:.7rem;font-weight:800;border:1.5px solid #e7d9c5;background:#fff;color:#57534e;cursor:pointer;transition:all .15s}
 .h-chip:hover{border-color:#c4b5fd;color:#7c3aed}
 .h-chip.on{background:#7c3aed;color:#fff;border-color:#7c3aed}
-.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);gap:3px;overflow-x:auto;padding-bottom:.25rem}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);gap:3px;overflow-x:auto;padding-bottom:.25rem;max-width:100%;overscroll-behavior-x:contain;scrollbar-width:thin}
+/* Téléphone / tablette : une grille ne doit jamais s'élargir à cause de son contenu */
+.main-content .grid > *{min-width:0}
 .heat span{width:11px;height:11px;border-radius:3px;background:#f0e6d8}
 .heat span.l1{background:#ddd6fe}.heat span.l2{background:#c4b5fd}.heat span.l3{background:#a78bfa}.heat span.l4{background:#7c3aed}
 html.dark .heat span{background:#2a2145}
@@ -116,6 +118,10 @@ html.dark .heat span{background:#2a2145}
 html.dark .h-table tr+tr td{border-color:rgba(255,255,255,.06)}
 a.qa-tile{text-decoration:none}
 </style>
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="RelBrain"/>
+<meta name="theme-color" content="#7c3aed"/>
 </head>
 <body data-rb-private>
 
@@ -141,10 +147,7 @@ a.qa-tile{text-decoration:none}
 <aside class="sidebar" id="sidebar">
   <div class="px-4 py-4 flex flex-col h-full overflow-y-auto">
     <a href="relbrain-accueil.html" class="flex items-center gap-2 mb-4">
-      <div class="bg-violet-600 text-white p-1.5 rounded-lg shadow-sm shadow-violet-200 relative">
-        <i class="fa-solid fa-brain text-sm"></i>
-        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full border-2 border-white"></span>
-      </div>
+      <img src="/icon.svg" alt="" width="32" height="32" class="rb-app-mark"/>
       <div>
         <p class="text-sm font-black text-slate-900 leading-none">RelBrain<span class="text-violet-600">.AI</span></p>
         <p class="text-[9px] text-violet-500 font-bold tracking-widest uppercase mt-0.5">Platform</p>
@@ -263,7 +266,7 @@ a.qa-tile{text-decoration:none}
     </div>
 
     <!-- OBJECTIF + ACTIONS RAPIDES -->
-    <div class="grid lg:grid-cols-3 gap-3">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
       <div class="lg:col-span-2 rb-card p-4">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2.5">
@@ -317,7 +320,7 @@ a.qa-tile{text-decoration:none}
     </div>
 
     <!-- POINTS FAIBLES + BADGES -->
-    <div class="grid lg:grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
       <div class="rb-card p-4">
         <div class="flex items-center justify-between mb-2 gap-2">
           <div><p class="font-black text-slate-900 text-sm">Points faibles détectés</p><p class="text-[10px] text-slate-500 font-semibold">Notions sous 70 % de réussite</p></div>
@@ -361,7 +364,7 @@ a.qa-tile{text-decoration:none}
         <div class="rb-card p-4 kpi"><p class="text-slate-900" id="k-days">—</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-1">Jours actifs</p></div>
       </div>
 
-      <div class="grid lg:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
         <div class="rb-card p-4 lg:col-span-2">
           <div class="mb-3"><h3 class="font-black text-slate-900 text-sm">Temps d'étude et XP</h3><p class="text-[10px] text-slate-500 font-semibold">Minutes par jour (barres) · XP par jour (ligne)</p></div>
           <div class="chart-wrap" style="height:220px"><canvas id="h-chart"></canvas></div>
@@ -373,7 +376,7 @@ a.qa-tile{text-decoration:none}
         </div>
       </div>
 
-      <div class="grid lg:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
         <div class="rb-card p-4 lg:col-span-2">
           <div class="flex items-center justify-between mb-3 flex-wrap gap-2"><h3 class="font-black text-slate-900 text-sm">Régularité sur un an</h3><span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">Moins <span class="heat" style="display:inline-grid;grid-template-rows:11px;grid-auto-flow:column"><span></span><span class="l1"></span><span class="l2"></span><span class="l3"></span><span class="l4"></span></span> Plus</span></div>
           <div class="heat" id="heat" aria-label="Calendrier de régularité"></div>

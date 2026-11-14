@@ -4,7 +4,7 @@
    · Mode hors-ligne léger pour connexions instables : les feuilles de style,
      scripts et pages déjà visitées restent disponibles sans réseau.
    ═══════════════════════════════════════════════════════════════════════════ */
-const VERSION = 'rb-v2.1.0';
+const VERSION = 'rb-v2.2.0';
 const CORE = [
   '/relbrain-design-system.css',
   '/relbrain-theme.css',

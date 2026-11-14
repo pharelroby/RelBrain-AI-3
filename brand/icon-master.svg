@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- RelBrain — icône maîtresse (1024 × 1024).
+       Carré plein, sans transparence : iOS et Android arrondissent eux-mêmes les coins.
+       Tout le motif tient dans le cercle central de 80 % (zone sûre des icônes « maskable »).
+       Pour régénérer toutes les tailles : npm run icons -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b21b6"/>
+      <stop offset=".38" stop-color="#7c3aed"/>
+      <stop offset=".72" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#ec4899"/>
+    </linearGradient>
+    <radialGradient id="light" cx=".28" cy=".18" r=".75">
+      <stop offset="0" stop-color="#fff" stop-opacity=".30"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="node" cx=".38" cy=".35" r=".7">
+      <stop offset="0" stop-color="#fffbeb"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="22"/>
+      <feOffset dy="26" result="b"/>
+      <feFlood flood-color="#2e1065" flood-opacity=".45"/>
+      <feComposite in2="b" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="14" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fond : dégradé de marque + lumière douce -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#light)"/>
+
+  <!-- Signature « cahier vivant » : papier réglé et marge, très discrets -->
+  <g stroke="#fff" stroke-opacity=".07" stroke-width="4">
+    <path d="M0 160H1024M0 256H1024M0 352H1024M0 448H1024M0 544H1024M0 640H1024M0 736H1024M0 832H1024M0 928H1024"/>
+  </g>
+  <path d="M148 0V1024" stroke="#fbcfe8" stroke-opacity=".16" stroke-width="6"/>
+
+  <!-- Le cerveau : deux hémisphères, leurs plis, et les neurones qui s'allument -->
+  <g filter="url(#shadow)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke-width="46">
+      <path d="M472 266c-100 0-150 64-150 132c-66 17-100 66-100 117c0 66 50 117 100 117c0 66 50 132 150 132z"/>
+      <path d="M552 266c100 0 150 64 150 132c66 17 100 66 100 117c0 66-50 117-100 117c0 66-50 132-150 132z"/>
+    </g>
+    <g stroke-width="28">
+      <path d="M472 352c-40 0-64 22-70 52"/>
+      <path d="M472 486c-46 0-86 16-118 44"/>
+      <path d="M472 620c-36 0-62 22-72 54"/>
+      <path d="M552 352c40 0 64 22 70 52"/>
+      <path d="M552 486c46 0 86 16 118 44"/>
+      <path d="M552 620c36 0 62 22 72 54"/>
+    </g>
+  </g>
+  <g filter="url(#glow)">
+    <circle cx="402" cy="404" r="30" fill="url(#node)"/>
+    <circle cx="670" cy="530" r="30" fill="url(#node)"/>
+    <circle cx="400" cy="674" r="27" fill="url(#node)"/>
+    <circle cx="622" cy="404" r="20" fill="url(#node)"/>
+  </g>
+
+  <!-- Étincelle de savoir -->
+  <path filter="url(#glow)" fill="#fde68a" d="M770 224c8 44 22 58 66 66c-44 8-58 22-66 66c-8-44-22-58-66-66c44-8 58-22 66-66z"/>
+</svg>
