@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'light';if(p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="robots" content="noindex"/>
@@ -8,7 +9,7 @@
 <link rel="icon" href="/icon.svg"/>
 <style>
 :root{--bg:#fdf4e8;--card:#fff;--line:#e7d9c5;--ink:#2a1d44;--muted:#78716c}
-@media(prefers-color-scheme:dark){:root{--bg:#14101f;--card:#1c1730;--line:rgba(255,255,255,.1);--ink:#ede9fe;--muted:#a1a1aa}}
+:root.dark{--bg:#14101f;--card:#1c1730;--line:rgba(255,255,255,.1);--ink:#ede9fe;--muted:#a1a1aa}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 main{width:100%;max-width:27rem;background:var(--card);border:1px solid var(--line);border-radius:1.5rem;padding:2.25rem 1.75rem;text-align:center}

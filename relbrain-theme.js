@@ -3,6 +3,7 @@
    ───────────────────────────────────────────────────────────────────────────
    API : RB.getTheme() · RB.setTheme('light'|'dark'|'system') · RB.toggleTheme()
          RB.toast(message, 'info'|'success'|'error')
+   Par défaut : thème CLAIR (le sombre ne s'active que si l'élève le choisit).
    La préférence est stockée dans localStorage['rb-theme'] ; un script inline
    dans <head> l'applique avant le premier rendu (pas de flash).
    Ce fichier charge aussi relbrain-motion.js s'il n'est pas déjà présent.
@@ -14,7 +15,7 @@
   var SELF = (document.currentScript && document.currentScript.src) || '';
   var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
-  function stored() { try { return localStorage.getItem(KEY) || 'system'; } catch (e) { return 'system'; } }
+  function stored() { try { return localStorage.getItem(KEY) || 'light'; } catch (e) { return 'light'; } }
   function isDark(pref) { return pref === 'dark' || (pref === 'system' && mq && mq.matches); }
 
   function apply(pref) {

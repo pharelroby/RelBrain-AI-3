@@ -6,7 +6,7 @@
 <script>
 (function(){try{
   var u=new URLSearchParams(window.location.search).get('rb-theme');
-  var p=(u==='light'||u==='dark'||u==='system')?u:(localStorage.getItem('rb-theme')||'system');
+  var p=(u==='light'||u==='dark'||u==='system')?u:(localStorage.getItem('rb-theme')||'light');
   if(u)try{localStorage.setItem('rb-theme',u);}catch(e){}
   var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
   if(d)document.documentElement.classList.add('dark');

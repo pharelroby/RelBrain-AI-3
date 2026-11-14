@@ -3,7 +3,7 @@
 <head>
 <script src="relbrain-loader.js"></script>
 <meta charset="UTF-8"/>
-<script>(function(){try{var p=localStorage.getItem('rb-theme')||'system';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<script>(function(){try{var p=localStorage.getItem('rb-theme')||'light';var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="robots" content="noindex"/>
 <title>RelBrain.AI – Salle des profs</title>
@@ -114,7 +114,7 @@ html.dark .tag.ok{color:#6ee7b7}html.dark .tag.warn{color:#fcd34d}html.dark .tag
 .hero .acts button{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border-radius:99px;font-size:.74rem;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;transition:transform var(--rb-dur-fast) var(--rb-ease-out),background var(--rb-dur-fast)}
 .hero .acts button:hover{transform:translateY(-2px);background:rgba(255,255,255,.22)}
 .hero .acts button.first{background:#fff;color:var(--rb-violet-600);border-color:#fff;box-shadow:4px 4px 0 0 var(--rb-amber)}
-html.dark .hero .acts button.first{color:#6d28d9}
+html.dark .hero .acts button.first{color:#ddd6fe;background:rgba(255,255,255,.14)}
 .hero-char{position:absolute!important;right:clamp(.5rem,4vw,3rem);bottom:-6px;width:clamp(120px,15vw,178px);color:#1a1033}
 .hero-glyph{position:absolute!important;font-family:var(--rb-font-display);font-weight:700;color:#fff;opacity:.34;pointer-events:none}
 @media(max-width:640px){.hero{padding-right:1.4rem}.hero-char,.hero-glyph{display:none}}

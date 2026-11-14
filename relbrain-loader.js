@@ -15,7 +15,7 @@
     'Dix minutes de flashcards suffisent à garder ta série.',
   ];
   var dark = false;
-  try { var p = localStorage.getItem('rb-theme') || 'system'; dark = p === 'dark' || (p === 'system' && matchMedia('(prefers-color-scheme: dark)').matches); } catch (e) {}
+  try { var p = localStorage.getItem('rb-theme') || 'light'; dark = p === 'dark' || (p === 'system' && matchMedia('(prefers-color-scheme: dark)').matches); } catch (e) {}
 
   var el = document.createElement('div');
   el.id = 'rb-splash';
