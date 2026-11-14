@@ -354,6 +354,9 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
 .chat-msg.user{align-self:flex-end;background:var(--rb-ink);color:#fff;border-bottom-right-radius:.3rem}
 .chat-msg.bot{align-self:flex-start;background:var(--rb-surface);border:1px solid var(--rb-line);color:var(--rb-ink-2);border-bottom-left-radius:.3rem}
 .chat-msg.bot ul,.chat-msg.bot ol{padding-left:1.1rem;margin:.35rem 0}
+.chat-msg.chat-locked{border-color:var(--rb-violet-300);background:var(--rb-violet-50)}
+.chat-msg.chat-locked p+p{margin-top:.35rem}
+.locked-actions{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
 .chat-msg.bot ul{list-style:disc}.chat-msg.bot ol{list-style:decimal}
 .chat-msg.bot strong{color:var(--rb-ink)}
 .chat-msg.bot code{font-family:var(--rb-font-mono);font-size:.8em;background:var(--rb-surface-sunk);padding:.1em .35em;border-radius:.3em}
@@ -440,7 +443,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!r.text) bot.innerHTML = '<em>Pas de réponse, réessaie.</em>';
         RB.data.logSession('chat', (Date.now() - started) / 1000 + 60, documentId).catch(function () {});
       } catch (e) {
-        stop(); bot.remove(); RB.handleError(e);
+        stop();
+        if (e && e.code === 'feature_locked' && e.details && e.details.feature === 'tutor') {
+          // Plan gratuit : pas de tuteur, mais on montre tout ce qui reste possible
+          bot.classList.add('chat-locked');
+          bot.innerHTML = '<p><strong>🔒 Le tuteur IA arrive avec les formules payantes.</strong></p>' +
+            '<p>Elles ouvriront bientôt. Pendant le lancement, tu peux déjà transformer tes cours en révisions, gratuitement :</p>' +
+            '<div class="locked-actions">' +
+              '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-quiz-setup.html"><i class="fa-solid fa-circle-question"></i> Générer un quiz</a>' +
+              '<a class="rb-btn rb-btn--ghost rb-btn--sm" href="relbrain-flashcards.html"><i class="fa-solid fa-layer-group"></i> Mes flashcards</a>' +
+              '<a class="rb-btn rb-btn--ghost rb-btn--sm" href="relbrain-documents.html"><i class="fa-solid fa-file-arrow-up"></i> Importer un cours (résumé + fiches)</a>' +
+            '</div>';
+          bot.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } else { bot.remove(); RB.handleError(e); }
       } finally { sending = false; input.focus(); }
     };
 

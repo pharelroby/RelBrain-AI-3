@@ -51,7 +51,8 @@ export function bearer(req: VercelRequest): string | null {
 
 function cors(req: VercelRequest, res: VercelResponse, open: boolean) {
   const origin = req.headers.origin as string | undefined;
-  const allowed = [process.env.APP_URL, 'http://localhost:3000', 'http://127.0.0.1:3000'].filter(Boolean);
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  const allowed = [process.env.APP_URL, vercel && `https://${vercel}`, 'http://localhost:3000', 'http://127.0.0.1:3000'].filter(Boolean);
   if (open) res.setHeader('Access-Control-Allow-Origin', '*');
   else if (origin && allowed.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);

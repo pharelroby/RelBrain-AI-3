@@ -13,7 +13,9 @@
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --linked > lib/database.types.ts",
     "vapid": "web-push generate-vapid-keys",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "tsx scripts/demo.ts",
+    "vercel:env": "node scripts/vercel-env.js",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -34,6 +36,7 @@
     "@types/web-push": "^3.6.4",
     "@vercel/node": "^3.2.29",
     "tsx": "^4.23.15",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vercel": "^65.16.0"
   }
 }

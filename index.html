@@ -619,6 +619,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 document.addEventListener('DOMContentLoaded', function () {
   /* ── Tarifs : bandeau du lancement masqué dès que PAIEMENTS_ACTIFS vaut true (relbrain-config.js) ── */
   if (window.RB_CONFIG && window.RB_CONFIG.PAIEMENTS_ACTIFS) { var ln = document.getElementById('launch-note'); if (ln) ln.remove(); }
+  else document.querySelectorAll('#pricing .price .rb-btn').forEach(function (b, i) { if (i) b.textContent = 'Commencer gratuitement'; }); // phase de test : tout le monde démarre en gratuit
 
   /* ── Avis vérifiés : lus dans la base, uniquement ceux validés dans la salle des profs ── */
   (function () {

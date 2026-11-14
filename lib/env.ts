@@ -22,5 +22,9 @@ export function envOptional(name: string, fallback = ''): string {
 
 /** URL publique du site, sans slash final (liens des emails, redirections OAuth/paiement). */
 export function appUrl(): string {
-  return envOptional('APP_URL', 'http://localhost:3000').replace(/\/+$/, '');
+  // 1. APP_URL si tu l'as réglée (utile avec un nom de domaine à toi)
+  // 2. Sinon, sur Vercel : l'adresse de production fournie automatiquement par Vercel
+  // 3. Sinon : ton ordinateur
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  return envOptional('APP_URL', vercel ? `https://${vercel}` : 'http://localhost:3000').replace(/\/+$/, '');
 }
