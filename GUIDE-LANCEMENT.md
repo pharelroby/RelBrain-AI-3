@@ -226,3 +226,13 @@ Pour régler quand la fenêtre d'avis s'ouvre, regarde en haut de la partie
 | Le site affiche « Site en maintenance » | *Administration → Maintenance* : décoche, puis enregistre |
 | `npm run demo` affiche une erreur sur le fichier JSON | Une virgule ou un guillemet manque dans `content/demo/compte-demo.json` |
 | Sur ton ordinateur, l'IA ou les pages `/api` ne répondent plus | Ferme la fenêtre noire de `LANCER-RELBRAIN.bat` et relance-le |
+
+## Traduction anglaise (bouton FR / EN)
+
+Le site est écrit en français ; la version anglaise est générée automatiquement.
+
+- **Après avoir ajouté ou modifié des textes**, lance `npm run i18n` : le script relit toutes les pages, traduit uniquement les nouveaux textes avec Gemini, puis tu fais un commit et un push.
+- **Corriger une traduction** : ajoute la ligne dans `i18n/en.manual.json` (`"Texte français exact": "English text"`), puis `npm run i18n`.
+- **Un texte reste en français en anglais ?** Ouvre la page en anglais, tape dans la console du navigateur `copy(JSON.stringify(RB_I18N.misses()))`, colle le résultat dans un fichier, puis `node scripts/i18n-add-misses.js ce-fichier.json` et `npm run i18n`.
+- **Ne pas traduire un élément** (nom propre, code…) : ajoute-lui `translate="no"`.
+- Si le quota gratuit du modèle principal est atteint, le script passe tout seul sur `GEMINI_FALLBACK_MODEL`.
