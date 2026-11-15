@@ -2,5 +2,6 @@
   "Badge débloqué : {0}": "Badge unlocked: {0}",
   "Promotion en ligue {0} 🚀": "Promoted to the {0} league 🚀",
   "Concours": "Entrance exams",
-  "Tes outils": "Your tools"
+  "Tes outils": "Your tools",
+  "La dérivée de <0/> est <1/>. Si f′(x) ＞ 0, la fonction est croissante ; <2>si f′(x) = 0, elle peut avoir un extremum</2>. Exemple : la dérivée de x² est 2x.": "The derivative of <0/> is <1/>. If f′(x) ＞ 0, the function is increasing; <2>if f′(x) = 0, it may have an extremum</2>. Example: the derivative of x² is 2x."
 }

@@ -158,6 +158,7 @@ const RULES = `You translate the French user interface of RelBrain, a study-coac
 Rules:
 - Address the user informally as "you". Keep the tone warm, short and clear, like the French.
 - Keep EXACTLY every placeholder: <0>…</0>, <1/>, {0}, {1}… (same numbers, may be reordered to fit English grammar). Never add or drop one.
+- Keep the characters ＜ and ＞ exactly as they are (they mean < and >).
 - Keep emoji, numbers, symbols, prices ("3 000 F", "FCFA"), arrows and punctuation marks like "→", "·", "…".
 - Do not translate brand or proper names: RelBrain, RelBrain.AI, XP, SM-2, school and university names, city names, people's names.
 - Exam names: "Baccalauréat"/"Bac" → "Baccalaureate"/"Bac", "Probatoire" stays "Probatoire", "BEPC" stays, "GCE O & A Level" stays, "concours" → "entrance exam(s)", "annales" → "past papers", "épreuve" → "paper", "corrigé" → "answer key", "Licence" → "Bachelor's", "classes prépa" → "preparatory classes".
@@ -221,6 +222,8 @@ function sameTags(a, b) {
     fs.writeFileSync(OUT, JSON.stringify({ v, d: merged, p: pre }) + '\n');
     const js = path.join(ROOT, 'relbrain-i18n.js');
     fs.writeFileSync(js, fs.readFileSync(js, 'utf8').replace(/var VERSION = '[^']*';/, `var VERSION = '${v}';`));
+    // Les pages chargent relbrain-i18n.js?v=… : nouvelle version = pas d'ancien fichier gardé en cache
+    for (const f of ['relbrain-loader.js', '404.html', 'relbrain-maintenance.html']) { const fp = path.join(ROOT, f); fs.writeFileSync(fp, fs.readFileSync(fp, 'utf8').replace(/relbrain-i18n\.js\?v=[A-Za-z0-9]+/g, 'relbrain-i18n.js?v=' + v)); }
     return v;
   };
   const queue = batches.slice();

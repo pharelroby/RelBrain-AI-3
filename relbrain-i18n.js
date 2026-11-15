@@ -16,7 +16,7 @@
 (function (root) {
   'use strict';
 
-  var VERSION = '1955bca93a'; // remplacé par npm run i18n
+  var VERSION = 'e481618347'; // remplacé par npm run i18n
   var INLINE = { A: 1, ABBR: 1, B: 1, BR: 1, CODE: 1, EM: 1, I: 1, KBD: 1, MARK: 1, S: 1, SMALL: 1, SPAN: 1, STRONG: 1, SUB: 1, SUP: 1, U: 1, TIME: 1, SVG: 1, IMG: 1, LABEL: 1 };
   var SKIP = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, PRE: 1, svg: 1, SVG: 1, TEMPLATE: 1, IFRAME: 1, CANVAS: 1 };
   var ATTRS = ['placeholder', 'title', 'aria-label', 'alt', 'data-tip'];
@@ -62,13 +62,16 @@
     }
     return text && rich && inlineOnly(el);
   }
+  function safe(s) { return s.replace(/</g, '＜').replace(/>/g, '＞'); }
+  function plain(s) { return s.replace(/＜/g, '<').replace(/＞/g, '>'); }
   function unitParts(el) {
     var parts = [], key = '';
     for (var n = el.firstChild; n; n = n.nextSibling) {
-      if (n.nodeType === 3) key += n.nodeValue.replace(/[<>]/g, '');
+      // « < » et « > » écrits dans le texte deviennent ＜ ＞ pour ne pas être confondus avec les repères <0>
+      if (n.nodeType === 3) key += safe(n.nodeValue);
       else if (n.nodeType === 1) {
         var i = parts.push(n) - 1, t = textOf(n);
-        key += t && LETTERS.test(t) ? '<' + i + '>' + t.replace(/[<>]/g, '') + '</' + i + '>' : '<' + i + '/>';
+        key += t && LETTERS.test(t) ? '<' + i + '>' + safe(t) + '</' + i + '>' : '<' + i + '/>';
       }
     }
     return { key: norm(key), parts: parts };
@@ -159,12 +162,12 @@
     if (en == null) { miss(u.key); return false; }
     var doc = el.ownerDocument, out = [], last = 0, re = /<(\d+)\/>|<(\d+)>([\s\S]*?)<\/\2>/g, m;
     while ((m = re.exec(en))) {
-      if (m.index > last) out.push(doc.createTextNode(en.slice(last, m.index)));
+      if (m.index > last) out.push(doc.createTextNode(plain(en.slice(last, m.index))));
       var part = u.parts[+(m[1] || m[2])];
-      if (part) { if (m[2]) setOne(part, m[3]); out.push(part); }
+      if (part) { if (m[2]) setOne(part, plain(m[3])); out.push(part); }
       last = re.lastIndex;
     }
-    if (last < en.length) out.push(doc.createTextNode(en.slice(last)));
+    if (last < en.length) out.push(doc.createTextNode(plain(en.slice(last))));
     while (el.firstChild) el.removeChild(el.firstChild);
     out.forEach(function (n) { el.appendChild(n); });
     if (mine) {
