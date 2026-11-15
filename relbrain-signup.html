@@ -10,718 +10,331 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-design-system.css"/>
+<link rel="stylesheet" href="relbrain-auth.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
 <script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-*{font-family:'Inter',sans-serif;box-sizing:border-box;}
-body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
-.hero-bg{background:
-  radial-gradient(ellipse 55% 45% at 15% 5%, rgba(251,191,36,.10) 0%, transparent 55%),
-  radial-gradient(ellipse 50% 45% at 85% 15%, rgba(236,72,153,.10) 0%, transparent 55%),
-  radial-gradient(ellipse 40% 40% at 50% 85%, rgba(124,58,237,.08) 0%, transparent 60%),
-  #fdf4e8;}
-
-.progress-fill{transition:width .6s cubic-bezier(.4,0,.2,1);}
-.step-panel{display:none;}
-.step-panel.active{display:block;animation:stepIn .35s cubic-bezier(.4,0,.2,1);}
-@keyframes stepIn{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
-.step-panel.going-back.active{animation:stepBack .35s cubic-bezier(.4,0,.2,1);}
-@keyframes stepBack{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:translateX(0);}}
-
-.rb-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:#fff;transition:border-color .15s,box-shadow .15s;outline:none;appearance:none;-webkit-appearance:none;}
-.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12);}
-.rb-input.error{border-color:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.10);}
-.rb-input.valid{border-color:#10b981;}
-.rb-input::placeholder{color:#a8a29e;}
-.rb-label{display:block;font-size:.75rem;font-weight:800;color:#57534e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
-
-.rb-select-wrap{position:relative;}
-.rb-select-wrap::after{content:'';position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #78716c;pointer-events:none;}
-
-.level-btn{padding:.625rem 1rem;border:1.5px solid #e7d9c5;border-radius:.75rem;font-size:.8125rem;font-weight:700;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;text-align:center;}
-.level-btn:hover{border-color:#c4b5fd;color:#7c3aed;background:#faf5ff;}
-.level-btn.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;font-weight:800;}
-
-.lang-btn{display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;font-weight:700;color:#57534e;background:#fff;cursor:pointer;transition:all .15s;width:100%;}
-.lang-btn:hover{border-color:#c4b5fd;background:#faf5ff;color:#6d28d9;}
-.lang-btn.selected{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9;}
-.lang-btn .flag{font-size:1.25rem;}
-
-.goal-btn{display:flex;align-items:center;gap:.75rem;padding:.875rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;cursor:pointer;transition:all .15s;background:#fff;width:100%;text-align:left;}
-.goal-btn:hover{border-color:#c4b5fd;background:#faf5ff;}
-.goal-btn.selected{border-color:#7c3aed;background:#f5f3ff;}
-.goal-btn .goal-icon{width:2rem;height:2rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0;}
-.goal-btn .goal-check{width:1.125rem;height:1.125rem;border:1.5px solid #cbd5e1;border-radius:50%;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.goal-btn.selected .goal-check{background:#7c3aed;border-color:#7c3aed;}
-
-.strength-bar{height:3px;border-radius:9999px;transition:width .3s,background .3s;}
-.input-wrap{position:relative;}
-.input-wrap .input-icon{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#a8a29e;font-size:.8rem;pointer-events:none;}
-.input-wrap .rb-input.has-icon{padding-left:2.25rem;}
-.input-wrap .input-end{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);color:#a8a29e;cursor:pointer;font-size:.875rem;}
-.toggle-pw:hover{color:#7c3aed;}
-
-.phone-wrap{display:flex;gap:.5rem;}
-.phone-flag-btn{display:flex;align-items:center;gap:.375rem;padding:0 .75rem;border:1.5px solid #e7d9c5;border-radius:.875rem;background:#fff;cursor:pointer;font-size:.8125rem;font-weight:700;color:#57534e;white-space:nowrap;transition:border-color .15s;}
-.phone-flag-btn:hover{border-color:#c4b5fd;}
-
-.country-dropdown{position:absolute;top:100%;left:0;z-index:100;margin-top:.25rem;background:#fff;border:1px solid #e7d9c5;border-radius:1rem;box-shadow:0 8px 30px rgba(0,0,0,.12);max-height:220px;overflow-y:auto;min-width:220px;}
-.country-dropdown.hidden{display:none;}
-.country-option{display:flex;align-items:center;gap:.625rem;padding:.625rem 1rem;font-size:.8125rem;cursor:pointer;transition:background .1s;}
-.country-option:hover{background:#faf5ff;}
-
-@keyframes successBounce{0%{transform:scale(0) rotate(-10deg);opacity:0;}60%{transform:scale(1.15) rotate(3deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
-@keyframes confettiDrop{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(80px) rotate(720deg);opacity:0;}}
-.success-icon{animation:successBounce .55s cubic-bezier(.36,.07,.19,.97) forwards;}
-.confetti{position:absolute;width:8px;height:8px;border-radius:2px;animation:confettiDrop 1s ease-in forwards;}
-
-.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.gradient-bg{background:linear-gradient(135deg,#7c3aed,#a855f7 60%,#ec4899);}
-
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-thumb{background:#e7d9c5;border-radius:9999px;}
-
-.step-dot{transition:all .3s;}
-.step-dot.done{background:#10b981;}
-.step-dot.active{background:#7c3aed;width:1.75rem;border-radius:.5rem;}
-.step-dot.upcoming{background:#e7d9c5;}
-
-.field-error{font-size:.7rem;color:#f43f5e;margin-top:.25rem;font-weight:700;display:none;}
-.field-error.show{display:block;}
-
-.social-btn{display:flex;align-items:center;justify-content:center;gap:.625rem;width:100%;padding:.75rem 1rem;border-radius:.875rem;border:1.5px solid #e7d9c5;background:#fff;cursor:pointer;font-size:.875rem;font-weight:700;color:#57534e;transition:all .15s;}
-.social-btn:hover{border-color:#c4b5fd;background:#faf5ff;color:#6d28d9;}
-
-#rb-toast-host{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
-.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
-@keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-</style>
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 <meta name="apple-mobile-web-app-title" content="RelBrain"/>
 <meta name="theme-color" content="#7c3aed"/>
 </head>
-<body class="hero-bg">
+<body class="auth-body">
 
 <div id="rb-toast-host"></div>
 
-<!-- NAVBAR -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-[#fdf4e8]/85 backdrop-blur-sm border-b border-[#e7d9c5]">
-  <div class="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2">
-      <img src="/icon.svg" alt="" width="36" height="36" class="rb-app-mark"/>
-      <span class="text-base font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
-    </a>
-    <a href="index.html" class="text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5 transition-colors">
-      <i class="fa-solid fa-arrow-left text-[10px]"></i> Retour à l'accueil
-    </a>
+<nav class="auth-nav">
+  <a href="index.html" class="auth-nav__brand"><img src="/icon.svg" alt="" width="32" height="32" class="rb-app-mark"/> <span>RelBrain<i>.AI</i></span></a>
+  <div class="auth-nav__tools">
+    <button type="button" class="rb-theme-toggle auth-icon-btn" onclick="RB.toggleTheme()" aria-label="Changer de thème"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
+    <a href="index.html" class="auth-nav__back"><i class="fa-solid fa-arrow-left"></i> <span>Retour à l'accueil</span></a>
   </div>
 </nav>
 
-<main class="pt-20 pb-16 px-4 min-h-screen flex flex-col items-center justify-start">
+<main class="auth">
 
-  <!-- Barre progression -->
-  <div class="w-full max-w-lg mb-8">
-    <div class="flex items-center justify-between mb-3 px-1" id="steps-indicator"></div>
-    <p class="text-center text-xs text-slate-500 font-bold" id="step-subtitle">Étape 1 sur 4</p>
-  </div>
-
-  <!-- Carte -->
-  <div class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-[#e7d9c5] overflow-hidden">
-
-    <!-- ÉTAPE 1 -->
-    <div class="step-panel active" id="panel-0">
-      <div class="p-7 md:p-9">
-        <div class="mb-7">
-          <div class="w-12 h-12 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-4">
-            <i class="fa-solid fa-brain text-violet-600 text-xl"></i>
-          </div>
-          <h1 class="text-2xl font-black text-slate-900 mb-1">Crée ton compte</h1>
-          <p class="text-sm text-slate-500 font-semibold">Gratuit pour toujours · Aucune carte requise</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-          <button class="social-btn" onclick="socialLogin('Google')">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Google
-          </button>
-          <button class="social-btn" onclick="socialLogin('Apple')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            Apple
-          </button>
-        </div>
-
-        <div class="flex items-center gap-3 mb-6">
-          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
-          <span class="text-xs text-slate-400 font-bold">ou avec ton email</span>
-          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
-        </div>
-
-        <div class="mb-4">
-          <label class="rb-label" for="email">Adresse email</label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" id="email" class="rb-input has-icon" placeholder="toi@exemple.com" oninput="validateEmail()"/>
-          </div>
-          <p class="field-error" id="email-error">Adresse email invalide.</p>
-        </div>
-
-        <div class="mb-4">
-          <label class="rb-label" for="password">Mot de passe</label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="password" class="rb-input has-icon" placeholder="Minimum 8 caractères" oninput="checkStrength()" style="padding-right:2.5rem"/>
-            <i class="fa-solid fa-eye input-end toggle-pw" id="pw-toggle" onclick="togglePw()"></i>
-          </div>
-          <div class="flex gap-1 mt-2">
-            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-1"></div>
-            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-2"></div>
-            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-3"></div>
-            <div class="strength-bar flex-1 bg-[#e7d9c5]" id="sb-4"></div>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-1 font-semibold" id="strength-label"></p>
-        </div>
-
-        <div class="mb-6">
-          <label class="rb-label" for="password2">Confirmer le mot de passe</label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="password2" class="rb-input has-icon" placeholder="Même mot de passe" oninput="validateConfirm()"/>
-          </div>
-          <p class="field-error" id="pw-error">Les mots de passe ne correspondent pas.</p>
-        </div>
-
-        <label class="flex items-start gap-3 cursor-pointer mb-6">
-          <input type="checkbox" id="cgu" class="mt-0.5 accent-violet-600 w-4 h-4 shrink-0"/>
-          <span class="text-xs text-slate-500 leading-relaxed font-semibold">J'accepte les <a href="relbrain-cgu.html" class="text-violet-600 font-black hover:underline">CGU</a> et la <a href="relbrain-confidentialite.html" class="text-violet-600 font-black hover:underline">Politique de confidentialité</a>.</span>
-        </label>
-
-        <button class="w-full gradient-bg text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-violet-200 flex items-center justify-center gap-2 text-sm" onclick="goStep(1)">
-          Créer mon compte <i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-
-        <p class="text-center text-xs text-slate-500 mt-5 font-semibold">
-          Déjà un compte ? <a href="relbrain-login.html" class="text-violet-600 font-black hover:underline">Se connecter</a>
-        </p>
-      </div>
+  <!-- ═══ Panneau de marque ═══ -->
+  <aside class="auth-brand" aria-hidden="true">
+    <img src="/icon.svg" alt="" class="auth-mini"/>
+    <div>
+      <span class="auth-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Gratuit pendant le lancement</span>
+      <h2>Révise <em>mieux</em>, pas plus longtemps.</h2>
+      <p class="lead">Ton compte est prêt en une minute.</p>
+      <ul>
+        <li><b>📄</b> Importe ton cours</li>
+        <li><b>⚡</b> Reçois quiz et flashcards</li>
+        <li><b>📈</b> Suis tes progrès</li>
+      </ul>
     </div>
+    <div class="auth-stage">
+      <span class="auth-glyph" style="left:6%;bottom:6%">∫</span>
+      <span class="auth-glyph" style="left:46%;top:38%;animation-delay:-3s">x²</span>
+      <span class="auth-glyph" style="right:4%;top:2%;animation-delay:-5s">✦</span>
+      <div class="auth-chip auth-chip--a"><span class="em">🎓</span><span>+100 XP<small>Cadeau de bienvenue</small></span></div>
+      <div class="auth-chip auth-chip--c">(x²)′ = 2x</div>
+      <div class="auth-chip auth-chip--b"><span class="em">🃏</span><span>12 flashcards<small>prêtes en 30 s</small></span></div>
+      <svg class="student" viewBox="0 0 160 190">
+        <ellipse cx="80" cy="182" rx="56" ry="6" fill="#2e1065" opacity=".25"/>
+        <path d="M30 186c2-38 22-58 50-58s48 20 50 58z" fill="#fde68a"/>
+        <path d="M62 132l18 22 18-22" fill="none" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>
+        <rect x="70" y="104" width="20" height="22" rx="8" fill="#8a5432"/>
+        <circle cx="52" cy="58" r="20" fill="#2a1a12"/><circle cx="108" cy="58" r="20" fill="#2a1a12"/>
+        <ellipse cx="80" cy="74" rx="30" ry="34" fill="#9b6139"/>
+        <path d="M50 66c4-26 56-30 60 0-10-12-50-12-60 0z" fill="#2a1a12"/>
+        <path d="M51 62c10-8 48-8 58 0" stroke="#ec4899" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <circle cx="69" cy="78" r="3.4" fill="#1a1033"/><circle cx="92" cy="78" r="3.4" fill="#1a1033"/>
+        <circle cx="70.2" cy="76.8" r="1" fill="#fff"/><circle cx="93.2" cy="76.8" r="1" fill="#fff"/>
+        <path d="M71 92c5 5 13 5 18 0" stroke="#1a1033" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="61" cy="88" r="4" fill="#ec4899" opacity=".28"/><circle cx="100" cy="88" r="4" fill="#ec4899" opacity=".28"/>
+        <circle cx="66" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><circle cx="94" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><path d="M76 78h8" stroke="#1a1033" stroke-width="2"/>
+        <path d="M118 150c14-6 22-20 18-34" stroke="#9b6139" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <g transform="rotate(-28 138 112)"><rect x="132" y="84" width="9" height="34" rx="2" fill="#f59e0b"/><path d="M132 118l4.5 9 4.5-9z" fill="#fde68a"/><rect x="132" y="84" width="9" height="6" fill="#ec4899"/></g>
+      </svg>
+    </div>
+  </aside>
 
-    <!-- ÉTAPE 2 -->
-    <div class="step-panel" id="panel-1">
-      <div class="p-7 md:p-9">
-        <div class="mb-7">
-          <div class="w-12 h-12 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-4">
-            <i class="fa-solid fa-user text-violet-600 text-xl"></i>
-          </div>
-          <h2 class="text-2xl font-black text-slate-900 mb-1">Parle-nous de toi</h2>
-          <p class="text-sm text-slate-500 font-semibold">Pour personnaliser ton expérience RelBrain</p>
+  <!-- ═══ Formulaire ═══ -->
+  <section class="auth-card" id="card">
+    <div class="steps-bar" id="bar" aria-hidden="true"><span class="s on"><i></i></span><span class="s"><i></i></span><span class="s"><i></i></span></div>
+
+    <!-- ÉTAPE 1 · Le compte -->
+    <form class="panel on" id="panel-0" novalidate>
+      <p class="steps-label">Étape 1 sur 2</p>
+      <h1>Crée ton compte</h1>
+      <p class="sub">Juste ton nom, ton email et un mot de passe.</p>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="prenom">Prénom</label>
+          <div class="inp no-icon" id="prenom-box"><input type="text" id="prenom" autocomplete="given-name" placeholder="Ex : Aïcha" required/></div>
+          <p class="err" id="prenom-error">Ton prénom, s'il te plaît.</p>
         </div>
-
-        <div class="flex items-center gap-4 mb-6 p-4 bg-[#fdf4e8] rounded-2xl border border-[#e7d9c5]">
-          <div class="w-16 h-16 rounded-2xl bg-violet-100 border-2 border-dashed border-violet-300 flex items-center justify-center overflow-hidden shrink-0" id="avatar-preview">
-            <i class="fa-solid fa-camera text-violet-400 text-xl" id="avatar-icon"></i>
-            <img id="avatar-img" class="hidden w-full h-full object-cover"/>
-          </div>
-          <div>
-            <p class="text-sm font-black text-slate-700 mb-0.5">Photo de profil</p>
-            <p class="text-xs text-slate-400 font-semibold mb-2">Optionnel · JPG, PNG, max 2 MB</p>
-            <label for="avatar-input" class="inline-flex items-center gap-1.5 text-xs font-black text-violet-600 cursor-pointer bg-violet-50 px-3 py-1.5 rounded-lg hover:bg-violet-100">
-              <i class="fa-solid fa-upload text-[10px]"></i> Choisir
-            </label>
-            <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="previewAvatar(this)"/>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="rb-label" for="prenom">Prénom <span class="text-rose-400">*</span></label>
-            <input type="text" id="prenom" class="rb-input" placeholder="Pharel" oninput="validateRequired('prenom','prenom-error')"/>
-            <p class="field-error" id="prenom-error">Champ requis.</p>
-          </div>
-          <div>
-            <label class="rb-label" for="nom">Nom <span class="text-rose-400">*</span></label>
-            <input type="text" id="nom" class="rb-input" placeholder="FOFE" oninput="validateRequired('nom','nom-error')"/>
-            <p class="field-error" id="nom-error">Champ requis.</p>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="rb-label">Téléphone <span class="text-slate-400 font-semibold normal-case">(optionnel)</span></label>
-          <div class="phone-wrap relative">
-            <button type="button" class="phone-flag-btn" id="phone-flag-btn" onclick="toggleCountryDrop()">
-              <span id="selected-flag">🇨🇲</span>
-              <span id="selected-code">+237</span>
-              <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
-            </button>
-            <div class="country-dropdown hidden" id="country-drop">
-              <div class="country-option" onclick="selectCountry('🇨🇲','+237')"><span>🇨🇲</span><span class="flex-1">Cameroun</span><span class="text-slate-400 text-xs">+237</span></div>
-              <div class="country-option" onclick="selectCountry('🇫🇷','+33')"><span>🇫🇷</span><span class="flex-1">France</span><span class="text-slate-400 text-xs">+33</span></div>
-              <div class="country-option" onclick="selectCountry('🇸🇳','+221')"><span>🇸🇳</span><span class="flex-1">Sénégal</span><span class="text-slate-400 text-xs">+221</span></div>
-              <div class="country-option" onclick="selectCountry('🇨🇮','+225')"><span>🇨🇮</span><span class="flex-1">Côte d'Ivoire</span><span class="text-slate-400 text-xs">+225</span></div>
-              <div class="country-option" onclick="selectCountry('🇧🇪','+32')"><span>🇧🇪</span><span class="flex-1">Belgique</span><span class="text-slate-400 text-xs">+32</span></div>
-              <div class="country-option" onclick="selectCountry('🇨🇦','+1')"><span>🇨🇦</span><span class="flex-1">Canada</span><span class="text-slate-400 text-xs">+1</span></div>
-            </div>
-            <input type="tel" id="phone" class="rb-input flex-1" placeholder="6 00 00 00 00"/>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="rb-label" for="pays">Pays <span class="text-rose-400">*</span></label>
-          <div class="rb-select-wrap">
-            <select id="pays" class="rb-input">
-              <option value="">Sélectionner…</option>
-              <option>Cameroun</option><option>France</option><option>Sénégal</option>
-              <option>Côte d'Ivoire</option><option>Bénin</option><option>Togo</option>
-              <option>Gabon</option><option>Congo (RDC)</option><option>Mali</option>
-              <option>Burkina Faso</option><option>Maroc</option><option>Algérie</option>
-              <option>Tunisie</option><option>Belgique</option><option>Suisse</option>
-              <option>Canada</option><option>Autre</option>
-            </select>
-          </div>
-          <p class="field-error" id="pays-error">Veuillez sélectionner votre pays.</p>
-        </div>
-
-        <div class="mb-6">
-          <label class="rb-label" for="universite">Établissement <span class="text-slate-400 font-semibold normal-case">(optionnel)</span></label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-building-columns input-icon"></i>
-            <input type="text" id="universite" class="rb-input has-icon" placeholder="Ton lycée, ton université ou ton école"/>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <button class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2" onclick="goStep(0)">
-            <i class="fa-solid fa-arrow-left text-xs"></i> Retour
-          </button>
-          <button class="flex-1 gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 text-sm flex items-center justify-center gap-2" onclick="goStep(2)">
-            Continuer <i class="fa-solid fa-arrow-right text-xs"></i>
-          </button>
+        <div class="field">
+          <label for="nom">Nom</label>
+          <div class="inp no-icon" id="nom-box"><input type="text" id="nom" autocomplete="family-name" placeholder="Ex : Mbarga" required/></div>
+          <p class="err" id="nom-error">Ton nom, s'il te plaît.</p>
         </div>
       </div>
-    </div>
 
-    <!-- ÉTAPE 3 -->
-    <div class="step-panel" id="panel-2">
-      <div class="p-7 md:p-9">
-        <div class="mb-7">
-          <div class="w-12 h-12 bg-amber-50 border border-amber-100 rounded-2xl flex items-center justify-center mb-4">
-            <i class="fa-solid fa-sliders text-amber-500 text-xl"></i>
+      <div class="field">
+        <label for="email">Adresse email</label>
+        <div class="inp" id="email-box"><i class="fa-solid fa-envelope lead"></i><input type="email" id="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.com" required/></div>
+        <p class="err" id="email-error">Vérifie ton adresse email.</p>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <div class="inp" id="password-box">
+          <i class="fa-solid fa-lock lead"></i>
+          <input type="password" id="password" autocomplete="new-password" placeholder="8 caractères minimum" required style="padding-right:3rem"/>
+          <button type="button" class="end" id="pw-toggle" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <p class="meter-label" id="strength-label"></p>
+        <p class="err" id="password-error">8 caractères minimum.</p>
+      </div>
+
+      <label class="check" style="margin:.3rem 0 1.3rem"><input type="checkbox" id="cgu"/> <span>J'accepte les <a href="relbrain-cgu.html" class="link" target="_blank">conditions d'utilisation</a> et la <a href="relbrain-confidentialite.html" class="link" target="_blank">politique de confidentialité</a>.</span></label>
+      <p class="err" id="cgu-error" style="margin:-1rem 0 1rem">Coche la case pour continuer.</p>
+
+      <button type="submit" class="btn-main">Continuer <i class="fa-solid fa-arrow-right"></i></button>
+      <p class="alt">Déjà un compte ? <a href="relbrain-login.html" class="link">Se connecter</a></p>
+    </form>
+
+    <!-- ÉTAPE 2 · Le profil scolaire -->
+    <form class="panel" id="panel-1" novalidate>
+      <p class="steps-label">Étape 2 sur 2</p>
+      <h1>Où en es-tu ?</h1>
+      <p class="sub">RelBrain adapte les quiz et les concours à ton pays et à ton niveau.</p>
+
+      <div class="field">
+        <label for="pays">Pays</label>
+        <div class="inp sel" id="pays-box"><i class="fa-solid fa-earth-africa lead"></i><select id="pays" autocomplete="country-name" required><option value="">Choisis ton pays…</option></select></div>
+        <p class="err" id="pays-error">Choisis ton pays.</p>
+      </div>
+
+      <div class="field">
+        <span class="auth-label">Niveau</span>
+        <div class="choices" id="level-grid" role="radiogroup" aria-label="Niveau"></div>
+        <p class="err" id="level-error">Choisis ton niveau.</p>
+      </div>
+
+      <div class="field">
+        <label for="universite">Établissement <span class="opt">(facultatif)</span></label>
+        <div class="inp" id="universite-box"><i class="fa-solid fa-building-columns lead"></i><input type="text" id="universite" autocomplete="organization" placeholder="Ton lycée ou ton université"/></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="filiere">Filière <span class="opt">(facultatif)</span></label>
+          <div class="inp no-icon"><input type="text" id="filiere" placeholder="Ex : Série C, Droit…"/></div>
+        </div>
+        <div class="field">
+          <span class="auth-label">Langue</span>
+          <div class="choices" style="grid-template-columns:1fr 1fr" role="radiogroup" aria-label="Langue">
+            <button type="button" class="choice on" data-lang="fr" translate="no">🇫🇷 Français</button>
+            <button type="button" class="choice" data-lang="en" translate="no">🇬🇧 English</button>
           </div>
-          <h2 class="text-2xl font-black text-slate-900 mb-1">Tes préférences</h2>
-          <p class="text-sm text-slate-500 font-semibold">Aide l'IA à te préparer le bon contenu</p>
-        </div>
-
-        <div class="mb-5">
-          <label class="rb-label mb-3">Niveau scolaire <span class="text-rose-400">*</span></label>
-          <div class="grid grid-cols-2 gap-2" id="level-grid"></div>
-          <p class="field-error" id="level-error">Veuillez choisir un niveau.</p>
-        </div>
-
-        <div class="mb-5">
-          <label class="rb-label" for="filiere">Filière / Spécialité</label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-diagram-project input-icon"></i>
-            <input type="text" id="filiere" class="rb-input has-icon" placeholder="Ex : Informatique, Droit…"/>
-          </div>
-        </div>
-
-        <div class="mb-5">
-          <label class="rb-label mb-3">Langue <span class="text-rose-400">*</span></label>
-          <div class="grid grid-cols-2 gap-2">
-            <button class="lang-btn selected" id="lang-fr" onclick="selectLang('fr')">
-              <span class="flag">🇫🇷</span> Français
-              <i class="fa-solid fa-check text-violet-500 text-xs ml-auto" id="lang-fr-check"></i>
-            </button>
-            <button class="lang-btn" id="lang-en" onclick="selectLang('en')">
-              <span class="flag">🇬🇧</span> English
-              <i class="fa-solid fa-check text-violet-500 text-xs ml-auto hidden" id="lang-en-check"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="mb-6">
-          <label class="rb-label mb-3">Objectifs <span class="text-slate-400 font-semibold normal-case">(plusieurs choix)</span></label>
-          <div class="space-y-2" id="goals-list"></div>
-        </div>
-
-        <div class="flex gap-3">
-          <button class="flex-1 border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2" onclick="goStep(1)">
-            <i class="fa-solid fa-arrow-left text-xs"></i> Retour
-          </button>
-          <button class="flex-1 gradient-bg text-white font-black py-3.5 rounded-xl shadow-lg shadow-violet-200 text-sm flex items-center justify-center gap-2" onclick="goStep(3)">
-            Terminer <i class="fa-solid fa-check text-xs"></i>
-          </button>
         </div>
       </div>
-    </div>
 
-    <!-- ÉTAPE 4 -->
-    <div class="step-panel" id="panel-3">
-      <div class="p-7 md:p-9 text-center relative overflow-hidden">
-        <div id="confetti-container" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-
-        <div class="w-24 h-24 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 success-icon shadow-2xl shadow-violet-300 relative z-10">
-          <i class="fa-solid fa-check text-white text-4xl"></i>
-        </div>
-
-        <h2 class="text-3xl font-black text-slate-900 mb-2 relative z-10">Bienvenue, <span class="gradient-text" id="welcome-name">toi !</span> 🎉</h2>
-        <p class="text-sm text-slate-500 mb-8 max-w-xs mx-auto leading-relaxed font-semibold relative z-10">Un email de confirmation vient de t'être envoyé. Valide ton adresse pour activer toutes les fonctionnalités.</p>
-
-        <div class="bg-[#fdf4e8] border border-[#e7d9c5] rounded-2xl p-5 mb-7 text-left space-y-2.5 relative z-10">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope text-violet-500 text-xs"></i></div>
-            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Email</p><p class="text-sm font-black text-slate-700" id="recap-email">—</p></div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-graduation-cap text-violet-500 text-xs"></i></div>
-            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Niveau</p><p class="text-sm font-black text-slate-700" id="recap-level">—</p></div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0"><i class="fa-solid fa-globe text-amber-500 text-xs"></i></div>
-            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Pays · Langue</p><p class="text-sm font-black text-slate-700" id="recap-country">—</p></div>
-          </div>
-        </div>
-
-        <div class="rounded-2xl p-4 mb-7 flex items-center gap-3 text-left gradient-bg relative z-10">
-          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-star text-amber-300"></i></div>
-          <div>
-            <p class="text-white font-black text-sm">+100 XP de bienvenue !</p>
-            <p class="text-violet-100 text-xs font-semibold">Tu démarres déjà avec un avantage 🚀</p>
-          </div>
-        </div>
-
-        <a href="relbrain-validation-email.html" class="block w-full gradient-bg text-white font-black py-4 rounded-xl shadow-xl shadow-violet-200 text-base flex items-center justify-center gap-2 mb-3 relative z-10">
-          <i class="fa-solid fa-envelope-circle-check"></i> Valider mon email
-        </a>
-        <a href="relbrain-accueil.html" class="block w-full border-2 border-[#e7d9c5] hover:border-violet-300 text-slate-600 font-bold py-3.5 rounded-xl text-sm relative z-10">Accueil →</a>
+      <div class="field">
+        <span class="auth-label">Ton objectif <span class="opt" style="font-weight:600;color:var(--rb-muted)">(facultatif)</span></span>
+        <div class="chips" id="goals-list"></div>
       </div>
-    </div>
-  </div>
 
-  <div class="flex items-center gap-4 mt-6">
-    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> SSL</span>
-    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-lock text-violet-500"></i> RGPD</span>
-    <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-slate-400"></i> Aucune revente</span>
-  </div>
+      <div class="two-btns">
+        <button type="button" class="btn-ghost" id="back-1" aria-label="Retour"><i class="fa-solid fa-arrow-left"></i></button>
+        <button type="submit" class="btn-main" id="create-btn"><i class="fa-solid fa-rocket"></i> Créer mon compte</button>
+      </div>
+    </form>
+
+    <!-- ÉTAPE 3 · Bienvenue -->
+    <div class="panel welcome" id="panel-2">
+      <div id="confetti-container" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="badge"><i class="fa-solid fa-check"></i></div>
+      <h1>Bienvenue, <span id="welcome-name" style="background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent" translate="no">toi</span> ! 🎉</h1>
+      <p class="sub" id="welcome-text" style="margin-bottom:0">Un email de confirmation vient de partir vers <b id="recap-email" translate="no">ton adresse</b>. Ouvre-le pour activer ton compte.</p>
+      <div class="xp"><span style="font-size:1.6rem">⭐</span><span><b>+100 XP de bienvenue</b><small style="opacity:.9;font-weight:600">Tu démarres déjà avec un avantage.</small></span></div>
+      <a href="relbrain-validation-email.html" class="btn-main" id="welcome-cta" style="text-decoration:none"><i class="fa-solid fa-envelope-circle-check"></i> J'ouvre mon email</a>
+    </div>
+
+    <div class="trust"><span><i class="fa-solid fa-lock"></i>Connexion chiffrée</span><span><i class="fa-solid fa-user-shield"></i>Aucune revente de données</span></div>
+  </section>
 </main>
 
 <script>
-let currentStep = 0;
-let selectedLevel = null;
-let selectedLang = 'fr';
-let selectedGoals = new Set();
+var step = 0, selectedLevel = null, selectedLang = 'fr', selectedGoals = new Set();
+var LEVELS = [['college', '📚 Collège'], ['lycee', '🏫 Lycée / Bac'], ['bts', '🎓 BTS / DUT'], ['licence', '📖 Licence'], ['master', '🧑‍🎓 Master'], ['prepa', '⚡ Prépa / Concours']];
+var GOALS = [['examen', '🎯 Réussir un examen'], ['revision', '🔁 Réviser régulièrement'], ['lacunes', '🧩 Combler mes lacunes'], ['rapidite', '⚡ Apprendre plus vite']];
+var $ = function (id) { return document.getElementById(id); };
+var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
 
-/* Steps indicator */
-const stepData = [
-  {icon:'fa-envelope', label:'Compte'},
-  {icon:'fa-user', label:'Profil'},
-  {icon:'fa-sliders', label:'Préférences'},
-  {icon:'fa-rocket', label:'Démarrer'},
-];
-
-function renderSteps(){
-  document.getElementById('steps-indicator').innerHTML = stepData.map((s,i) => `
-    <div class="flex flex-col items-center gap-1 flex-1">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-white border-2 border-[#e7d9c5] text-slate-400" id="step-icon-${i}">${i+1}</div>
-      <span class="text-[10px] font-bold text-slate-400 transition-colors duration-300" id="step-label-${i}">${s.label}</span>
-    </div>
-    ${i < stepData.length - 1 ? `<div class="h-0.5 flex-1 mx-1 rounded-full overflow-hidden bg-[#e7d9c5] mb-4"><div class="h-full gradient-bg rounded-full progress-fill" id="connector-${i}" style="width:0%"></div></div>` : ''}
-  `).join('');
-  updateProgress();
+function toast(msg, type) {
+  var icons = { info: 'fa-circle-info', success: 'fa-circle-check', error: 'fa-circle-exclamation' };
+  var el = document.createElement('div');
+  el.className = 'rb-toast ' + (type || 'info');
+  el.innerHTML = '<i class="fa-solid ' + icons[type || 'info'] + '"></i><span></span>';
+  el.lastChild.textContent = msg;
+  $('rb-toast-host').appendChild(el);
+  setTimeout(function () { el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 300); }, 3600);
 }
-renderSteps();
-
-/* Level buttons */
-const levels = [
-  { id:'college', label:'📚 Collège' },
-  { id:'lycee',   label:'🏫 Lycée / BAC' },
-  { id:'bts',     label:'🎓 BTS / DUT' },
-  { id:'licence', label:'📖 Licence' },
-  { id:'master',  label:'🧑‍🎓 Master' },
-  { id:'prepa',   label:'⚡ Prépa / Concours' },
-];
-document.getElementById('level-grid').innerHTML = levels.map(l => `
-  <button class="level-btn" id="lvl-${l.id}" onclick="selectLevel('${l.id}')">${l.label}</button>
-`).join('');
-
-/* Goals */
-const goals = [
-  { id:'examen', icon:'fa-file-pen', color:'bg-rose-50 text-rose-500', label:'Préparer un examen', sub:'Partiel, BAC, concours...' },
-  { id:'revision', icon:'fa-rotate', color:'bg-violet-50 text-violet-500', label:'Réviser régulièrement', sub:'Maintenir mes acquis' },
-  { id:'lacunes', icon:'fa-magnifying-glass', color:'bg-amber-50 text-amber-500', label:'Combler mes lacunes', sub:'Corriger mes points faibles' },
-  { id:'rapidite', icon:'fa-bolt', color:'bg-pink-50 text-pink-500', label:'Apprendre plus vite', sub:'Mémoriser efficacement' },
-];
-document.getElementById('goals-list').innerHTML = goals.map(g => `
-  <button class="goal-btn" id="goal-${g.id}" onclick="toggleGoal('${g.id}')">
-    <div class="goal-icon ${g.color}"><i class="fa-solid ${g.icon}"></i></div>
-    <div class="flex-1 text-left">
-      <p class="text-sm font-black text-slate-800">${g.label}</p>
-      <p class="text-xs text-slate-400 font-semibold">${g.sub}</p>
-    </div>
-    <div class="goal-check" id="gc-${g.id}"><i class="fa-solid fa-check text-white text-[9px] hidden" id="gci-${g.id}"></i></div>
-  </button>
-`).join('');
-
-/* Navigation */
-function goStep(target){
-  if (target > currentStep && !validateStep(currentStep)) return;
-  const panels = document.querySelectorAll('.step-panel');
-  const goingBack = target < currentStep;
-  panels[currentStep].classList.remove('active','going-back');
-  const next = panels[target];
-  next.classList.toggle('going-back', goingBack);
-  setTimeout(()=>{ next.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); },10);
-  currentStep = target;
-  updateProgress();
-  if (target === 3) buildSuccessScreen();
+function fieldError(id, on) {
+  var box = $(id + '-box'); if (box) box.classList.toggle('is-error', on);
+  var e = $(id + '-error'); if (e) e.classList.toggle('show', on);
+  return !on;
 }
 
-function updateProgress(){
-  stepData.forEach((s,i) => {
-    const icon = document.getElementById(`step-icon-${i}`);
-    const label = document.getElementById(`step-label-${i}`);
-    const conn = document.getElementById(`connector-${i}`);
-    if (i < currentStep) {
-      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-emerald-500 text-white';
-      icon.innerHTML = '<i class="fa-solid fa-check text-sm"></i>';
-      label.className = 'text-[10px] font-black text-emerald-600';
-      if (conn) conn.style.width = '100%';
-    } else if (i === currentStep) {
-      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 gradient-bg text-white shadow-lg shadow-violet-200';
-      icon.innerHTML = `<i class="fa-solid ${s.icon}"></i>`;
-      label.className = 'text-[10px] font-black text-violet-600';
-    } else {
-      icon.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300 bg-white border-2 border-[#e7d9c5] text-slate-400';
-      icon.innerHTML = `<span>${i+1}</span>`;
-      label.className = 'text-[10px] font-bold text-slate-400';
-      if (conn) conn.style.width = '0%';
-    }
-  });
-  document.getElementById('step-subtitle').textContent = `Étape ${currentStep + 1} sur 4`;
-}
-
-/* Validations */
-function validateStep(step){
-  if (step === 0) {
-    const email = document.getElementById('email').value.trim();
-    const pw = document.getElementById('password').value;
-    const pw2 = document.getElementById('password2').value;
-    const cgu = document.getElementById('cgu').checked;
-    let ok = true;
-    if (!isValidEmail(email)) { showError('email','email-error'); ok = false; }
-    if (pw.length < 8) { showError('password',''); toast('Mot de passe ≥ 8 caractères','error'); ok = false; }
-    else if (pw !== pw2) { showError('password2','pw-error'); ok = false; }
-    if (!cgu) { toast('Accepte les CGU','error'); ok = false; }
-    return ok;
-  }
-  if (step === 1) {
-    const prenom = document.getElementById('prenom').value.trim();
-    const nom = document.getElementById('nom').value.trim();
-    const pays = document.getElementById('pays').value;
-    let ok = true;
-    if (!prenom) { showError('prenom','prenom-error'); ok = false; }
-    if (!nom) { showError('nom','nom-error'); ok = false; }
-    if (!pays) { showError('pays','pays-error'); ok = false; }
-    return ok;
-  }
-  if (step === 2) {
-    if (!selectedLevel) { document.getElementById('level-error').classList.add('show'); toast('Choisis ton niveau','error'); return false; }
-    return true;
-  }
-  return true;
-}
-
-function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-function validateEmail(){
-  const el = document.getElementById('email'); const err = document.getElementById('email-error');
-  if (el.value && !isValidEmail(el.value)) { el.classList.add('error'); el.classList.remove('valid'); err.classList.add('show'); }
-  else if (el.value) { el.classList.remove('error'); el.classList.add('valid'); err.classList.remove('show'); }
-}
-function validateConfirm(){
-  const pw = document.getElementById('password').value; const pw2 = document.getElementById('password2');
-  const err = document.getElementById('pw-error');
-  if (pw2.value && pw2.value !== pw) { pw2.classList.add('error'); err.classList.add('show'); }
-  else if (pw2.value) { pw2.classList.remove('error'); pw2.classList.add('valid'); err.classList.remove('show'); }
-}
-function validateRequired(id, errId){
-  const el = document.getElementById(id); const err = document.getElementById(errId);
-  if (!el.value.trim()) { el.classList.add('error'); err.classList.add('show'); }
-  else { el.classList.remove('error'); el.classList.add('valid'); err.classList.remove('show'); }
-}
-function showError(id, errId){
-  const el = document.getElementById(id);
-  if (el) { el.classList.add('error'); el.focus(); }
-  if (errId) { const err = document.getElementById(errId); if (err) err.classList.add('show'); }
-}
-function checkStrength(){
-  const pw = document.getElementById('password').value;
-  const bars = [1,2,3,4].map(i=>document.getElementById('sb-'+i));
-  const label = document.getElementById('strength-label');
-  let score = 0;
-  if (pw.length >= 8) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[0-9]/.test(pw)) score++;
-  if (/[^a-zA-Z0-9]/.test(pw)) score++;
-  const colors = ['bg-rose-500','bg-orange-400','bg-amber-400','bg-emerald-500'];
-  const texts = ['Très faible','Faible','Moyen','Fort 💪'];
-  const textColors = ['text-rose-500','text-orange-500','text-amber-600','text-emerald-600'];
-  bars.forEach((b,i) => { b.className = 'strength-bar flex-1 ' + (i < score && score > 0 ? colors[score-1] : 'bg-[#e7d9c5]'); });
-  if (pw) { label.textContent = texts[score-1] || ''; label.className = 'text-[11px] mt-1 font-bold ' + (textColors[score-1] || ''); }
-  else { label.textContent = ''; }
-}
-function togglePw(){
-  const inp = document.getElementById('password'); const ico = document.getElementById('pw-toggle');
-  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash input-end toggle-pw'; }
-  else { inp.type = 'password'; ico.className = 'fa-solid fa-eye input-end toggle-pw'; }
-}
-function previewAvatar(input){
-  if (!input.files?.[0]) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('avatar-icon').classList.add('hidden');
-    const img = document.getElementById('avatar-img');
-    img.src = e.target.result;
-    img.classList.remove('hidden');
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-function selectLevel(id){
-  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('lvl-'+id).classList.add('selected');
-  selectedLevel = id;
-  document.getElementById('level-error').classList.remove('show');
-}
-function selectLang(lang){
-  selectedLang = lang;
-  ['fr','en'].forEach(l => {
-    document.getElementById('lang-'+l).classList.toggle('selected', l === lang);
-    document.getElementById('lang-'+l+'-check').classList.toggle('hidden', l !== lang);
-  });
-}
-function toggleGoal(id){
-  const btn = document.getElementById('goal-'+id); const check = document.getElementById('gc-'+id);
-  const checkIcon = document.getElementById('gci-'+id);
-  if (selectedGoals.has(id)) { selectedGoals.delete(id); btn.classList.remove('selected'); checkIcon.classList.add('hidden'); }
-  else { selectedGoals.add(id); btn.classList.add('selected'); checkIcon.classList.remove('hidden'); }
-}
-function toggleCountryDrop(){ document.getElementById('country-drop').classList.toggle('hidden'); }
-function selectCountry(flag, code){
-  document.getElementById('selected-flag').textContent = flag;
-  document.getElementById('selected-code').textContent = code;
-  document.getElementById('country-drop').classList.add('hidden');
-}
-document.addEventListener('click', e => {
-  const btn = document.getElementById('phone-flag-btn'); const drop = document.getElementById('country-drop');
-  if (btn && drop && !btn.contains(e.target) && !drop.contains(e.target)) drop.classList.add('hidden');
+/* Choix : niveaux, langue, objectifs */
+$('level-grid').innerHTML = LEVELS.map(function (l) { return '<button type="button" class="choice" role="radio" aria-checked="false" data-level="' + l[0] + '">' + l[1] + '</button>'; }).join('');
+$('goals-list').innerHTML = GOALS.map(function (g) { return '<button type="button" class="choice" aria-pressed="false" data-goal="' + g[0] + '">' + g[1] + '</button>'; }).join('');
+$('level-grid').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-level]'); if (!b) return;
+  selectedLevel = b.dataset.level;
+  this.querySelectorAll('.choice').forEach(function (x) { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); });
+  fieldError('level', false);
 });
-function socialLogin(p){ toast('Connexion '+p+' — bientôt disponible !','info'); }
+$('goals-list').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-goal]'); if (!b) return;
+  var on = !selectedGoals.has(b.dataset.goal);
+  on ? selectedGoals.add(b.dataset.goal) : selectedGoals.delete(b.dataset.goal);
+  b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+});
+document.querySelectorAll('[data-lang]').forEach(function (b) {
+  b.addEventListener('click', function () { selectedLang = b.dataset.lang; document.querySelectorAll('[data-lang]').forEach(function (x) { x.classList.toggle('on', x === b); }); });
+});
+try { if (localStorage.getItem('rb-lang') === 'en') document.querySelector('[data-lang="en"]').click(); } catch (e) {}
 
-function buildSuccessScreen(){
-  const prenom = document.getElementById('prenom').value || '';
-  const pays = document.getElementById('pays').value || '—';
-  const email = document.getElementById('email').value || '—';
-  const levelEl = selectedLevel ? document.getElementById('lvl-'+selectedLevel) : null;
-  const levelLabel = levelEl ? levelEl.textContent.trim() : '—';
-  const langLabel = selectedLang === 'fr' ? '🇫🇷 Français' : '🇬🇧 English';
+/* Mot de passe : afficher + force */
+$('pw-toggle').addEventListener('click', function () {
+  var inp = $('password'), show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  this.innerHTML = '<i class="fa-solid ' + (show ? 'fa-eye-slash' : 'fa-eye') + '"></i>';
+});
+$('password').addEventListener('input', function () {
+  var pw = this.value, score = 0;
+  if (pw.length >= 8) score++; if (/[A-Z]/.test(pw)) score++; if (/[0-9]/.test(pw)) score++; if (/[^a-zA-Z0-9]/.test(pw)) score++;
+  var colors = ['#f43f5e', '#fb923c', '#f59e0b', '#10b981'], labels = ['Trop faible', 'Faible', 'Correct', 'Solide 💪'];
+  document.querySelectorAll('.meter span').forEach(function (s, i) { s.style.background = pw && i < score ? colors[score - 1] : ''; });
+  $('strength-label').textContent = pw ? (pw.length < 8 ? 'Encore ' + (8 - pw.length) + ' caractère' + (8 - pw.length > 1 ? 's' : '') : labels[score - 1] || '') : '';
+  $('strength-label').style.color = pw && score ? colors[score - 1] : '';
+  fieldError('password', false);
+});
+['prenom', 'nom', 'email'].forEach(function (id) { $(id).addEventListener('input', function () { fieldError(id, false); }); });
+$('pays').addEventListener('change', function () { fieldError('pays', false); });
+$('cgu').addEventListener('change', function () { fieldError('cgu', false); });
 
-  document.getElementById('welcome-name').textContent = prenom || 'toi';
-  document.getElementById('recap-email').textContent = email;
-  document.getElementById('recap-level').textContent = levelLabel;
-  document.getElementById('recap-country').textContent = `${pays} · ${langLabel}`;
-  try { sessionStorage.setItem('rb_signup_email', email); } catch(e){}
-  spawnConfetti();
+/* Navigation entre les étapes */
+function go(target) {
+  var from = $('panel-' + step), to = $('panel-' + target);
+  from.classList.remove('on');
+  to.classList.toggle('back', target < step);
+  to.classList.add('on');
+  step = target;
+  document.querySelectorAll('#bar .s').forEach(function (s, i) { s.classList.toggle('done', i < step); s.classList.toggle('on', i === step); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  var first = to.querySelector('input,select'); if (first && window.innerWidth > 940) setTimeout(function () { first.focus(); }, 300);
 }
+function validate0() {
+  var ok = true;
+  ok = fieldError('prenom', !$('prenom').value.trim()) && ok;
+  ok = fieldError('nom', !$('nom').value.trim()) && ok;
+  ok = fieldError('email', !isEmail($('email').value.trim())) && ok;
+  ok = fieldError('password', $('password').value.length < 8) && ok;
+  ok = fieldError('cgu', !$('cgu').checked) && ok;
+  return ok;
+}
+function validate1() {
+  var ok = fieldError('pays', !$('pays').value);
+  ok = fieldError('level', !selectedLevel) && ok;
+  return ok;
+}
+$('panel-0').addEventListener('submit', function (e) { e.preventDefault(); if (validate0()) go(1); else if (window.RB && RB.motion) RB.motion.shake($('card')); });
+$('back-1').addEventListener('click', function () { go(0); });
+$('panel-1').addEventListener('submit', function (e) { e.preventDefault(); if (!validate1()) { if (window.RB && RB.motion) RB.motion.shake($('card')); return; } window.createAccount(); });
 
-function spawnConfetti(){
-  const c = document.getElementById('confetti-container');
-  const colors = ['#7c3aed','#a855f7','#ec4899','#10b981','#f59e0b','#06b6d4'];
+function welcome() {
+  $('welcome-name').textContent = $('prenom').value.trim() || 'toi';
+  $('recap-email').textContent = $('email').value.trim();
+  var c = $('confetti-container'), colors = ['#7c3aed', '#a855f7', '#ec4899', '#10b981', '#f59e0b', '#06b6d4'];
   c.innerHTML = '';
-  for (let i = 0; i < 24; i++) {
-    const el = document.createElement('div');
+  for (var i = 0; i < 28; i++) {
+    var el = document.createElement('i');
     el.className = 'confetti';
-    el.style.cssText = `left:${Math.random()*100}%;top:${-10-Math.random()*30}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*.8}s;animation-duration:${.8+Math.random()*.8}s;transform:rotate(${Math.random()*360}deg);width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;`;
+    el.style.cssText = 'left:' + Math.random() * 100 + '%;background:' + colors[i % colors.length] + ';animation-delay:' + Math.random() * .7 + 's;width:' + (6 + Math.random() * 6) + 'px;height:' + (6 + Math.random() * 6) + 'px';
     c.appendChild(el);
   }
+  go(2);
 }
+/* Mode démo (sans Supabase) */
+window.createAccount = function () { try { sessionStorage.setItem('rb_signup_email', $('email').value.trim()); } catch (e) {} welcome(); };
 
-function toast(msg, type){
-  const host = document.getElementById('rb-toast-host');
-  const colors = {info:'bg-violet-600 text-white',success:'bg-emerald-500 text-white',error:'bg-rose-500 text-white'};
-  const icons = {info:'fa-circle-info',success:'fa-circle-check',error:'fa-circle-xmark'};
-  const el = document.createElement('div');
-  el.className = 'rb-toast ' + colors[type];
-  el.innerHTML = '<i class="fa-solid ' + icons[type] + '"></i><span>' + msg + '</span>';
-  host.appendChild(el);
-  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},3000);
-}
+document.addEventListener('DOMContentLoaded', function () {
+  var list = (window.RB && RB.COUNTRIES) || [{ name: 'Cameroun', flag: '🇨🇲' }];
+  $('pays').insertAdjacentHTML('beforeend', list.map(function (c) { return '<option value="' + c.name.replace(/"/g, '&quot;') + '">' + c.flag + ' ' + c.name + '</option>'; }).join(''));
+});
 </script>
 
-<!-- ═══ INTÉGRATION BACKEND — Supabase Auth (voir relbrain-app.js) ═══ -->
+<!-- ═══ INSCRIPTION RÉELLE — Supabase Auth (voir relbrain-app.js) ═══ -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  if (!window.RB || RB.demo) return; // mode démo : comportement d'origine
-  var params = new URLSearchParams(location.search);
-  function safeNext() {
-    var n = params.get('next') || '';
-    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n.replace(/^\//, '')) ? n.replace(/^\//, '') : 'relbrain-accueil.html';
-  }
-  function setLoading(btn, on, html) {
-    if (!btn) return;
-    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + (html || ''); btn.disabled = true; }
-    else { btn.innerHTML = btn.dataset.html || btn.innerHTML; btn.disabled = false; }
-  }
-  var card = document.querySelector('main .rounded-3xl');
-    var baseGoStep = window.goStep;
+  if (!window.RB || RB.demo) return;
   var creating = false;
-  window.goStep = async function (target) {
-    // Passage à l'écran final = création réelle du compte
-    if (target === 3 && currentStep === 2) {
-      if (!validateStep(2) || creating) return;
-      creating = true;
-      var btn = document.querySelector('#panel-2 .gradient-bg');
-      setLoading(btn, true, 'Création…');
-      var code = document.getElementById('selected-code').textContent.replace('+', '');
-      var phone = document.getElementById('phone').value.replace(/\D/g, '');
-      try {
-        var r = await RB.auth.signUp({
-          email: document.getElementById('email').value.trim().toLowerCase(),
-          password: document.getElementById('password').value,
-          profile: {
-            first_name: document.getElementById('prenom').value.trim(),
-            last_name: document.getElementById('nom').value.trim(),
-            phone: phone ? code + phone : undefined,
-            country: document.getElementById('pays').value,
-            institution: document.getElementById('universite').value.trim() || undefined,
-            school_level: selectedLevel,
-            field: document.getElementById('filiere').value.trim() || undefined,
-            language: selectedLang,
-            goals: Array.from(selectedGoals),
-          },
-        });
-        // Photo de profil : envoyée tout de suite si la session est déjà active
-        var avatar = document.getElementById('avatar-input').files[0];
-        if (r.session && avatar) RB.data.uploadAvatar(avatar).catch(function () {});
-        baseGoStep(3);
-        if (!r.needs_confirmation) {
-          var link = document.querySelector('#panel-3 a[href="relbrain-validation-email.html"]');
-          if (link) { link.href = 'relbrain-accueil.html'; link.innerHTML = '<i class="fa-solid fa-rocket"></i> Commencer à apprendre'; }
-        }
-      } catch (e) {
-        toast(e.message, 'error');
-        if (e.code === 'email_taken' || e.code === 'weak_password') baseGoStep(0);
-        RB.motion.shake(document.querySelector('main .rounded-3xl'));
-      } finally { creating = false; setLoading(btn, false); }
-      return;
-    }
-    baseGoStep(target);
-  };
-  window.socialLogin = function (provider) {
-    if (provider !== 'Google' || RB_CONFIG.GOOGLE_AUTH === false) return toast('Connexion ' + provider + ' — bientôt disponible !', 'info');
-    RB.auth.google('relbrain-accueil.html').catch(function (e) { toast(e.message, 'error'); });
+  window.createAccount = async function () {
+    if (creating) return;
+    creating = true;
+    var btn = $('create-btn'), html = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> Création…';
+    try {
+      var r = await RB.auth.signUp({
+        email: $('email').value.trim().toLowerCase(),
+        password: $('password').value,
+        profile: {
+          first_name: $('prenom').value.trim(),
+          last_name: $('nom').value.trim(),
+          country: $('pays').value,
+          institution: $('universite').value.trim() || undefined,
+          school_level: selectedLevel,
+          field: $('filiere').value.trim() || undefined,
+          language: selectedLang,
+          goals: Array.from(selectedGoals),
+        },
+      });
+      try { localStorage.setItem('rb-lang', selectedLang); } catch (e) {}
+      welcome();
+      if (!r.needs_confirmation) {
+        $('welcome-text').textContent = 'Ton compte est prêt. Allons-y !';
+        $('welcome-cta').href = 'relbrain-accueil.html';
+        $('welcome-cta').innerHTML = '<i class="fa-solid fa-rocket"></i> Commencer à apprendre';
+      }
+    } catch (e) {
+      toast(e.message, 'error');
+      if (e.code === 'email_taken' || e.code === 'weak_password') { go(0); fieldError(e.code === 'email_taken' ? 'email' : 'password', true); }
+      RB.motion.shake($('card'));
+    } finally { creating = false; btn.disabled = false; btn.innerHTML = html; }
   };
 });
 </script>

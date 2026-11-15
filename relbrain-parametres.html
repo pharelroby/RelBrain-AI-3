@@ -284,7 +284,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
         <div class="settings-pane active" id="span-langue">
           <div class="rb-card p-4">
             <h2 class="font-black text-slate-900 text-sm mb-0.5">Langue de l'interface</h2>
-            <p class="text-[10px] text-slate-400 mb-3 font-semibold">RelBrain et l'IA génèrent le contenu dans cette langue.</p>
+            <p class="text-[10px] text-slate-400 mb-3 font-semibold">Tu peux aussi changer avec le bouton FR / EN en haut de chaque page.</p>
             <div class="grid sm:grid-cols-2 gap-2">
               <div class="radio-card selected" onclick="selectRadio(this)">
                 <span class="text-lg">🇫🇷</span>
@@ -293,11 +293,11 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
               </div>
               <div class="radio-card" onclick="selectRadio(this)">
                 <span class="text-lg">🇬🇧</span>
-                <div><p class="text-xs font-black text-slate-800">English</p><p class="text-[10px] text-slate-400 font-semibold">Beta</p></div>
+                <div><p class="text-xs font-black text-slate-800">English</p><p class="text-[10px] text-slate-400 font-semibold">Interface et IA en anglais</p></div>
                 <div class="radio-dot"></div>
               </div>
             </div>
-            <p class="text-[10px] text-slate-400 mt-3 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-info text-violet-500 text-[9px]"></i> Espagnol et Arabe arrivent bientôt.</p>
+            <p class="text-[10px] text-slate-400 mt-3 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-info text-violet-500 text-[9px]"></i> Tout le site change de langue, y compris les réponses de l'IA.</p>
           </div>
         </div>
 
@@ -783,11 +783,14 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ─── Langue ─── */
     var langCards = document.querySelectorAll('#span-langue .radio-card');
     langCards.forEach(function (c, i) {
-      c.classList.toggle('selected', (p.language || 'fr') === (i === 0 ? 'fr' : 'en'));
+      c.classList.toggle('selected', ((window.RB_I18N && RB_I18N.lang) || p.language || 'fr') === (i === 0 ? 'fr' : 'en'));
       c.onclick = async function () {
         langCards.forEach(function (x) { x.classList.remove('selected'); }); c.classList.add('selected');
-        try { await RB.data.updateProfile({ language: i === 0 ? 'fr' : 'en' }); toast(i === 0 ? 'L\'IA te répondra en français ✓' : 'The AI will now answer in English ✓', 'success'); }
-        catch (e) { RB.handleError(e); }
+        var l = i === 0 ? 'fr' : 'en';
+        if (window.RB_I18N && RB_I18N.lang === l) return;
+        // Tout le site passe dans cette langue (interface + réponses de l'IA)
+        if (window.RB_I18N) return RB_I18N.set(l);
+        try { await RB.data.updateProfile({ language: l }); } catch (e) { RB.handleError(e); }
       };
     });
 

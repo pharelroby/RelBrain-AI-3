@@ -46,6 +46,15 @@
   var esc = RB.escape = function (s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
   };
+  /* Pays proposés à l'inscription et dans les concours (le nom français est enregistré dans le profil) */
+  RB.COUNTRIES = [
+    ['Cameroun', '🇨🇲'], ["Côte d'Ivoire", '🇨🇮'], ['Sénégal', '🇸🇳'], ['Gabon', '🇬🇦'], ['Congo', '🇨🇬'], ['Congo (RDC)', '🇨🇩'],
+    ['Bénin', '🇧🇯'], ['Togo', '🇹🇬'], ['Burkina Faso', '🇧🇫'], ['Mali', '🇲🇱'], ['Niger', '🇳🇪'], ['Tchad', '🇹🇩'],
+    ['Centrafrique', '🇨🇫'], ['Guinée', '🇬🇳'], ['Guinée équatoriale', '🇬🇶'], ['Madagascar', '🇲🇬'], ['Rwanda', '🇷🇼'], ['Burundi', '🇧🇮'],
+    ['Nigeria', '🇳🇬'], ['Ghana', '🇬🇭'], ['Maroc', '🇲🇦'], ['Algérie', '🇩🇿'], ['Tunisie', '🇹🇳'],
+    ['France', '🇫🇷'], ['Belgique', '🇧🇪'], ['Suisse', '🇨🇭'], ['Canada', '🇨🇦'], ['Autre', '🌍'],
+  ].map(function (c) { return { name: c[0], flag: c[1] }; });
+  RB.countryFlag = function (name) { var c = RB.COUNTRIES.filter(function (x) { return x.name === name; })[0]; return c ? c.flag : '🌍'; };
   RB.formatNumber = function (n) { return Number(n || 0).toLocaleString('fr-FR'); };
   RB.timeAgo = function (date) {
     var s = (Date.now() - new Date(date).getTime()) / 1000;
@@ -393,7 +402,7 @@
       list: async function () {
         await RB.ready;
         return unwrap(await RB.sb.from('concours')
-          .select('id,slug,short_name,abbr,name,category,city,description,website,color,sort_order,levels:concours_levels(id,code,label,requirement,sort_order,annales:concours_annales(count))')
+          .select('id,slug,short_name,abbr,name,category,city,country,description,website,color,sort_order,levels:concours_levels(id,code,label,requirement,sort_order,annales:concours_annales(count))')
           .order('sort_order'));
       },
       get: async function (slug) {
@@ -791,6 +800,7 @@
     try {
       var results = await Promise.all([RB.data.profile(), RB.data.gamification()]);
       shellCtx = { user: session.user, profile: results[0], game: results[1] };
+      if (window.RB_I18N && results[0]) RB_I18N.syncProfile(results[0].language);
       fill(shellCtx);
     } catch (e) {
       console.warn('[RelBrain] profil indisponible', e);

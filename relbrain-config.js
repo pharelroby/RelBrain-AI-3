@@ -53,9 +53,8 @@ window.RB_CONFIG = {
   // Racine des fonctions /api. Vide = même domaine (recommandé sur Vercel).
   API_BASE: '',
 
-  // Afficher le bouton « Continuer avec Google » (activer le fournisseur
-  // dans Supabase → Authentication → Providers → Google).
-  GOOGLE_AUTH: true,
+  // Connexion par Google : désactivée (connexion uniquement par email + mot de passe).
+  GOOGLE_AUTH: false,
 };
 
 // Badge « Version de test » (texte réglé plus haut, BADGE_TEST)

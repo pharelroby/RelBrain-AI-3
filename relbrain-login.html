@@ -10,221 +10,164 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="relbrain-design-system.css"/>
+<link rel="stylesheet" href="relbrain-auth.css"/>
 <script src="relbrain-theme.js" defer></script>
 <script src="relbrain-motion.js" defer></script>
 <script src="relbrain-sound.js" defer></script>
 <script src="relbrain-config.js"></script>
 <script src="relbrain-app.js" defer></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-*{font-family:'Inter',sans-serif;box-sizing:border-box;}
-body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
-.hero-mesh{position:absolute;inset:0;overflow:hidden;pointer-events:none;
-  background:
-    radial-gradient(ellipse 55% 45% at 15% 5%, rgba(251,191,36,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 45% at 85% 15%, rgba(236,72,153,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 40% at 50% 85%, rgba(124,58,237,.08) 0%, transparent 60%);
-}
-@keyframes float-y{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
-.float{animation:float-y 3s ease-in-out infinite;}
-
-.rb-input{width:100%;padding:.85rem 1rem;border:1.5px solid #e7d9c5;border-radius:.875rem;font-size:.875rem;color:#0f172a;background:white;transition:border-color .15s,box-shadow .15s;outline:none;}
-.rb-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.14);}
-.rb-input::placeholder{color:#a8a29e;}
-.rb-label{display:block;font-size:.75rem;font-weight:800;color:#44403c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
-
-.input-wrap{position:relative;}
-.input-wrap .input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#a8a29e;font-size:.8rem;pointer-events:none;}
-.input-wrap .rb-input.has-icon{padding-left:2.4rem;}
-.input-wrap .input-end{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:#a8a29e;cursor:pointer;font-size:.875rem;}
-.toggle-pw:hover{color:#7c3aed;}
-
-.social-btn{display:flex;align-items:center;justify-content:center;gap:.625rem;width:100%;padding:.8rem 1rem;border-radius:.875rem;border:1.5px solid #e7d9c5;background:white;cursor:pointer;font-size:.875rem;font-weight:700;color:#44403c;transition:all .15s;}
-.social-btn:hover{border-color:#c4b5fd;background:#faf5ff;color:#7c3aed;}
-
-.gradient-text{background:linear-gradient(135deg,#7c3aed,#a855f7 40%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-
-.btn-primary{background:#7c3aed;color:white;font-weight:800;padding:1rem;border-radius:.875rem;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;box-shadow:0 8px 24px rgba(124,58,237,.28);cursor:pointer;border:0;width:100%;}
-.btn-primary:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 12px 28px rgba(124,58,237,.35);}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-
-#rb-toast-host{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
-.rb-toast{display:flex;align-items:center;gap:.625rem;padding:.75rem 1.125rem;border-radius:.875rem;font-size:.8125rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.14);pointer-events:all;animation:toastIn .25s ease;}
-@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
-
-.field-error{font-size:.7rem;color:#f43f5e;margin-top:.25rem;font-weight:600;display:none;}
-.field-error.show{display:block;}
-.rb-input.error{border-color:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.10);}
-</style>
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 <meta name="apple-mobile-web-app-title" content="RelBrain"/>
 <meta name="theme-color" content="#7c3aed"/>
 </head>
-<body>
+<body class="auth-body">
 
 <div id="rb-toast-host"></div>
 
-<nav class="fixed top-0 left-0 right-0 z-50 bg-[#fdf4e8]/85 backdrop-blur-sm border-b border-[#e7d9c5]">
-  <div class="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2">
-      <img src="/icon.svg" alt="" width="36" height="36" class="rb-app-mark"/>
-      <span class="text-base font-black text-slate-900">RelBrain<span class="text-violet-600">.AI</span></span>
-    </a>
-    <a href="index.html" class="text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5 transition-colors">
-      <i class="fa-solid fa-arrow-left text-[10px]"></i> Retour à l'accueil
-    </a>
+<nav class="auth-nav">
+  <a href="index.html" class="auth-nav__brand"><img src="/icon.svg" alt="" width="32" height="32" class="rb-app-mark"/> <span>RelBrain<i>.AI</i></span></a>
+  <div class="auth-nav__tools">
+    <button type="button" class="rb-theme-toggle auth-icon-btn" onclick="RB.toggleTheme()" aria-label="Changer de thème"><i class="rb-theme-icon fa-solid fa-moon"></i></button>
+    <a href="index.html" class="auth-nav__back"><i class="fa-solid fa-arrow-left"></i> <span>Retour à l'accueil</span></a>
   </div>
 </nav>
 
-<main class="relative pt-24 pb-16 px-4 min-h-screen flex items-center justify-center overflow-hidden">
-  <div class="hero-mesh"></div>
+<main class="auth">
 
-  <div class="w-full max-w-md relative z-10">
+  <!-- ═══ Panneau de marque ═══ -->
+  <aside class="auth-brand" aria-hidden="true">
+    <img src="/icon.svg" alt="" class="auth-mini"/>
+    <div>
+      <span class="auth-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Ton coach de révision</span>
+      <h2>Content de te <em>revoir</em> !</h2>
+      <p class="lead">Ta série, tes flashcards et tes quiz t'attendent.</p>
+      <ul>
+        <li><b>⚡</b> Quiz tirés de tes cours</li>
+        <li><b>🧠</b> Révisions au bon moment</li>
+        <li><b>🔥</b> Ta série continue</li>
+      </ul>
+    </div>
+    <div class="auth-stage">
+      <span class="auth-glyph" style="left:6%;bottom:6%">π</span>
+      <span class="auth-glyph" style="left:46%;top:38%;animation-delay:-3s">√</span>
+      <span class="auth-glyph" style="right:4%;top:2%;animation-delay:-5s">∑</span>
+      <div class="auth-chip auth-chip--a"><span class="em">🔥</span><span>Série de 5 jours<small>Ne la casse pas !</small></span></div>
+      <div class="auth-chip auth-chip--c">f′(x) = 2x</div>
+      <div class="auth-chip auth-chip--b"><span class="em">✅</span><span>+20 XP<small>Bonne réponse</small></span></div>
+      <svg class="student" viewBox="0 0 160 190">
+        <ellipse cx="80" cy="182" rx="56" ry="6" fill="#2e1065" opacity=".25"/>
+        <path d="M30 186c2-38 22-58 50-58s48 20 50 58z" fill="#fde68a"/>
+        <path d="M62 132l18 22 18-22" fill="none" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>
+        <rect x="70" y="104" width="20" height="22" rx="8" fill="#8a5432"/>
+        <circle cx="52" cy="58" r="20" fill="#2a1a12"/><circle cx="108" cy="58" r="20" fill="#2a1a12"/>
+        <ellipse cx="80" cy="74" rx="30" ry="34" fill="#9b6139"/>
+        <path d="M50 66c4-26 56-30 60 0-10-12-50-12-60 0z" fill="#2a1a12"/>
+        <path d="M51 62c10-8 48-8 58 0" stroke="#ec4899" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <circle cx="69" cy="78" r="3.4" fill="#1a1033"/><circle cx="92" cy="78" r="3.4" fill="#1a1033"/>
+        <circle cx="70.2" cy="76.8" r="1" fill="#fff"/><circle cx="93.2" cy="76.8" r="1" fill="#fff"/>
+        <path d="M71 92c5 5 13 5 18 0" stroke="#1a1033" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="61" cy="88" r="4" fill="#ec4899" opacity=".28"/><circle cx="100" cy="88" r="4" fill="#ec4899" opacity=".28"/>
+        <circle cx="66" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><circle cx="94" cy="78" r="10" fill="none" stroke="#1a1033" stroke-width="2"/><path d="M76 78h8" stroke="#1a1033" stroke-width="2"/>
+        <path d="M118 150c14-6 22-20 18-34" stroke="#9b6139" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <g transform="rotate(-28 138 112)"><rect x="132" y="84" width="9" height="34" rx="2" fill="#f59e0b"/><path d="M132 118l4.5 9 4.5-9z" fill="#fde68a"/><rect x="132" y="84" width="9" height="6" fill="#ec4899"/></g>
+      </svg>
+    </div>
+  </aside>
 
-    <div class="bg-white rounded-3xl shadow-xl border border-[#e7d9c5] overflow-hidden">
-      <div class="p-7 md:p-9">
+  <!-- ═══ Formulaire ═══ -->
+  <section class="auth-card" id="card">
+    <h1>Connexion</h1>
+    <p class="sub">Avec ton adresse email et ton mot de passe.</p>
 
-        <div class="text-center mb-7">
-          <div class="w-14 h-14 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4 float">
-            <i class="fa-solid fa-brain text-violet-600 text-2xl"></i>
-          </div>
-          <h1 class="text-2xl font-black text-slate-900 mb-1">Bon retour 👋</h1>
-          <p class="text-sm text-slate-500 font-semibold">Connecte-toi pour continuer ton apprentissage.</p>
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="email">Adresse email</label>
+        <div class="inp" id="email-box">
+          <i class="fa-solid fa-envelope lead"></i>
+          <input type="email" id="email" name="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.com" required/>
         </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-          <button class="social-btn" onclick="socialLogin('Google')">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Google
-          </button>
-          <button class="social-btn" onclick="socialLogin('Apple')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            Apple
-          </button>
-        </div>
-
-        <div class="flex items-center gap-3 mb-6">
-          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
-          <span class="text-xs text-slate-400 font-bold">ou avec ton email</span>
-          <div class="flex-1 h-px bg-[#e7d9c5]"></div>
-        </div>
-
-        <div class="mb-4">
-          <label class="rb-label" for="email">Adresse email</label>
-          <div class="input-wrap">
-            <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" id="email" class="rb-input has-icon" placeholder="toi@exemple.com" oninput="clearError('email')"/>
-          </div>
-          <p class="field-error" id="email-error">Adresse email invalide.</p>
-        </div>
-
-        <div class="mb-4">
-          <div class="flex items-center justify-between mb-1">
-            <label class="rb-label mb-0" for="password">Mot de passe</label>
-            <a href="relbrain-forgot-password.html" class="text-[11px] font-black text-violet-600 hover:underline">Mot de passe oublié ?</a>
-          </div>
-          <div class="input-wrap">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="password" class="rb-input has-icon" placeholder="••••••••" style="padding-right:2.5rem" onkeydown="if(event.key==='Enter')doLogin()"/>
-            <i class="fa-solid fa-eye input-end toggle-pw" id="pw-toggle" onclick="togglePw()"></i>
-          </div>
-        </div>
-
-        <label class="flex items-center gap-2 cursor-pointer mb-6 select-none">
-          <input type="checkbox" id="remember" class="accent-violet-600 w-4 h-4" checked/>
-          <span class="text-xs text-slate-500 font-semibold">Rester connecté pendant 30 jours</span>
-        </label>
-
-        <button class="btn-primary" onclick="doLogin()" id="login-btn">
-          <i class="fa-solid fa-right-to-bracket"></i> Se connecter
-        </button>
-
-        <p class="text-center text-xs text-slate-500 mt-5 font-semibold">
-          Pas encore de compte ? <a href="relbrain-signup.html" class="text-violet-600 font-black hover:underline">Créer un compte</a>
-        </p>
+        <p class="err" id="email-error">Vérifie ton adresse email.</p>
       </div>
-    </div>
 
-    <div class="flex items-center justify-center gap-4 mt-6">
-      <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> SSL 256-bit</span>
-      <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-lock text-violet-500"></i> RGPD conforme</span>
-    </div>
-  </div>
+      <div class="field">
+        <div class="row-between" style="margin-bottom:.4rem">
+          <label for="password" style="margin:0">Mot de passe</label>
+          <a href="relbrain-forgot-password.html" class="link" style="font-size:.78rem">Mot de passe oublié ?</a>
+        </div>
+        <div class="inp" id="password-box">
+          <i class="fa-solid fa-lock lead"></i>
+          <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Ton mot de passe" required style="padding-right:3rem"/>
+          <button type="button" class="end" id="pw-toggle" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <p class="err" id="password-error">Entre ton mot de passe.</p>
+      </div>
+
+      <label class="check" style="margin:.2rem 0 1.3rem"><input type="checkbox" id="remember" checked/> Rester connecté sur cet appareil</label>
+
+      <button type="submit" class="btn-main" id="login-btn"><i class="fa-solid fa-right-to-bracket"></i> Se connecter</button>
+    </form>
+
+    <p class="alt">Pas encore de compte ? <a href="relbrain-signup.html" class="link">Créer un compte gratuit</a></p>
+    <div class="trust"><span><i class="fa-solid fa-lock"></i>Connexion chiffrée</span><span><i class="fa-solid fa-user-shield"></i>Tes données restent privées</span></div>
+  </section>
 </main>
 
 <script>
-function togglePw(){
-  const inp = document.getElementById('password');
-  const ico = document.getElementById('pw-toggle');
-  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash input-end toggle-pw'; }
-  else { inp.type = 'password'; ico.className = 'fa-solid fa-eye input-end toggle-pw'; }
-}
-function clearError(field){
-  document.getElementById(field).classList.remove('error');
-  document.getElementById(field+'-error').classList.remove('show');
-}
-function isValidEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);}
-
-function doLogin(){
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
-  let ok = true;
-
-  if (!isValidEmail(email.value.trim())) {
-    email.classList.add('error');
-    document.getElementById('email-error').classList.add('show');
-    ok = false;
-  }
-  if (!password.value || password.value.length < 6) {
-    password.classList.add('error');
-    ok = false;
-    showToast('Mot de passe incorrect.', 'error');
-  }
-  if (!ok) return;
-
-  const btn = document.getElementById('login-btn');
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connexion…';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    showToast('Connexion réussie ✓', 'success');
-    setTimeout(() => { window.location.href = 'relbrain-accueil.html'; }, 900);
-  }, 900);
-}
-
-function socialLogin(provider){ showToast('Connexion ' + provider + ' — bientôt disponible !', 'info'); }
-
-function showToast(msg, type){
-  const host = document.getElementById('rb-toast-host');
-  const colors = {info:'bg-violet-600 text-white', success:'bg-emerald-500 text-white', error:'bg-rose-500 text-white'};
-  const icons  = {info:'fa-circle-info', success:'fa-circle-check', error:'fa-circle-xmark'};
-  const el = document.createElement('div');
-  el.className = 'rb-toast ' + colors[type];
-  el.innerHTML = '<i class="fa-solid ' + icons[type] + '"></i><span>' + msg + '</span>';
+/* ─── Petits outils de la page ─── */
+function showToast(msg, type) {
+  var host = document.getElementById('rb-toast-host');
+  var icons = { info: 'fa-circle-info', success: 'fa-circle-check', error: 'fa-circle-exclamation' };
+  var el = document.createElement('div');
+  el.className = 'rb-toast ' + (type || 'info');
+  el.innerHTML = '<i class="fa-solid ' + icons[type || 'info'] + '"></i><span></span>';
+  el.lastChild.textContent = msg;
   host.appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(20px)'; setTimeout(()=>el.remove(),300); },3000);
+  setTimeout(function () { el.style.opacity = '0'; el.style.transform = 'translateY(10px)'; setTimeout(function () { el.remove(); }, 300); }, 3600);
 }
+function fieldError(id, on) {
+  document.getElementById(id + '-box').classList.toggle('is-error', on);
+  document.getElementById(id + '-error').classList.toggle('show', on);
+}
+var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
+
+document.getElementById('pw-toggle').addEventListener('click', function () {
+  var inp = document.getElementById('password'), show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  this.innerHTML = '<i class="fa-solid ' + (show ? 'fa-eye-slash' : 'fa-eye') + '"></i>';
+  this.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+});
+var ERR = { email: 'Vérifie ton adresse email.', password: 'Entre ton mot de passe.' };
+['email', 'password'].forEach(function (id) { document.getElementById(id).addEventListener('input', function () { fieldError(id, false); document.getElementById(id + '-error').textContent = ERR[id]; }); });
+
+/* Mode démo (sans Supabase) : simple simulation */
+window.doLogin = function () {
+  var email = document.getElementById('email').value.trim(), pw = document.getElementById('password').value;
+  if (!isEmail(email)) return fieldError('email', true);
+  if (!pw) return fieldError('password', true);
+  showToast('Connexion réussie ✓', 'success');
+  setTimeout(function () { location.href = 'relbrain-accueil.html'; }, 700);
+};
+document.getElementById('login-form').addEventListener('submit', function (e) { e.preventDefault(); window.doLogin(); });
 </script>
 
-<!-- ═══ INTÉGRATION BACKEND — Supabase Auth (voir relbrain-app.js) ═══ -->
+<!-- ═══ CONNEXION RÉELLE — Supabase Auth (voir relbrain-app.js) ═══ -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  if (!window.RB || RB.demo) return; // mode démo : comportement d'origine
+  if (!window.RB || RB.demo) return;
   var params = new URLSearchParams(location.search);
+  var card = document.getElementById('card');
   function safeNext() {
-    var n = params.get('next') || '';
-    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n.replace(/^\//, '')) ? n.replace(/^\//, '') : 'relbrain-accueil.html';
+    var n = (params.get('next') || '').replace(/^\//, '');
+    return /^[a-z0-9\-]+\.html(\?[^#]*)?$/i.test(n) ? n : 'relbrain-accueil.html';
   }
-  function setLoading(btn, on, html) {
-    if (!btn) return;
-    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + (html || ''); btn.disabled = true; }
+  function setLoading(btn, on, label) {
+    if (on) { btn.dataset.html = btn.innerHTML; btn.innerHTML = '<span class="rb-synapse rb-synapse--light" style="--rb-synapse-size:1.1rem"><i></i><i></i><i></i></span> ' + label; btn.disabled = true; }
     else { btn.innerHTML = btn.dataset.html || btn.innerHTML; btn.disabled = false; }
   }
-  var card = document.querySelector('main .rounded-3xl');
-    // Déjà connecté → page suivante
+
   // Déjà connecté : on file vers la page demandée. Garde-fou anti-boucle : si le serveur
-  // nous renvoie ici aussitôt (session refusée), on reste sur la page et on demande de se reconnecter.
+  // nous renvoie ici aussitôt (session refusée), on reste et on demande de se reconnecter.
   RB.auth.session().then(function (s) {
     if (!s) return;
     var last = 0;
@@ -239,31 +182,28 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.doLogin = async function () {
-    var email = document.getElementById('email'), password = document.getElementById('password');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
-      email.classList.add('error'); document.getElementById('email-error').classList.add('show'); RB.motion.shake(card); return;
-    }
-    if (!password.value) { password.classList.add('error'); RB.motion.shake(card); showToast('Entre ton mot de passe.', 'error'); return; }
+    var emailEl = document.getElementById('email'), pwEl = document.getElementById('password');
+    var email = emailEl.value.trim().toLowerCase();
+    if (!isEmail(email)) { fieldError('email', true); RB.motion.shake(card); emailEl.focus(); return; }
+    if (!pwEl.value) { fieldError('password', true); RB.motion.shake(card); pwEl.focus(); return; }
     var btn = document.getElementById('login-btn');
     setLoading(btn, true, 'Connexion…');
     try {
-      await RB.auth.signIn(email.value.trim().toLowerCase(), password.value);
+      await RB.auth.signIn(email, pwEl.value);
       btn.innerHTML = '<i class="fa-solid fa-check"></i> Connecté'; btn.classList.add('is-success');
-      showToast('Connexion réussie ✓', 'success');
-      setTimeout(function () { location.href = safeNext(); }, 500);
+      setTimeout(function () { location.href = safeNext(); }, 450);
     } catch (e) {
       setLoading(btn, false);
       RB.motion.shake(card);
       if (e.code === 'email_not_confirmed') {
-        try { sessionStorage.setItem('rb_signup_email', email.value.trim()); } catch (x) {}
+        try { sessionStorage.setItem('rb_signup_email', email); } catch (x) {}
         showToast(e.message, 'error');
         setTimeout(function () { location.href = 'relbrain-validation-email.html'; }, 1800);
-      } else showToast(e.message || 'Connexion impossible.', 'error');
+      } else {
+        fieldError('password', true);
+        document.getElementById('password-error').textContent = e.message || 'Connexion impossible.';
+      }
     }
-  };
-  window.socialLogin = function (provider) {
-    if (provider !== 'Google' || RB_CONFIG.GOOGLE_AUTH === false) return showToast('Connexion ' + provider + ' — bientôt disponible !', 'info');
-    RB.auth.google(safeNext()).catch(function (e) { showToast(e.message, 'error'); });
   };
   if (params.get('next')) showToast('Connecte-toi pour accéder à cette page 🔒', 'info');
 });

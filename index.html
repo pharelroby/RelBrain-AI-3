@@ -112,6 +112,14 @@ html.dark .quiz-pop .opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
 .curve-card{padding:1.5rem 1.5rem 1rem}
 
 /* Étapes */
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:900px){.tools{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.tools{grid-template-columns:1fr;gap:.7rem}}
+.tool{display:flex;align-items:center;gap:.9rem;padding:1.1rem 1.2rem}
+.tool__ico{flex:none;width:2.8rem;height:2.8rem;border-radius:.9rem;display:grid;place-items:center;font-size:1.1rem;color:var(--c);background:var(--bg)}
+html.dark .tool__ico{background:rgba(255,255,255,.08);color:#e9d5ff}
+.tool h3{font-weight:800;font-size:1rem;color:var(--rb-ink);margin-bottom:.1rem}
+.tool p{font-size:.86rem;color:var(--rb-muted);font-weight:550;line-height:1.4}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;position:relative}
 @media(max-width:860px){.steps{grid-template-columns:1fr}}
 .step{padding:1.5rem;position:relative}
@@ -246,8 +254,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
         et en <span class="rb-scribble"><em>réflexes</em><svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 14 C 40 4, 90 18, 130 8 S 185 6, 197 12"/></svg></span>.
       </h1>
       <p class="rb-lead rb-reveal" style="--rb-delay:160ms;max-width:34rem">
-        Importe tes PDF, résumés, photos de notes ou polycopiés. RelBrain AI repère l'essentiel, te fait réviser au bon moment
-        et te montre exactement où tu progresses.
+        Importe ton cours : RelBrain repère l'essentiel et te fait réviser au bon moment.
       </p>
       <div class="hero-cta rb-reveal" style="--rb-delay:240ms">
         <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-bolt"></i> Commencer gratuitement</a>
@@ -283,21 +290,20 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 
       <article class="sheet rb-sheet rb-ruled rb-dogear">
         <span class="rb-annotation">← à retenir pour le Bac !</span>
-        <p class="sheet-title">Chap. 4 — Algorithmes de tri</p>
-        <p>Le <mark class="rb-mark rb-mark--full" data-step="1">tri rapide (QuickSort)</mark> choisit un pivot puis partitionne le tableau.
-        Sa complexité moyenne est <mark class="rb-mark rb-mark--full" data-step="2">O(n log n)</mark>, mais elle devient
-        <mark class="rb-mark rb-mark--pink rb-mark--full" data-step="3">O(n²) dans le pire cas</mark>, lorsque le pivot est toujours extrême.
-        Le tri fusion garantit O(n log n) au prix d'une mémoire supplémentaire.</p>
+        <p class="sheet-title">Chap. 3 — Dérivées et variations</p>
+        <p>La dérivée de <mark class="rb-mark rb-mark--full" data-step="1">f(x) = xⁿ</mark> est <mark class="rb-mark rb-mark--full" data-step="2">f′(x) = n·xⁿ⁻¹</mark>.
+        Si f′(x) &gt; 0, la fonction est croissante ; <mark class="rb-mark rb-mark--pink rb-mark--full" data-step="3">si f′(x) = 0, elle peut avoir un extremum</mark>.
+        Exemple : la dérivée de x² est 2x.</p>
       </article>
 
       <svg class="links-svg" id="scene-links" aria-hidden="true"></svg>
 
       <div class="quiz-pop rb-sheet" id="scene-quiz">
         <div class="rb-row" style="--rb-gap:.4rem"><span class="rb-tag">QCM · Moyen</span><span class="rb-tag rb-tag--outline">Généré en 28 s</span></div>
-        <p class="q">Quelle est la complexité moyenne du tri rapide ?</p>
-        <div class="opt"><b>A</b> O(n)</div>
-        <div class="opt" id="scene-right"><b>B</b> O(n log n)</div>
-        <div class="opt"><b>C</b> O(n²)</div>
+        <p class="q">Quelle est la dérivée de f(x) = x³ ?</p>
+        <div class="opt"><b>A</b> 3x</div>
+        <div class="opt" id="scene-right"><b>B</b> 3x²</div>
+        <div class="opt"><b>C</b> x²</div>
       </div>
 
       <div class="scene-xp rb-sheet" style="border-radius:var(--rb-radius-pill)">
@@ -321,14 +327,14 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
      Pas de chiffres d'utilisateurs : seulement des promesses que le produit tient. -->
 <section class="rb-container" style="padding-block:clamp(2.5rem,2rem + 3vw,4.5rem)">
   <div class="stats" data-rb-stagger="90">
-    <div class="stat"><strong>0 F</strong><span>pendant le lancement, sans carte bancaire</span></div>
-    <div class="stat"><strong>4 outils</strong><span>quiz, flashcards, résumés et tuteur IA, tirés de tes propres cours</span></div>
-    <div class="stat"><strong>SM-2</strong><span>la révision espacée : chaque notion revient juste avant l'oubli</span></div>
-    <div class="stat"><strong>100 %</strong><span>tes données : export et suppression de ton compte en un clic</span></div>
+    <div class="stat"><strong>0 F</strong><span>pendant le lancement</span></div>
+    <div class="stat"><strong>30 s</strong><span>pour transformer un cours en quiz</span></div>
+    <div class="stat"><strong>SM-2</strong><span>chaque notion revient juste avant l'oubli</span></div>
+    <div class="stat"><strong>100 %</strong><span>tes données, exportables en un clic</span></div>
   </div>
   <a class="school-band rb-reveal" href="relbrain-contact.html">
     <span class="school-band__icon"><i class="fa-solid fa-building-columns"></i></span>
-    <span><strong>Utile au lycée comme à l'université.</strong> Ton établissement aimerait proposer RelBrain à ses élèves ou à ses étudiants ? Parlons-en.</span>
+    <span><strong>Ton établissement</strong> veut proposer RelBrain à ses élèves ? Parlons-en.</span>
     <i class="fa-solid fa-arrow-right rb-arrow"></i>
   </a>
 </section>
@@ -344,10 +350,10 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
     <div class="rb-grid" style="align-items:center">
       <div class="rb-col-6">
         <div class="pain-list" data-rb-stagger="90">
-          <div class="pain"><div><h3>Trop de documents</h3><p>Des dizaines de PDF, notes, diapos… impossible de savoir par où commencer.</p></div></div>
-          <div class="pain"><div><h3>Quoi réviser ?</h3><p>Difficile de distinguer l'essentiel de l'accessoire la veille de l'examen.</p></div></div>
-          <div class="pain"><div><h3>L'oubli, inévitable</h3><p>Sans rappel actif, la mémoire d'un cours s'effondre en quelques jours.</p></div></div>
-          <div class="pain"><div><h3>Aucun suivi</h3><p>Impossible de mesurer ses progrès ou de cibler ses vraies lacunes.</p></div></div>
+          <div class="pain"><div><h3>Trop de documents</h3><p>Par où commencer ?</p></div></div>
+          <div class="pain"><div><h3>Tout semble important</h3><p>L'essentiel se perd la veille de l'examen.</p></div></div>
+          <div class="pain"><div><h3>L'oubli</h3><p>Un cours relu s'efface en quelques jours.</p></div></div>
+          <div class="pain"><div><h3>Aucun suivi</h3><p>Tu ne sais pas où tu en es.</p></div></div>
         </div>
       </div>
       <div class="rb-col-6">
@@ -357,7 +363,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
             <span class="rb-tag rb-tag--pink">Ebbinghaus × SM-2</span>
           </figcaption>
           <svg class="rb-curve" data-reviews="1,3,7,16"></svg>
-          <p class="rb-caption" style="margin-top:.5rem">Chaque révision, programmée <mark class="rb-mark">juste avant l'oubli</mark>, remonte la mémoire et l'ancre plus longtemps. RelBrain calcule ce moment pour chaque notion.</p>
+          <p class="rb-caption" style="margin-top:.5rem">RelBrain te fait réviser <mark class="rb-mark">juste avant l'oubli</mark> : chaque rappel ancre la notion plus longtemps.</p>
         </figure>
       </div>
     </div>
@@ -376,81 +382,41 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
       <article class="step rb-sheet rb-lift">
         <span class="step-n">1</span>
         <h3>Importe</h3>
-        <p>Glisse ton cours : PDF, Word, PowerPoint, texte, ou simple photo de tes notes manuscrites (lecture OCR).</p>
+        <p>PDF, Word, PowerPoint ou une photo de tes notes.</p>
         <div class="step-visual"><span class="chip-file"><i class="fa-solid fa-file-pdf" style="color:var(--rb-rose)"></i> SVT_Ch3.pdf</span><span class="chip-file"><i class="fa-solid fa-camera" style="color:var(--rb-amber)"></i> notes.jpg</span></div>
       </article>
       <article class="step rb-sheet rb-lift rb-lift--pink">
         <span class="step-n">2</span>
         <h3>L'IA connecte</h3>
-        <p>Elle repère les notions clés, les relie entre elles et prépare quiz, flashcards et fiche de révision en ~30 secondes.</p>
+        <p>Elle repère l'essentiel et prépare tes révisions en 30 secondes.</p>
         <div class="step-visual"><span class="rb-synapse" style="--rb-synapse-size:3rem"><i></i><i></i><i></i></span></div>
       </article>
       <article class="step rb-sheet rb-lift rb-lift--amber">
         <span class="step-n">3</span>
         <h3>Apprends & monte</h3>
-        <p>Révise au bon moment, gagne de l'XP, garde ta série et grimpe de la ligue Bronze jusqu'à Maître.</p>
+        <p>Révise au bon moment, gagne de l'XP et grimpe les ligues.</p>
         <div class="step-visual" style="padding:0 1.25rem"><div class="rb-xp-bar" style="flex:1"><div class="rb-xp-bar__fill" style="--p:74%"></div></div><strong style="font-size:.8rem">Niv. 8</strong></div>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 03 · FONCTIONNALITÉS ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 03 · TES OUTILS ═══════════════════════════════
+     Une tuile = un outil, en quelques mots (les visiteurs lisent peu). -->
 <section class="rb-section rb-section--white" id="features">
   <div class="rb-container">
     <div class="rb-section-head rb-reveal">
       <span class="rb-section-num">03</span>
-      <div><span class="rb-eyebrow">Fonctionnalités</span><h2 class="rb-h1" style="margin-top:.5rem">Tout pour apprendre <em>plus vite</em>, rien pour te distraire.</h2></div>
+      <div><span class="rb-eyebrow">Tes outils</span><h2 class="rb-h1" style="margin-top:.5rem">Tout ce qu'il faut, <em>rien de trop</em>.</h2></div>
       <div class="rb-section-head__rule"></div>
     </div>
-    <div class="bento" data-rb-stagger="70">
-      <article class="b-a rb-sheet rb-lift">
-        <div class="b-ico" style="background:var(--rb-violet-50);color:var(--rb-violet)"><i class="fa-solid fa-bolt"></i></div>
-        <h3>Ton cours devient un quiz en 30 secondes</h3>
-        <p>QCM, vrai/faux, réponses courtes, calculs ou rédaction type examen. Chaque question vient de <strong>ton</strong> cours, avec une explication qui dit pourquoi la bonne réponse est juste — et pourquoi le piège est faux.</p>
-        <div class="rb-row" style="margin-top:1rem;--rb-gap:.4rem"><span class="rb-tag">PDF</span><span class="rb-tag">DOCX</span><span class="rb-tag">PPTX</span><span class="rb-tag">TXT</span><span class="rb-tag rb-tag--amber">Photos de notes (OCR)</span></div>
-      </article>
-      <article class="b-b rb-sheet ink-card rb-lift">
-        <div class="b-ico" style="background:rgba(255,255,255,.18)"><i class="fa-solid fa-bullseye"></i></div>
-        <h3>IA adaptative</h3>
-        <p>RelBrain détecte tes points faibles et génère plus de questions là où tu te trompes.</p>
-      </article>
-      <article class="b-c rb-sheet rb-lift rb-lift--amber">
-        <div class="b-ico" style="background:var(--rb-amber-100);color:#b45309"><i class="fa-solid fa-layer-group"></i></div>
-        <h3>Flashcards SM-2</h3>
-        <div class="demo-flip rb-flip" id="demo-flip" role="button" tabindex="0" aria-label="Retourner la carte">
-          <div class="rb-flip__inner">
-            <div class="rb-flip__face front">Que signifie LIFO ?<small>Clique pour retourner</small></div>
-            <div class="rb-flip__face rb-flip__face--back back">Last In, First Out — le principe de la pile.<small>Prochaine révision : dans 6 jours</small></div>
-          </div>
-        </div>
-      </article>
-      <article class="b-d rb-sheet rb-lift">
-        <div class="b-ico" style="background:var(--rb-emerald-100);color:#047857"><i class="fa-solid fa-chart-line"></i></div>
-        <h3>Tableau de bord honnête</h3>
-        <p>Maîtrise par matière, minutes d'étude, score moyen, et la liste précise de tes notions fragiles.</p>
-      </article>
-      <article class="b-e rb-sheet rb-lift rb-lift--pink">
-        <div class="b-ico" style="background:var(--rb-pink-100);color:#be185d"><i class="fa-solid fa-comments"></i></div>
-        <h3>Un coach qui fait réfléchir</h3>
-        <p>Pose tes questions sur ton cours : l'assistant guide par indices avant de donner la réponse.</p>
-      </article>
-      <article class="b-f rb-sheet night-card">
-        <div class="rb-grid" style="align-items:center">
-          <div class="rb-col-7">
-            <div class="b-ico" style="background:rgba(255,255,255,.08);color:#c4b5fd"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <h3>Des fiches de révision qui vont à l'essentiel</h3>
-            <p>Résumé court, fiche détaillée ou points clés à connaître par cœur la veille — avec les pièges classiques d'examen signalés dans la marge.</p>
-          </div>
-          <div class="rb-col-5">
-            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--rb-radius-md);padding:1.1rem">
-              <p class="rb-eyebrow" style="color:#c4b5fd">Points clés · IA</p>
-              <p style="margin-top:.5rem;color:#ece6fb;font-size:.92rem">La pile suit le principe <strong style="color:#fff">LIFO</strong>, la file suit <strong style="color:#fff">FIFO</strong>. QuickSort : O(n log n) en moyenne.</p>
-              <p class="rb-annotation" style="color:#f9a8d4;margin-top:.6rem">⚠ piège : le pire cas est O(n²)</p>
-            </div>
-          </div>
-        </div>
-      </article>
+    <div class="tools" data-rb-stagger="60">
+      <article class="tool rb-sheet rb-lift"><span class="tool__ico" style="--c:#7c3aed;--bg:var(--rb-violet-50)"><i class="fa-solid fa-bolt"></i></span><div><h3>Quiz en 30 s</h3><p>QCM, vrai/faux, calculs, tirés de ton cours.</p></div></article>
+      <article class="tool rb-sheet rb-lift rb-lift--amber"><span class="tool__ico" style="--c:#b45309;--bg:var(--rb-amber-100)"><i class="fa-solid fa-layer-group"></i></span><div><h3>Flashcards</h3><p>Elles reviennent au bon moment.</p></div></article>
+      <article class="tool rb-sheet rb-lift rb-lift--pink"><span class="tool__ico" style="--c:#be185d;--bg:var(--rb-pink-100)"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div><h3>Fiches de révision</h3><p>L'essentiel et les pièges d'examen.</p></div></article>
+      <article class="tool rb-sheet rb-lift"><span class="tool__ico" style="--c:#7c3aed;--bg:var(--rb-violet-50)"><i class="fa-solid fa-bullseye"></i></span><div><h3>IA adaptative</h3><p>Plus de questions là où tu te trompes.</p></div></article>
+      <article class="tool rb-sheet rb-lift rb-lift--amber"><span class="tool__ico" style="--c:#047857;--bg:var(--rb-emerald-100)"><i class="fa-solid fa-chart-line"></i></span><div><h3>Ton suivi</h3><p>Ta maîtrise par matière et tes points faibles.</p></div></article>
+      <article class="tool rb-sheet rb-lift rb-lift--pink"><span class="tool__ico" style="--c:#0369a1;--bg:#e0f2fe"><i class="fa-solid fa-book-open"></i></span><div><h3>Même sans cours</h3><p>Choisis une matière : l'IA suit ton programme.</p></div></article>
     </div>
   </div>
 </section>
@@ -462,7 +428,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
       <span class="rb-section-num" style="display:block;margin-bottom:.5rem">04</span>
       <span class="rb-eyebrow">Motivation</span>
       <h2 class="rb-h1" style="margin:.5rem 0 1rem">Revenir chaque jour devient <em>naturel</em>.</h2>
-      <p class="rb-lead">XP à chaque effort, séries quotidiennes avec gel de secours, 45 badges, défis du jour et ligues hebdomadaires entre élèves de ton niveau. Le jeu sert l'apprentissage — jamais l'inverse.</p>
+      <p class="rb-lead">XP, séries, badges et ligues entre élèves de ton niveau.</p>
       <div class="leagues" aria-label="Les six ligues">
         <div class="league"><span>🥉</span>Bronze</div><div class="league"><span>🥈</span>Argent</div><div class="league"><span>🥇</span>Or</div>
         <div class="league"><span>💎</span>Platine</div><div class="league"><span>💠</span>Diamant</div><div class="league"><span>👑</span>Maître</div>
@@ -473,10 +439,10 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
         <span class="rb-tag rb-tag--amber">🎯 Essaie maintenant</span>
         <span class="rb-caption rb-tabular"><span data-rb-xp-total="1240">1 240</span> XP</span>
       </div>
-      <p style="font-family:var(--rb-font-display);font-size:1.3rem;font-weight:650;line-height:1.3;margin-bottom:1rem">Quelle structure de données suit le principe « premier arrivé, premier servi » ?</p>
-      <button class="try-opt" data-ok="0"><b class="rb-kbd">A</b> La pile</button>
-      <button class="try-opt" data-ok="1"><b class="rb-kbd">B</b> La file</button>
-      <button class="try-opt" data-ok="0"><b class="rb-kbd">C</b> L'arbre binaire</button>
+      <p style="font-family:var(--rb-font-display);font-size:1.3rem;font-weight:650;line-height:1.3;margin-bottom:1rem">Quelle est la dérivée de f(x) = 5x² ?</p>
+      <button class="try-opt" data-ok="0"><b class="rb-kbd">A</b> 5x</button>
+      <button class="try-opt" data-ok="1"><b class="rb-kbd">B</b> 10x</button>
+      <button class="try-opt" data-ok="0"><b class="rb-kbd">C</b> 10x²</button>
       <div class="rb-xp-bar" style="margin-top:1rem"><div class="rb-xp-bar__fill" id="try-bar" style="--p:88%"></div></div>
       <p class="rb-caption" style="margin-top:.4rem" id="try-hint">Encore 30 XP avant le niveau 8…</p>
     </div>
@@ -504,25 +470,15 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
       <div class="promise__text">
         <span class="rb-annotation">promis, juré</span>
         <h3>Ici, aucun avis n'est inventé.</h3>
-        <p>RelBrain vient d'ouvrir. Chaque avis publié sur cette page vient d'un élève inscrit, après avoir vraiment révisé avec RelBrain, et il est relu avant d'être affiché. Les premiers arrivent : le tien peut en faire partie.</p>
+        <p>Chaque avis vient d'un élève inscrit qui a vraiment révisé avec RelBrain. Le tien peut être l'un des premiers.</p>
         <a href="relbrain-signup.html" class="rb-btn rb-btn--ink"><i class="fa-solid fa-pen-nib"></i> Essayer, puis donner mon avis</a>
       </div>
       <ol class="promise__steps">
-        <li><b>1</b><span><strong>Tu crées ton compte</strong>gratuitement, en une minute.</span></li>
-        <li><b>2</b><span><strong>Tu révises quelques jours</strong>avec tes propres cours.</span></li>
-        <li><b>3</b><span><strong>RelBrain te demande ton avis</strong>Une note, un commentaire, publiés seulement si tu l'acceptes.</span></li>
+        <li><b>1</b><span><strong>Tu crées ton compte</strong>en une minute.</span></li>
+        <li><b>2</b><span><strong>Tu révises</strong>avec tes cours.</span></li>
+        <li><b>3</b><span><strong>Tu donnes ton avis</strong>publié seulement si tu l'acceptes.</span></li>
       </ol>
     </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ MATIÈRES ═══════════════════════════════ -->
-<section class="rb-section">
-  <div class="rb-container rb-container--narrow" style="text-align:center">
-    <span class="rb-eyebrow">Même sans document</span>
-    <h2 class="rb-h2" style="margin:.5rem 0 .75rem">Commence tout de suite, par matière.</h2>
-    <p class="rb-lead" style="margin-bottom:2rem">Choisis une matière : l'IA s'appuie sur le programme de ton niveau.</p>
-    <div class="subjects" id="subjects" data-rb-stagger="40"></div>
   </div>
 </section>
 
@@ -607,7 +563,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
     <div class="glyphs" aria-hidden="true"><span style="left:8%;top:18%">π</span><span style="right:10%;top:22%;animation-delay:1s">√</span><span style="left:14%;bottom:16%;animation-delay:2s">∑</span><span style="right:16%;bottom:20%;animation-delay:.5s">✦</span></div>
     <p class="rb-eyebrow" style="color:#c4b5fd;justify-content:center">Ton cerveau. Tes cours. Ton apprentissage.</p>
     <h2 class="rb-h1" style="margin:1rem auto 1.25rem;max-width:40rem">Prêt·e à apprendre <em style="color:#f9a8d4">autrement</em> ?</h2>
-    <p style="color:#cfc6e4;font-weight:550;margin-bottom:2rem">Crée ton compte en une minute : c'est gratuit pendant tout le lancement.</p>
+    <p style="color:#cfc6e4;font-weight:550;margin-bottom:2rem">Un compte en une minute, gratuit pendant le lancement.</p>
     <div class="rb-row" style="justify-content:center">
       <a href="relbrain-signup.html" class="rb-btn rb-btn--ink rb-btn--lg"><i class="fa-solid fa-rocket"></i> Commencer gratuitement</a>
       <a href="relbrain-documentation.html" class="rb-btn rb-btn--lg" style="--_bg:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)">Lire le guide</a>
@@ -657,12 +613,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }).catch(function () {});
   })();
 
-  /* ── Matières ── */
-  var subjects = [['Mathématiques', 'fa-square-root-variable'], ['Physique', 'fa-atom'], ['Chimie', 'fa-flask'], ['SVT / Biologie', 'fa-dna'], ['Informatique', 'fa-code'], ['Histoire', 'fa-landmark'], ['Géographie', 'fa-globe'], ['Économie', 'fa-chart-line'], ['Droit', 'fa-scale-balanced'], ['Médecine', 'fa-stethoscope'], ['Philosophie', 'fa-feather'], ['Anglais', 'fa-language']];
-  document.getElementById('subjects').innerHTML = subjects.map(function (s) {
-    return '<a class="subject" href="relbrain-signup.html"><i class="fa-solid ' + s[1] + '" style="color:var(--rb-violet)"></i>' + s[0] + '</a>';
-  }).join('');
-
   /* ── FAQ ── */
   var faqs = [
     ['Comment fonctionne la génération de quiz ?', "Tu importes un document. L'IA en extrait le texte, repère les notions clés et génère des questions adaptées au niveau choisi, avec une explication pour chacune. Tout est prêt en une trentaine de secondes."],
@@ -674,12 +624,6 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
   document.getElementById('faq').innerHTML = faqs.map(function (f) { return '<details><summary>' + f[0] + '</summary><div>' + f[1] + '</div></details>'; }).join('');
 
-  /* ── Carte retournable ── */
-  var flip = document.getElementById('demo-flip');
-  function doFlip() { flip.classList.toggle('is-flipped'); }
-  flip.addEventListener('click', doFlip);
-  flip.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doFlip(); } });
-
   /* ── Mini-quiz : éclat de savoir + XP + niveau ── */
   var done = false;
   document.querySelectorAll('#try .try-opt').forEach(function (b) {
@@ -689,11 +633,11 @@ document.addEventListener('DOMContentLoaded', function () {
         done = true; b.classList.add('is-right', 'rb-answer-right');
         RB.motion.burst(b, { count: 14 });
         RB.motion.xp(30, b, { progress: 100 });
-        document.getElementById('try-hint').textContent = 'Bravo ! La file suit le principe FIFO.';
+        document.getElementById('try-hint').textContent = 'Bravo ! (5x²)′ = 5 × 2x = 10x.';
         setTimeout(function () { RB.motion.levelUp(8, { perks: ['🎨 Thème « Nuit étoilée »', '❄️ +1 gel de série'] }); }, 1100);
       } else {
         b.classList.add('is-wrong'); RB.motion.shake(b);
-        document.getElementById('try-hint').textContent = 'Presque ! La pile, c\'est « dernier arrivé, premier servi ».';
+        document.getElementById('try-hint').textContent = 'Presque ! Rappel : la dérivée de xⁿ est n·xⁿ⁻¹.';
       }
     });
   });

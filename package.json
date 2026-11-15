@@ -16,7 +16,8 @@
     "demo": "tsx scripts/demo.ts",
     "vercel:env": "node scripts/vercel-env.js",
     "deploy": "vercel --prod",
-    "icons": "node scripts/icons.js"
+    "icons": "node scripts/icons.js",
+    "i18n": "node scripts/i18n.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -37,6 +38,7 @@
     "@types/pdf-parse": "^1.1.4",
     "@types/web-push": "^3.6.4",
     "@vercel/node": "^3.2.29",
+    "linkedom": "^0.18.9",
     "tsx": "^4.23.15",
     "typescript": "^5.6.3",
     "vercel": "^65.16.0"

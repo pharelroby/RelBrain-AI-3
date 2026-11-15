@@ -107,6 +107,24 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 .ann-btn.primary{background:linear-gradient(135deg,#7c3aed,#a855f7);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.22)}
 .ann-btn:disabled{opacity:.6;cursor:wait}
 @media(max-width:560px){.ann-row>div:last-child{width:100%;justify-content:flex-start;padding-left:2.7rem}}
+.country-bar{display:flex;align-items:center;gap:.6rem;padding:.55rem .6rem .55rem .8rem;background:#fff;border:1px solid #e7d9c5;border-radius:.9rem}
+.country-bar .flag{font-size:1.4rem;line-height:1}
+.country-bar button{margin-left:auto;font-size:.7rem;font-weight:800;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:.6rem;padding:.4rem .7rem;cursor:pointer}
+.country-bar button:hover{background:#ede9fe}
+.c-step{display:inline-flex;align-items:center;gap:.4rem;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7c3aed}
+.c-step b{width:1.25rem;height:1.25rem;border-radius:50%;display:grid;place-items:center;background:#7c3aed;color:#fff;font-size:.6rem;letter-spacing:0}
+.countries{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:.6rem}
+.country{display:flex;align-items:center;gap:.65rem;padding:.75rem .8rem;background:#fff;border:1.5px solid #e7d9c5;border-radius:.9rem;cursor:pointer;text-align:left;transition:all .15s;font:inherit}
+.country:hover{border-color:#c4b5fd;transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,58,237,.10)}
+.country.mine{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.country .flag{font-size:1.6rem;line-height:1}
+.country b{display:block;font-size:.8rem;font-weight:900;color:#1c1917}
+.country small{display:block;font-size:.64rem;font-weight:700;color:#a8a29e}
+.country small.has{color:#7c3aed}
+.empty-country{text-align:center;padding:2rem 1.2rem;background:#fff;border:1.5px dashed #ddd6fe;border-radius:1rem}
+html.dark .country,html.dark .country-bar,html.dark .empty-country{background:#1c1730;border-color:rgba(255,255,255,.08)}
+html.dark .country b{color:#ede9fe}
+html.dark .country-bar button{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.35);color:#ddd6fe}
 html.dark .seg{background:#1c1730;border-color:rgba(255,255,255,.08)}
 html.dark .c-card{background:#1c1730;border-color:rgba(255,255,255,.08)}
 html.dark .year-head{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
@@ -213,12 +231,25 @@ html.dark .lvl-chip,html.dark .ann-icon{background:rgba(124,58,237,.18);border-c
 
   <div class="p-4 md:p-5 max-w-4xl mx-auto w-full space-y-3">
 
+    <!-- ═══ VUE 0 : CHOIX DU PAYS ═══ -->
+    <section id="view-country" class="space-y-3" hidden>
+      <div>
+        <p class="c-step"><b>1</b> Ton pays</p>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900 mt-1">Dans quel pays passes-tu tes concours ?</h1>
+        <p class="text-xs text-slate-500 mt-0.5 font-semibold">On te montre ensuite les écoles et leurs annales.</p>
+      </div>
+      <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i><input id="qc" class="rb-input" style="padding:.5rem .7rem .5rem 1.8rem;width:100%;max-width:18rem;font-size:.78rem" placeholder="Chercher un pays" aria-label="Chercher un pays"/></div>
+      <div class="countries" id="countries"></div>
+    </section>
+
     <!-- ═══ VUE 1 : CATALOGUE ═══ -->
-    <section id="view-list" class="space-y-3">
+    <section id="view-list" class="space-y-3" hidden>
+      <div class="country-bar"><span class="flag" id="cb-flag">🌍</span><div class="min-w-0"><p class="c-step" style="font-size:.56rem"><b>1</b> Ton pays</p><p class="text-sm font-black text-slate-900 truncate" id="cb-name">—</p></div><button type="button" id="cb-change"><i class="fa-solid fa-arrows-rotate"></i> Changer de pays</button></div>
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
+          <p class="c-step"><b>2</b> Ton école</p>
           <h1 class="text-xl md:text-2xl font-black text-slate-900">Concours</h1>
-          <p class="text-xs text-slate-500 mt-0.5 font-semibold">Les annales des concours des grandes écoles du Cameroun, de la plus récente à la plus ancienne.</p>
+          <p class="text-xs text-slate-500 mt-0.5 font-semibold" id="list-sub">Choisis une école pour voir ses annales.</p>
         </div>
         <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i><input id="q" class="rb-input" style="padding:.45rem .7rem .45rem 1.8rem;width:14rem;font-size:.75rem" placeholder="Chercher une école" aria-label="Chercher une école"/></div>
       </div>
@@ -234,7 +265,7 @@ html.dark .lvl-chip,html.dark .ann-icon{background:rgba(124,58,237,.18);border-c
 
     <!-- ═══ VUE 2 : UN CONCOURS ═══ -->
     <section id="view-detail" class="space-y-3" hidden>
-      <a href="relbrain-concours.html" class="back-link" id="back"><i class="fa-solid fa-arrow-left"></i> Tous les concours</a>
+      <a href="relbrain-concours.html" class="back-link" id="back"><i class="fa-solid fa-arrow-left"></i> Toutes les écoles</a>
       <div class="c-hero" id="hero">
         <div class="relative z-10 flex items-center gap-3">
           <div class="c-crest" id="h-crest">?</div>
@@ -284,7 +315,8 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
 (function () {
   var CAT = { ingenieur: 'École d\'ingénieurs', technologie: 'Institut de technologie', commerce: 'École de commerce', universite: 'Université' };
   var FORMAT = { qcm: ['QCM', 'fmt-qcm'], redaction: ['Rédaction', 'fmt-red'], mixte: ['QCM + questions ouvertes', 'fmt-mix'] };
-  var catalog = [], cat = '', current = null, level = null, annales = [];
+  var catalog = [], all = [], cat = '', current = null, level = null, annales = [], country = null, profileCountry = null;
+  var KEY = 'rb-concours-country';
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return window.RB && RB.escape ? RB.escape(s) : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
@@ -302,7 +334,7 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
     ['saint-jerome', 'USJ', 'Saint Jérôme', 'Université Catholique Saint Jérôme de Douala', 'universite', 'Douala', '#10b981', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
     ['ucac', 'UCAC', 'UCAC', 'Université Catholique d\'Afrique Centrale', 'universite', 'Yaoundé', '#e11d48', [['1re', '1re année', 'Baccalauréat ou GCE A-Level']]],
   ].map(function (c) {
-    return { slug: c[0], abbr: c[1], short_name: c[2], name: c[3], category: c[4], city: c[5], color: c[6], description: null,
+    return { slug: c[0], abbr: c[1], short_name: c[2], name: c[3], category: c[4], city: c[5], color: c[6], country: 'Cameroun', description: null,
       levels: c[7].map(function (l, i) { return { id: c[0] + ':' + l[0], code: l[0], label: l[1], requirement: l[2], sort_order: i + 1, count: c[4] === 'ingenieur' || c[4] === 'technologie' ? 12 - i * 4 : 6 }; }) };
   });
   function demoAnnales(levelId) {
@@ -317,6 +349,38 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
   async function loadCatalog() {
     if (!window.RB || RB.demo) return DEMO;
     return (await RB.data.concours.list()).map(function (c) { c.levels = (c.levels || []).sort(function (a, b) { return a.sort_order - b.sort_order; }); return c; });
+  }
+
+  /* ─── Vue 0 : le pays d'abord (les écoles dépendent du pays) ─── */
+  function countries() { return (window.RB && RB.COUNTRIES) || [{ name: 'Cameroun', flag: '🇨🇲' }, { name: 'Autre', flag: '🌍' }]; }
+  function flagOf(name) { var c = countries().filter(function (x) { return x.name === name; })[0]; return c ? c.flag : '🌍'; }
+  function schoolsIn(name) { return all.filter(function (c) { return (c.country || 'Cameroun') === name; }).length; }
+  function renderCountries() {
+    var q = norm($('qc').value.trim());
+    var list = countries().slice().sort(function (a, b) {
+      var mine = (b.name === profileCountry) - (a.name === profileCountry); if (mine) return mine;
+      return (schoolsIn(b.name) > 0) - (schoolsIn(a.name) > 0);
+    }).filter(function (c) { return !q || norm(c.name).indexOf(q) > -1; });
+    $('countries').innerHTML = list.map(function (c) {
+      var n = schoolsIn(c.name);
+      return '<button type="button" class="country' + (c.name === profileCountry ? ' mine' : '') + '" data-country="' + esc(c.name) + '"><span class="flag">' + c.flag + '</span><span class="min-w-0"><b>' + esc(c.name) + '</b>' +
+        (c.name === profileCountry ? '<small class="has">Ton pays</small>' : '') +
+        '<small class="' + (n ? 'has' : '') + '">' + (n ? n + ' école' + (n > 1 ? 's' : '') : 'Bientôt') + '</small></span></button>';
+    }).join('') || '<p class="text-xs text-slate-500 font-semibold">Aucun pays ne correspond.</p>';
+  }
+  function showCountries() {
+    current = null; $('view-list').hidden = true; $('view-detail').hidden = true; $('view-country').hidden = false;
+    document.title = 'RelBrain.AI – Concours'; $('crumb').textContent = 'Concours';
+    try { history.replaceState(null, '', location.pathname + '?pays=choisir'); } catch (e) {}
+    renderCountries();
+  }
+  function setCountry(name) {
+    country = name;
+    try { localStorage.setItem(KEY, name); } catch (e) {}
+    catalog = all.filter(function (c) { return (c.country || 'Cameroun') === name; });
+    $('cb-flag').textContent = flagOf(name); $('cb-name').textContent = name;
+    $('view-country').hidden = true;
+    showList();
   }
 
   /* ─── Vue 1 : catalogue ─── */
@@ -334,6 +398,18 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
   function renderGrid() {
     var q = norm($('q').value.trim());
     var list = catalog.filter(function (c) { return (!cat || c.category === cat) && (!q || norm(c.short_name + ' ' + c.name + ' ' + (c.city || '')).indexOf(q) > -1); });
+    if (!catalog.length) {
+      $('cats').hidden = true; $('q').parentNode.hidden = true;
+      $('list-sub').textContent = 'Aucune école de ce pays pour le moment.';
+      $('grid').innerHTML = '<div class="empty-country sm:col-span-2"><p class="text-4xl mb-2">' + flagOf(country) + '</p>' +
+        '<p class="text-sm font-black text-slate-800">Les concours de ce pays arrivent bientôt.</p>' +
+        '<p class="text-xs text-slate-500 font-semibold mt-1 max-w-sm mx-auto">Dis-nous quelle école tu prépares : on ajoute en priorité celles que les élèves demandent.</p>' +
+        '<div class="flex flex-wrap justify-center gap-2 mt-4"><a href="relbrain-contact.html" class="ann-btn primary"><i class="fa-solid fa-paper-plane"></i> Proposer une école</a>' +
+        '<a href="relbrain-documents.html" class="ann-btn"><i class="fa-solid fa-file-arrow-up"></i> Importer mes propres sujets</a></div></div>';
+      return;
+    }
+    $('cats').hidden = false; $('q').parentNode.hidden = false;
+    $('list-sub').textContent = 'Choisis une école pour voir ses annales, de la plus récente à la plus ancienne.';
     $('grid').innerHTML = list.length ? list.map(card).join('') : '<p class="text-xs text-slate-500 font-semibold py-6 text-center sm:col-span-2">Aucune école ne correspond à ta recherche.</p>';
   }
 
@@ -400,15 +476,15 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
     current = catalog.find(function (c) { return c.slug === slug; });
     if (!current && window.RB && !RB.demo) { try { current = await RB.data.concours.get(slug); current.levels.sort(function (a, b) { return a.sort_order - b.sort_order; }); } catch (e) { current = null; } }
     if (!current) { toast('Concours introuvable.', 'error'); return showList(); }
-    $('view-list').hidden = true; $('view-detail').hidden = false; $('q2').value = '';
+    $('view-list').hidden = true; $('view-country').hidden = true; $('view-detail').hidden = false; $('q2').value = '';
     renderHero(current);
     window.scrollTo(0, 0);
     selectLevel(code);
   }
   function showList() {
-    current = null; $('view-detail').hidden = true; $('view-list').hidden = false;
+    current = null; $('view-detail').hidden = true; $('view-country').hidden = true; $('view-list').hidden = false;
     document.title = 'RelBrain.AI – Concours'; $('crumb').textContent = 'Concours';
-    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    try { history.replaceState(null, '', location.pathname + '?pays=' + encodeURIComponent(country || '')); } catch (e) {}
     renderGrid();
   }
 
@@ -433,7 +509,11 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
     }
   }
 
-  async function start() {
+  async function start(ctx) {
+    profileCountry = ctx && ctx.profile && ctx.profile.country || null;
+    $('countries').addEventListener('click', function (e) { var b = e.target.closest('[data-country]'); if (b) setCountry(b.dataset.country); });
+    $('qc').addEventListener('input', renderCountries);
+    $('cb-change').addEventListener('click', showCountries);
     $('cats').addEventListener('click', function (e) { var b = e.target.closest('button[data-cat]'); if (!b) return; cat = b.dataset.cat; document.querySelectorAll('#cats button').forEach(function (x) { x.classList.toggle('on', x === b); }); renderGrid(); });
     $('q').addEventListener('input', renderGrid);
     $('q2').addEventListener('input', filterAnnales);
@@ -444,15 +524,25 @@ function toast(msg,type){const h=document.getElementById('rb-toast-host');const 
       var o = e.target.closest('[data-open]'); if (o) return openFile(o.dataset.open, o);
       var p = e.target.closest('[data-practice]'); if (p) return practice(p.dataset.practice, p.dataset.title, p);
     });
+    $('view-list').hidden = false;
     skeleton('grid', 4);
-    try { catalog = await loadCatalog(); }
+    try { all = await loadCatalog(); }
     catch (e) { if (window.RB && RB.handleError) RB.handleError(e, 'Concours indisponibles.'); $('grid').innerHTML = '<p class="text-center text-xs text-rose-600 font-bold py-6 sm:col-span-2">Impossible de charger les concours. <button class="underline" onclick="location.reload()">Réessayer</button></p>'; return; }
-    var p = new URLSearchParams(location.search);
-    if (p.get('c')) openConcours(p.get('c'), p.get('n')); else renderGrid();
+    var p = new URLSearchParams(location.search), saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    var wanted = p.get('pays') === 'choisir' ? null : p.get('pays') || saved || profileCountry;
+    if (p.get('c')) {
+      var school = all.filter(function (c) { return c.slug === p.get('c'); })[0];
+      country = school ? school.country || 'Cameroun' : wanted || 'Cameroun';
+      catalog = all.filter(function (c) { return (c.country || 'Cameroun') === country; });
+      $('cb-flag').textContent = flagOf(country); $('cb-name').textContent = country;
+      openConcours(p.get('c'), p.get('n'));
+    } else if (wanted && countries().some(function (c) { return c.name === wanted; })) setCountry(wanted);
+    else { $('view-list').hidden = true; showCountries(); }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    if (window.RB && !RB.demo) RB.onReady(start); else start();
+    if (window.RB && !RB.demo) RB.onReady(start); else start({ profile: { country: 'Cameroun' } });
   });
 })();
 </script>

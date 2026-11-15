@@ -48,6 +48,7 @@
           '<a class="rb-site-link" href="relbrain-login.html" data-rb-guest>Connexion</a>' +
           '<a class="rb-btn rb-btn--ink rb-btn--sm" href="relbrain-signup.html" data-rb-guest-cta>Essai gratuit <i class="fa-solid fa-arrow-right"></i></a>' +
         '</nav>' +
+        '<span class="rb-site-lang" data-rb-lang-slot></span>' +
       '</div>';
     var burger = el.querySelector('.rb-site-burger'), links = el.querySelector('.rb-site-links');
     burger.addEventListener('click', function () {
