@@ -37,8 +37,8 @@ let ok = 0, ko = 0, vide = [];
 for (const name of A_ENVOYER) {
   const value = env[name];
   if (!value) { vide.push(name); continue; }
-  run(['env', 'rm', name, 'production', '--yes']); // remplace l'ancienne valeur si elle existe
-  const r = run(['env', 'add', name, 'production'], value);
+  // --force remplace l'ancienne valeur ; la valeur passe par l'entrée standard (jamais affichée)
+  const r = run(['env', 'add', name, '--environment', 'production', '--force', '--yes'], value);
   if (r.status === 0) { ok++; console.log('  ✓ ' + name); }
   else {
     ko++;
