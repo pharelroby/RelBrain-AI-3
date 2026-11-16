@@ -1,8 +1,20 @@
-/* POST /api/auth/signup — inscription email + mot de passe (limitée : 5 / heure / IP).
-   Supabase envoie l'email de confirmation ; le lien ramène sur relbrain-validation-email.html. */
+/* POST /api/auth/signup — inscription email + mot de passe (limitée : 30 / heure / IP).
+
+   ═══════════════════════════════════════════════════════════════
+   📧 CONFIRMATION D'EMAIL — PHASE DE TEST
+   ───────────────────────────────────────────────────────────────
+   Le service d'emails gratuit de Supabase n'envoie que quelques
+   emails par heure pour tout le projet : au-delà, chaque inscription
+   échouait (« email rate limit exceeded »).
+   Pendant la phase de test, le compte est donc créé DÉJÀ CONFIRMÉ,
+   sans email, et l'élève est connecté tout de suite.
+   Quand un vrai service d'emails sera branché (nom de domaine +
+   SMTP dans Supabase), mets REQUIRE_EMAIL_CONFIRM=true dans Vercel :
+   la confirmation par email reviendra.
+   ═══════════════════════════════════════════════════════════════ */
 import { z } from 'zod';
 import { route, parse, HttpError } from '../../lib/http';
-import { anon } from '../../lib/supabase';
+import { anon, admin } from '../../lib/supabase';
 import { appUrl } from '../../lib/env';
 
 const Body = z.object({
@@ -23,29 +35,42 @@ const Body = z.object({
     .default({}),
 });
 
+function signupError(message: string): never {
+  if (/already registered|already exists|already been registered/i.test(message)) {
+    throw new HttpError(409, 'email_taken', 'Un compte existe déjà avec cette adresse. Connecte-toi ou réinitialise ton mot de passe.');
+  }
+  if (/password/i.test(message)) throw new HttpError(400, 'weak_password', 'Mot de passe trop faible : 8 caractères minimum, avec lettres et chiffres.');
+  throw new HttpError(400, 'signup_failed', "L'inscription n'a pas pu aboutir. Vérifie tes informations.");
+}
+
 export default route(
-  { methods: ['POST'], rateLimit: { key: (c) => `signup:${c.ip}`, max: 5, windowSec: 3600 } },
+  { methods: ['POST'], rateLimit: { key: (c) => `signup:${c.ip}`, max: 30, windowSec: 3600 } },
   async ({ req }) => {
     const body = parse(Body, req.body);
-    const { data, error } = await anon().auth.signUp({
-      email: body.email.toLowerCase(),
-      password: body.password,
-      options: {
-        data: body.profile,
-        emailRedirectTo: `${appUrl()}/relbrain-validation-email.html?confirmed=1`,
-      },
-    });
-    if (error) {
-      if (/already registered|already exists/i.test(error.message)) {
-        throw new HttpError(409, 'email_taken', 'Un compte existe déjà avec cette adresse. Connecte-toi ou réinitialise ton mot de passe.');
-      }
-      if (/password/i.test(error.message)) throw new HttpError(400, 'weak_password', 'Mot de passe trop faible : 8 caractères minimum, avec lettres et chiffres.');
-      throw new HttpError(400, 'signup_failed', "L'inscription n'a pas pu aboutir. Vérifie tes informations.");
+    const email = body.email.toLowerCase();
+
+    // Phase de test : compte confirmé d'office, pas d'email envoyé
+    if (process.env.REQUIRE_EMAIL_CONFIRM !== 'true') {
+      const created = await admin().auth.admin.createUser({ email, password: body.password, email_confirm: true, user_metadata: body.profile });
+      if (created.error) signupError(created.error.message);
+      const { data, error } = await anon().auth.signInWithPassword({ email, password: body.password });
+      if (error || !data.session) return { user_id: created.data.user?.id, needs_confirmation: false, session: null };
+      return {
+        user_id: data.user?.id,
+        needs_confirmation: false,
+        session: { access_token: data.session.access_token, refresh_token: data.session.refresh_token, expires_at: data.session.expires_at },
+      };
     }
+
+    const { data, error } = await anon().auth.signUp({
+      email,
+      password: body.password,
+      options: { data: body.profile, emailRedirectTo: `${appUrl()}/relbrain-validation-email.html?confirmed=1` },
+    });
+    if (error) signupError(error.message);
     return {
       user_id: data.user?.id,
       needs_confirmation: !data.session,
-      // Si la confirmation d'email est désactivée dans Supabase, une session est renvoyée directement.
       session: data.session
         ? { access_token: data.session.access_token, refresh_token: data.session.refresh_token, expires_at: data.session.expires_at }
         : null,

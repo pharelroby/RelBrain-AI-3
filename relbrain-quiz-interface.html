@@ -86,7 +86,7 @@ body{background:#fdf4e8;min-height:100vh;color:#0f172a;}
   <div class="quiz-screen" id="quiz-screen">
     <div class="rb-card p-6 md:p-8 mb-5">
       <div class="flex items-center gap-3 mb-5">
-        <span class="text-[10px] font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full" id="q-badge">QCM · Moyen</span>
+        <span class="text-[10px] font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full" id="q-badge">QCM</span>
         <span class="text-[10px] font-black text-slate-400" id="q-points">2 points</span>
       </div>
       <h2 class="text-xl md:text-2xl font-black text-slate-900 mb-6 leading-snug" id="question-text">Quelle est la complexité temporelle moyenne de l'algorithme QuickSort ?</h2>
@@ -198,7 +198,7 @@ let timeLeft = 600;
 function renderQuestion(){
   const q = questions[current];
   document.getElementById('question-text').textContent = q.q;
-  document.getElementById('q-badge').textContent = 'QCM · Moyen';
+  document.getElementById('q-badge').textContent = 'QCM';
   document.getElementById('q-points').textContent = q.points + ' points';
   document.getElementById('progress-text').textContent = (current+1) + '/' + questions.length;
   document.getElementById('progress-bar').style.width = ((current+1) / questions.length * 100) + '%';
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var q = questions[current], r = results[current];
       shownAt = Date.now();
       document.getElementById('question-text').textContent = q.q;
-      document.getElementById('q-badge').textContent = TYPE_LABEL[q.type] + ' · ' + (DIFF_LABEL[quiz.difficulty] || '');
+      document.getElementById('q-badge').textContent = TYPE_LABEL[q.type] || 'QCM'; // pas de niveau de difficulté affiché
       document.getElementById('q-points').textContent = q.points + ' point' + (q.points > 1 ? 's' : '') + (q.concept ? ' · ' + q.concept : '');
       document.getElementById('progress-text').textContent = (current + 1) + '/' + questions.length;
       document.getElementById('progress-bar').style.width = ((current + 1) / questions.length * 100) + '%';

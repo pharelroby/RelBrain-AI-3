@@ -340,8 +340,8 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
           <div class="grid sm:grid-cols-2 gap-2" id="type-grid"></div>
         </div>
 
-        <!-- ÉTAPE 4 : DIFFICULTÉ -->
-        <div class="rb-card p-4">
+        <!-- ÉTAPE 4 : DIFFICULTÉ — masquée : les quiz sont toujours au niveau « moyen », adapté au niveau scolaire de l'élève -->
+        <div class="rb-card p-4" hidden>
           <div class="flex items-center gap-2 mb-3">
             <span class="w-6 h-6 rounded-lg gradient-bg text-white text-[10px] font-black flex items-center justify-center">4</span>
             <div>
@@ -384,7 +384,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
               <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-brain text-violet-500 text-xs"></i></div>
               <div class="flex-1">
                 <p class="text-xs font-black text-slate-800">IA adaptative</p>
-                <p class="text-[10px] text-slate-500 font-semibold">Ajuste la difficulté en direct</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Insiste là où tu te trompes</p>
               </div>
               <label class="opt-switch"><input type="checkbox" id="opt-adapt" onchange="updateSummary()"><span class="opt-slider"></span></label>
             </label>
@@ -413,7 +413,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
                 <span class="text-[10px] font-black uppercase tracking-wider text-yellow-200">Aperçu du quiz</span>
               </div>
               <p class="text-lg font-black mb-0.5" id="hero-title">Quiz Personnalisé</p>
-              <p class="text-violet-100 text-[10px] font-bold mb-3" id="hero-sub">Algorithmique_S5.pdf · Niveau moyen</p>
+              <p class="text-violet-100 text-[10px] font-bold mb-3" id="hero-sub">Algorithmique_S5.pdf · QCM</p>
 
               <div class="grid grid-cols-3 gap-1.5">
                 <div class="bg-white/15 backdrop-blur rounded-lg p-2 text-center">
@@ -448,7 +448,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
                 <span class="text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-shapes text-violet-500 w-3.5 text-[10px]"></i> Type</span>
                 <span class="font-black text-slate-800 text-[11px]" id="sum-type">QCM</span>
               </div>
-              <div class="flex items-center justify-between py-1.5 border-b border-[#f0e6d8]">
+              <div class="flex items-center justify-between py-1.5 border-b border-[#f0e6d8]" hidden>
                 <span class="text-slate-500 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-gauge-high text-violet-500 w-3.5 text-[10px]"></i> Difficulté</span>
                 <span class="font-black text-[11px]" id="sum-diff" style="color:#f59e0b">Moyen</span>
               </div>
@@ -713,7 +713,7 @@ function generateQuiz(){
     {pct:32, label:'Analyse sémantique…', sub:'Identification des concepts', step:'🧠 Analyse IA'},
     {pct:52, label:'Connexion des idées…', sub:'Concepts identifiés', step:'🔗 Synapses'},
     {pct:72, label:'Génération des questions…', sub:state.count + ' questions · ' + state.typeLabel, step:'✍️ Rédaction'},
-    {pct:88, label:'Calibrage…', sub:'Niveau : ' + diffs.find(x=>x.id===state.diff).label, step:'⚖️ Ajustement'},
+    {pct:88, label:'Calibrage…', sub:'Adapté à ton niveau', step:'⚖️ Ajustement'},
     {pct:100, label:'Quiz prêt ! 🎉', sub:'Redirection...', step:'✅ Terminé'}
   ];
 
