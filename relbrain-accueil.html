@@ -294,7 +294,7 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
 
     <h1 class="ai-greeting">Bonjour <span data-rb="first-name">Pharel</span> 👋</h1>
     <h2 class="ai-title">Comment puis-je t'<span class="gradient-text">aider</span> aujourd'hui ?</h2>
-    <p class="ai-subtitle">Pose une question, colle un extrait de cours ou choisis une suggestion pour commencer.</p>
+    <p class="ai-subtitle">Pose une question ou colle un extrait de cours.</p>
 
     <div class="ai-input-wrap">
       <button class="ai-input-addon" onclick="document.getElementById('ai-input').focus()"><i class="fa-solid fa-plus"></i></button>
@@ -302,26 +302,6 @@ body{background:#fdf4e8;min-height:100vh;overflow-x:hidden;color:#0f172a;font-si
       <button class="ai-send-btn" onclick="sendAI()"><i class="fa-solid fa-arrow-up text-xs"></i></button>
     </div>
 
-    <div class="ai-suggestions">
-      <button class="suggestion-chip" onclick="quickPrompt('Résume mon cours de maths')">📐 Résume mon cours</button>
-      <button class="suggestion-chip" onclick="quickPrompt('Génère 10 questions sur les probabilités')">🎯 Quiz probabilités</button>
-      <button class="suggestion-chip" onclick="quickPrompt('Explique-moi les structures de données')">💡 Structures de données</button>
-    </div>
-
-    <div class="action-cards">
-      <button class="action-card" onclick="quickPrompt('Génère des exercices sur mon dernier cours')">
-        <div class="ac-icon bg-violet-100 text-violet-600"><i class="fa-solid fa-file-pen"></i></div>
-        <div><p class="ac-title">Génère des exercices</p><p class="ac-desc">Entraîne-toi sur les notions clés.</p></div>
-      </button>
-      <button class="action-card" onclick="quickPrompt('Résume mon cours')">
-        <div class="ac-icon bg-amber-100 text-amber-600"><i class="fa-solid fa-file-lines"></i></div>
-        <div><p class="ac-title">Résumé de ton cours</p><p class="ac-desc">Résumé structuré et complet.</p></div>
-      </button>
-      <button class="action-card" onclick="quickPrompt('Corrige mes réponses')">
-        <div class="ac-icon bg-emerald-100 text-emerald-600"><i class="fa-solid fa-circle-check"></i></div>
-        <div><p class="ac-title">Corrige mes réponses</p><p class="ac-desc">Fais corriger tes exercices.</p></div>
-      </button>
-    </div>
   </section>
 </div>
 </div>
@@ -491,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Plan du jour
     var plan = document.createElement('section'); plan.id = 'coach-plan';
-    document.querySelector('.action-cards').insertAdjacentElement('afterend', plan);
+    reset.insertAdjacentElement('afterend', plan);
     plan.innerHTML = '<div class="rb-skeleton" style="height:9rem;border-radius:1rem"></div>';
     try {
       var res = await Promise.all([RB.data.recommendations(), Promise.resolve(ctx.game)]);
