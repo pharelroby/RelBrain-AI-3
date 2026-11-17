@@ -48,11 +48,8 @@
   };
   /* Pays proposés à l'inscription et dans les concours (le nom français est enregistré dans le profil) */
   RB.COUNTRIES = [
-    ['Cameroun', '🇨🇲'], ["Côte d'Ivoire", '🇨🇮'], ['Sénégal', '🇸🇳'], ['Gabon', '🇬🇦'], ['Congo', '🇨🇬'], ['Congo (RDC)', '🇨🇩'],
-    ['Bénin', '🇧🇯'], ['Togo', '🇹🇬'], ['Burkina Faso', '🇧🇫'], ['Mali', '🇲🇱'], ['Niger', '🇳🇪'], ['Tchad', '🇹🇩'],
-    ['Centrafrique', '🇨🇫'], ['Guinée', '🇬🇳'], ['Guinée équatoriale', '🇬🇶'], ['Madagascar', '🇲🇬'], ['Rwanda', '🇷🇼'], ['Burundi', '🇧🇮'],
-    ['Nigeria', '🇳🇬'], ['Ghana', '🇬🇭'], ['Maroc', '🇲🇦'], ['Algérie', '🇩🇿'], ['Tunisie', '🇹🇳'],
-    ['France', '🇫🇷'], ['Belgique', '🇧🇪'], ['Suisse', '🇨🇭'], ['Canada', '🇨🇦'], ['Autre', '🌍'],
+    ['Cameroun', '🇨🇲'], ["Côte d'Ivoire", '🇨🇮'], ['Sénégal', '🇸🇳'], ['Bénin', '🇧🇯'], ['Togo', '🇹🇬'],
+    ['Congo (RDC)', '🇨🇩'], ['Congo', '🇨🇬'], ['France', '🇫🇷'], ['Allemagne', '🇩🇪'], ['Suisse', '🇨🇭'], ['Canada', '🇨🇦'], ['Autre', '🌍'],
   ].map(function (c) { return { name: c[0], flag: c[1] }; });
   RB.countryFlag = function (name) { var c = RB.COUNTRIES.filter(function (x) { return x.name === name; })[0]; return c ? c.flag : '🌍'; };
   RB.formatNumber = function (n) { return Number(n || 0).toLocaleString('fr-FR'); };

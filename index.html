@@ -302,7 +302,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
       <svg class="links-svg" id="scene-links" aria-hidden="true"></svg>
 
       <div class="quiz-pop rb-sheet" id="scene-quiz">
-        <div class="rb-row" style="--rb-gap:.4rem"><span class="rb-tag">QCM</span><span class="rb-tag rb-tag--outline">Généré en 28 s</span></div>
+        <div class="rb-row" style="--rb-gap:.4rem"><span class="rb-tag">QCM · Moyen</span><span class="rb-tag rb-tag--outline">Généré en 28 s</span></div>
         <p class="q">Quelle est la dérivée de f(x) = x³ ?</p>
         <div class="opt"><b>A</b> 3x</div>
         <div class="opt" id="scene-right"><b>B</b> 3x²</div>
@@ -503,7 +503,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
         <div class="amount">0 F<small> /mois</small></div><span class="xaf">Pour toujours, sans carte bancaire</span>
         <ul>
           <li><i class="fa-solid fa-check"></i> 5 documents par mois</li>
-          <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 10 questions</li>
+          <li><i class="fa-solid fa-check"></i> Quiz jusqu'à 15 questions</li>
           <li><i class="fa-solid fa-check"></i> Flashcards avec révision espacée</li>
           <li><i class="fa-solid fa-check"></i> Résumé court et points clés</li>
           <li class="off"><i class="fa-solid fa-xmark"></i> IA adaptative</li>
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ['Puis-je payer avec Orange Money ou MTN MoMo ?', "Bientôt. Pendant le lancement, RelBrain est entièrement gratuit. Les forfaits Pro et Premium arriveront ensuite, payables en FCFA par Orange Money ou MTN Mobile Money, ou par carte bancaire, sans prélèvement automatique."],
     ['Quelle différence avec Quizlet ou Anki ?', "RelBrain génère automatiquement le contenu depuis TES cours et l'adapte à tes points faibles. Avec Quizlet ou Anki, tu dois créer toi-même tes cartes. RelBrain utilise le même algorithme de révision espacée (SM-2) qu'Anki."],
     ['Ça marche avec une connexion lente ?', "RelBrain est conçu pour le mobile et les connexions instables : pages légères, mise en cache hors-ligne des pages déjà visitées, et reprise automatique des sessions."],
-    ['Le plan gratuit est-il vraiment gratuit ?', "Oui, sans carte bancaire et sans limite de durée : 5 documents par mois, quiz de 10 questions, flashcards et résumés courts. Tu passes à Pro quand tu veux."],
+    ['Le plan gratuit est-il vraiment gratuit ?', "Oui, sans carte bancaire et sans limite de durée : 5 documents par mois, quiz de 15 questions, flashcards et résumés courts. Tu passes à Pro quand tu veux."],
   ];
   document.getElementById('faq').innerHTML = faqs.map(function (f) { return '<details><summary>' + f[0] + '</summary><div>' + f[1] + '</div></details>'; }).join('');
 
