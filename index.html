@@ -120,6 +120,31 @@ html.dark .quiz-pop .opt.is-right{background:rgba(16,185,129,.16);color:#6ee7b7}
 html.dark .tool__ico{background:rgba(255,255,255,.08);color:#e9d5ff}
 .tool h3{font-weight:800;font-size:1rem;color:var(--rb-ink);margin-bottom:.1rem}
 .tool p{font-size:.86rem;color:var(--rb-muted);font-weight:550;line-height:1.4}
+/* Tutoriels vidéo */
+.tutos-lead{color:var(--rb-muted);font-weight:600;margin:-.5rem 0 1.4rem}
+.tutos{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1rem}
+@media(max-width:1080px){.tutos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.8rem;margin:0 calc(-1 * var(--rb-gutter));padding:.3rem var(--rb-gutter) 1rem;scrollbar-width:none}.tutos::-webkit-scrollbar{display:none}.tuto{flex:0 0 clamp(8.5rem,38vw,11.5rem);scroll-snap-align:start}}
+.tuto{position:relative;aspect-ratio:9/16;border-radius:1.4rem;overflow:hidden;border:0;padding:0;cursor:pointer;text-align:left;color:#fff;
+  background:radial-gradient(120% 70% at 0% 0%,rgba(255,255,255,.18),transparent 55%),linear-gradient(160deg,var(--a),var(--b));
+  box-shadow:0 18px 34px -20px rgba(46,16,101,.55);transition:transform .25s var(--rb-ease-spring),box-shadow .25s}
+.tuto:hover{transform:translateY(-4px) rotate(-.6deg);box-shadow:0 24px 40px -18px rgba(46,16,101,.6)}
+.tuto::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0 23px,rgba(255,255,255,.08) 23px 24px)}
+.tuto__n{position:absolute;top:.8rem;left:.9rem;font-family:var(--rb-font-display);font-style:italic;font-size:2rem;line-height:1;opacity:.9}
+.tuto__ico{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);width:3.6rem;height:3.6rem;border-radius:1.1rem;display:grid;place-items:center;font-size:1.4rem;background:rgba(255,255,255,.18);backdrop-filter:blur(4px)}
+.tuto__play{position:absolute;top:38%;left:50%;width:3.6rem;height:3.6rem;margin:-1.8rem 0 0 -1.8rem;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--a);font-size:1.1rem;opacity:0;transform:scale(.7);transition:all .25s}
+.tuto:hover .tuto__play,.tuto:focus-visible .tuto__play{opacity:1;transform:none}
+.tuto__txt{position:absolute;left:0;right:0;bottom:0;padding:2.2rem .9rem .9rem;background:linear-gradient(to top,rgba(20,10,40,.55),transparent)}
+.tuto__txt b{display:block;font-weight:850;font-size:.95rem;line-height:1.2}
+.tuto__txt small{display:flex;align-items:center;gap:.35rem;font-weight:650;font-size:.72rem;opacity:.9;margin-top:.25rem}
+.tuto-player{position:fixed;inset:0;z-index:var(--rb-z-overlay,1000);background:rgba(15,8,30,.82);backdrop-filter:blur(6px);display:grid;place-items:center;padding:1rem}
+.tuto-player[hidden]{display:none}
+.tuto-player__box{width:min(24rem,100%);display:flex;flex-direction:column;gap:.6rem;animation:rb-fade-up .3s var(--rb-ease-out)}
+.tuto-player__top{display:flex;align-items:center;justify-content:space-between;color:#fff;font-weight:800}
+.tuto-player__x{width:2.4rem;height:2.4rem;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;font-size:1rem}
+.tuto-player video{width:100%;max-height:calc(100vh - 9rem);aspect-ratio:9/16;border-radius:1.2rem;background:#000;object-fit:contain}
+.tuto-player__nav{display:flex;align-items:center;justify-content:space-between;color:#e9d5ff;font-weight:700;font-size:.85rem}
+.tuto-player__nav button{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:.55rem .9rem;font-weight:750;cursor:pointer}
+.tuto-player__nav button:disabled{opacity:.35;cursor:default}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;position:relative}
 @media(max-width:860px){.steps{grid-template-columns:1fr}}
 .step{padding:1.5rem;position:relative}
@@ -424,11 +449,39 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 04 · GAMIFICATION ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 04 · TUTORIELS VIDÉO ═══════════════════════════════
+     Les vidéos ne se chargent qu'au clic (preload="none") : aucun coût pour qui ne les regarde pas.
+     Pour en ajouter une : copie le fichier dans /videos puis ajoute une ligne dans TUTOS (script en bas de page). -->
+<section class="rb-section rb-section--sunk" id="tutos">
+  <div class="rb-container">
+    <div class="rb-section-head rb-reveal">
+      <span class="rb-section-num">04</span>
+      <div><span class="rb-eyebrow">Tutoriels</span><h2 class="rb-h1" style="margin-top:.5rem">Prends tes marques <em>en vidéo</em>.</h2></div>
+      <div class="rb-section-head__rule"></div>
+    </div>
+    <p class="tutos-lead rb-reveal">Six vidéos courtes, une par étape. Touche pour regarder.</p>
+    <div class="tutos" id="tutos-list" data-rb-stagger="60"></div>
+  </div>
+</section>
+
+<!-- Lecteur plein écran des tutoriels -->
+<div class="tuto-player" id="tuto-player" role="dialog" aria-modal="true" aria-label="Tutoriel vidéo" hidden>
+  <div class="tuto-player__box">
+    <div class="tuto-player__top"><b id="tuto-title">Tutoriel</b><button type="button" class="tuto-player__x" id="tuto-close" aria-label="Fermer la vidéo"><i class="fa-solid fa-xmark"></i></button></div>
+    <video id="tuto-video" controls playsinline preload="none"></video>
+    <div class="tuto-player__nav">
+      <button type="button" id="tuto-prev"><i class="fa-solid fa-chevron-left"></i> Précédent</button>
+      <span id="tuto-count">1 / 6</span>
+      <button type="button" id="tuto-next">Suivant <i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 05 · GAMIFICATION ═══════════════════════════════ -->
 <section class="rb-section">
   <div class="rb-container game-grid">
     <div class="rb-reveal">
-      <span class="rb-section-num" style="display:block;margin-bottom:.5rem">04</span>
+      <span class="rb-section-num" style="display:block;margin-bottom:.5rem">05</span>
       <span class="rb-eyebrow">Motivation</span>
       <h2 class="rb-h1" style="margin:.5rem 0 1rem">Revenir chaque jour devient <em>naturel</em>.</h2>
       <p class="rb-lead">XP, séries, badges et ligues entre élèves de ton niveau.</p>
@@ -457,7 +510,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
      Tant qu'il n'y en a pas, la section explique honnêtement comment ils arrivent. -->
 <section class="rb-section rb-section--sunk" style="overflow:hidden" id="avis">
   <div class="rb-container rb-section-head rb-reveal">
-    <span class="rb-section-num">05</span>
+    <span class="rb-section-num">06</span>
     <div><span class="rb-eyebrow">Avis vérifiés</span><h2 class="rb-h1" style="margin-top:.5rem">La parole aux <em>élèves</em>.</h2></div>
     <div class="rb-section-head__rule"></div>
   </div>
@@ -492,7 +545,7 @@ html.dark .try-opt.is-wrong{background:rgba(244,63,94,.16);color:#fda4af}
 <section class="rb-section rb-section--white" id="pricing">
   <div class="rb-container">
     <div class="rb-section-head rb-reveal">
-      <span class="rb-section-num">06</span>
+      <span class="rb-section-num">07</span>
       <div><span class="rb-eyebrow">Tarifs</span><h2 class="rb-h1" style="margin-top:.5rem">Le prix d'un forfait internet, <em>pas celui d'un répétiteur</em>.</h2></div>
       <div class="rb-section-head__rule"></div>
     </div>
@@ -626,6 +679,42 @@ document.addEventListener('DOMContentLoaded', function () {
     ['Le plan gratuit est-il vraiment gratuit ?', "Oui, sans carte bancaire et sans limite de durée : 5 documents par mois, quiz de 15 questions, flashcards et résumés courts. Tu passes à Pro quand tu veux."],
   ];
   document.getElementById('faq').innerHTML = faqs.map(function (f) { return '<details><summary>' + f[0] + '</summary><div>' + f[1] + '</div></details>'; }).join('');
+
+  /* ── Tutoriels vidéo : cartes + lecteur plein écran (la vidéo ne se charge qu'à l'ouverture) ── */
+  var TUTOS = [
+    ['tuto-1-inscription.mp4', 'Créer ton compte', "S'inscrire et se connecter", 'fa-user-plus', '#7c3aed', '#a855f7'],
+    ['tuto-2-profil.mp4', 'Ton profil', 'Le compléter en une minute', 'fa-id-card', '#db2777', '#f472b6'],
+    ['tuto-3-importer.mp4', 'Importer un cours', 'PDF, Word ou photo', 'fa-file-arrow-up', '#0369a1', '#38bdf8'],
+    ['tuto-4-quiz.mp4', 'Générer un quiz', 'Ton cours devient un quiz', 'fa-bolt', '#b45309', '#f59e0b'],
+    ['tuto-5-flashcards.mp4', 'Les flashcards', 'Réviser au bon moment', 'fa-layer-group', '#047857', '#34d399'],
+    ['tuto-6-accueil.mp4', "L'écran d'accueil", 'Tout trouver en un coup d’œil', 'fa-house', '#5b21b6', '#ec4899'],
+  ];
+  var tList = document.getElementById('tutos-list');
+  tList.innerHTML = TUTOS.map(function (t, i) {
+    return '<button type="button" class="tuto" data-i="' + i + '" style="--a:' + t[4] + ';--b:' + t[5] + '" aria-label="Regarder : ' + t[1] + '">' +
+      '<span class="tuto__n">' + (i + 1) + '</span><span class="tuto__ico"><i class="fa-solid ' + t[3] + '"></i></span>' +
+      '<span class="tuto__play"><i class="fa-solid fa-play"></i></span>' +
+      '<span class="tuto__txt"><b>' + t[1] + '</b><small><i class="fa-solid fa-circle-play"></i> ' + t[2] + '</small></span></button>';
+  }).join('');
+  var player = document.getElementById('tuto-player'), video = document.getElementById('tuto-video'), cur = 0;
+  function openTuto(i) {
+    cur = (i + TUTOS.length) % TUTOS.length;
+    video.src = '/videos/' + TUTOS[cur][0];
+    document.getElementById('tuto-title').textContent = (cur + 1) + '. ' + TUTOS[cur][1];
+    document.getElementById('tuto-count').textContent = (cur + 1) + ' / ' + TUTOS.length;
+    document.getElementById('tuto-prev').disabled = cur === 0;
+    document.getElementById('tuto-next').disabled = cur === TUTOS.length - 1;
+    player.hidden = false; document.body.style.overflow = 'hidden';
+    var p = video.play(); if (p && p.catch) p.catch(function () {});
+  }
+  function closeTuto() { video.pause(); video.removeAttribute('src'); video.load(); player.hidden = true; document.body.style.overflow = ''; }
+  tList.addEventListener('click', function (e) { var b = e.target.closest('.tuto'); if (b) openTuto(+b.dataset.i); });
+  document.getElementById('tuto-close').addEventListener('click', closeTuto);
+  document.getElementById('tuto-prev').addEventListener('click', function () { openTuto(cur - 1); });
+  document.getElementById('tuto-next').addEventListener('click', function () { openTuto(cur + 1); });
+  video.addEventListener('ended', function () { if (cur < TUTOS.length - 1) openTuto(cur + 1); });
+  player.addEventListener('click', function (e) { if (e.target === player) closeTuto(); });
+  document.addEventListener('keydown', function (e) { if (!player.hidden && e.key === 'Escape') closeTuto(); });
 
   /* ── Mini-quiz : éclat de savoir + XP + niveau ── */
   var done = false;

@@ -1,45 +1,117 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "functions": {
-    "api/router.ts": { "maxDuration": 300 }
+    "api/router.ts": {
+      "maxDuration": 300
+    }
   },
   "crons": [
-    { "path": "/api/cron/notifications", "schedule": "0 17 * * *" },
-    { "path": "/api/cron/subscriptions", "schedule": "0 7 * * *" }
+    {
+      "path": "/api/cron/notifications",
+      "schedule": "0 17 * * *"
+    },
+    {
+      "path": "/api/cron/subscriptions",
+      "schedule": "0 7 * * *"
+    }
   ],
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/router?__route=:path*" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/router?__route=:path*"
+    }
   ],
   "redirects": [
-    { "source": "/Dashboard.html", "destination": "/dashboard.html", "permanent": true },
-    { "source": "/relbrain-historique.html", "destination": "/dashboard.html#historique", "permanent": true },
-    { "source": "/relbrain-historique", "destination": "/dashboard.html#historique", "permanent": true },
-    { "source": "/signup.html", "destination": "/relbrain-signup.html", "permanent": true },
-    { "source": "/relbrain-discord.html", "destination": "/relbrain-communautes.html", "permanent": true },
-    { "source": "/relbrain-landing.html", "destination": "/", "permanent": true }
+    {
+      "source": "/Dashboard.html",
+      "destination": "/dashboard.html",
+      "permanent": true
+    },
+    {
+      "source": "/relbrain-historique.html",
+      "destination": "/dashboard.html#historique",
+      "permanent": true
+    },
+    {
+      "source": "/relbrain-historique",
+      "destination": "/dashboard.html#historique",
+      "permanent": true
+    },
+    {
+      "source": "/signup.html",
+      "destination": "/relbrain-signup.html",
+      "permanent": true
+    },
+    {
+      "source": "/relbrain-discord.html",
+      "destination": "/relbrain-communautes.html",
+      "permanent": true
+    },
+    {
+      "source": "/relbrain-landing.html",
+      "destination": "/",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
       ]
     },
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
       ]
     },
     {
       "source": "/(.*)\\.(css|js|svg|woff2)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
     }
   ]
 }

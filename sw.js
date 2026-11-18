@@ -4,7 +4,7 @@
    · Mode hors-ligne léger pour connexions instables : les feuilles de style,
      scripts et pages déjà visitées restent disponibles sans réseau.
    ═══════════════════════════════════════════════════════════════════════════ */
-const VERSION = 'rb-v2.3.7';
+const VERSION = 'rb-v2.3.8';
 const CORE = [
   '/relbrain-design-system.css',
   '/relbrain-theme.css',
@@ -34,6 +34,8 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   // Jamais de cache pour l'API, l'authentification ni les autres domaines (Supabase…)
   if (req.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
+  // Vidéos : jamais en cache (trop lourdes, et la lecture par morceaux casse sur iPhone)
+  if (url.pathname.startsWith('/videos/')) return;
 
   if (req.mode === 'navigate') {
     // Pages : réseau d'abord, cache en secours

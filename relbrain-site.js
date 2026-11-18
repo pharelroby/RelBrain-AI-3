@@ -22,6 +22,7 @@
 
   var LINKS = [
     { href: 'index.html#features', label: 'Fonctionnalités', match: [] },
+    { href: 'index.html#tutos', label: 'Tutos', match: [] },
     { href: 'index.html#pricing', label: 'Tarifs', match: [] },
     { href: 'relbrain-blog.html', label: 'Blog', match: ['relbrain-blog', 'relbrain-article'] },
     { href: 'relbrain-documentation.html', label: 'Guide', match: ['relbrain-documentation', 'relbrain-support'] },
