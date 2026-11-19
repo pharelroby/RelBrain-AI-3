@@ -27,6 +27,12 @@ window.RB_CONFIG = {
   // Où mène le lien « Donner mon avis » du badge.
   LIEN_AVIS: 'relbrain-contact.html',
 
+  // Rappel « Rejoins la chaîne WhatsApp » (petite carte en bas de l'écran,
+  // pour les élèves connectés). Mets '' dans CHAINE_WHATSAPP pour l'arrêter.
+  CHAINE_WHATSAPP: 'https://whatsapp.com/channel/0029VbDJjJLB4hdap5a3mK2g',
+  RAPPEL_WHATSAPP_JOURS: 3,     // « Plus tard » : on redemande dans 3 jours
+  RAPPEL_WHATSAPP_MAX: 6,       // au plus 6 rappels par élève, puis plus rien
+
   // ═══════════════════════════════════════════════════════════════
   // 🔑 CLÉS SUPABASE PUBLIQUES À INSÉRER ICI
   // ────────────────────────────────────────────────────────────────

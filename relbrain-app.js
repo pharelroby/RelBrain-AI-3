@@ -159,7 +159,7 @@
       await RB.ready;
       var redirect = location.origin + '/relbrain-validation-email.html?confirmed=1';
       var r = await directOr(
-        function () { return RB.api('/api/auth/signup', { body: { email: o.email, password: o.password, profile: o.profile || {} }, auth: false }); },
+        function () { return RB.api('/api/auth/signup', { body: { email: o.email, password: o.password, profile: o.profile || {}, hp: o.hp || undefined, t: o.t }, auth: false }); },
         async function () {
           var d = await RB.sb.auth.signUp({ email: o.email, password: o.password, options: { data: o.profile || {}, emailRedirectTo: redirect } });
           if (d.error) throw new ApiError(400, 'signup_failed', /registered/i.test(d.error.message) ? 'Un compte existe déjà avec cette adresse.' : d.error.message);
@@ -784,6 +784,58 @@
     },
   };
 
+  /* ═══════════════════════════════════════════════════════════════
+     RAPPEL « REJOINS LA CHAÎNE WHATSAPP »
+     Petite carte en bas de l'écran, pour les élèves connectés :
+     · jamais à la première visite, et après 40 s sur la page ;
+     · « Plus tard » → on redemande dans RAPPEL_WHATSAPP_JOURS jours ;
+     · « Rejoindre » ou « J'y suis déjà » → plus jamais ;
+     · au plus RAPPEL_WHATSAPP_MAX fois. Réglages : relbrain-config.js
+     ═══════════════════════════════════════════════════════════════ */
+  var WA_DELAY_MS = 40000;
+  function waGet(k) { try { return Number(localStorage.getItem(k) || 0); } catch (e) { return 0; } }
+  function waSet(k, v) { try { localStorage.setItem(k, String(v)); } catch (e) {} }
+  RB.whatsapp = {
+    maybeShow: function () {
+      var url = C.CHAINE_WHATSAPP;
+      if (!url || waGet('rb-wa-done')) return;
+      if (waGet('rb-wa-count') >= (C.RAPPEL_WHATSAPP_MAX || 6)) return;
+      if (waGet('rb-wa-snooze') > Date.now()) return;
+      if (document.querySelector('.rb-overlay.open, .rb-wa-card, .tuto-player:not([hidden])')) return setTimeout(RB.whatsapp.maybeShow, 30000);
+      RB.whatsapp.show();
+    },
+    show: function () {
+      waSet('rb-wa-count', waGet('rb-wa-count') + 1);
+      var el = document.createElement('aside');
+      el.className = 'rb-wa-card';
+      el.setAttribute('role', 'dialog');
+      el.setAttribute('aria-label', 'Chaîne WhatsApp RelBrain');
+      el.innerHTML =
+        '<style>.rb-wa-card{position:fixed;right:1rem;bottom:1rem;z-index:9000;width:min(21rem,calc(100vw - 2rem));background:var(--rb-surface,#fff);color:var(--rb-ink,#1c1917);border:1px solid var(--rb-line,#e7d9c5);border-radius:1.2rem;padding:1rem 1rem .9rem;box-shadow:0 24px 50px -20px rgba(22,101,52,.45);animation:rbWaIn .45s cubic-bezier(.34,1.56,.64,1)}' +
+        '.rb-wa-card .t{display:flex;gap:.75rem;align-items:flex-start}.rb-wa-card .i{flex:none;width:2.6rem;height:2.6rem;border-radius:.9rem;display:grid;place-items:center;background:#25d366;color:#fff;font-size:1.35rem}' +
+        '.rb-wa-card b{display:block;font-weight:850;font-size:.95rem}.rb-wa-card p{margin:.2rem 0 0;font-size:.8rem;font-weight:600;color:var(--rb-muted,#78716c);line-height:1.45}' +
+        '.rb-wa-card .a{display:flex;gap:.5rem;margin-top:.85rem}.rb-wa-card .go{flex:1;display:flex;align-items:center;justify-content:center;gap:.45rem;background:#16a34a;color:#fff;border-radius:.8rem;padding:.65rem;font-weight:800;font-size:.85rem;text-decoration:none}' +
+        '.rb-wa-card .go:hover{background:#15803d}.rb-wa-card .later{border:1.5px solid var(--rb-line,#e7d9c5);background:none;color:var(--rb-ink-2,#44403c);border-radius:.8rem;padding:.6rem .8rem;font-weight:750;font-size:.8rem;cursor:pointer}' +
+        '.rb-wa-card .x{position:absolute;top:.5rem;right:.5rem;border:0;background:none;color:var(--rb-muted,#78716c);width:1.8rem;height:1.8rem;border-radius:50%;cursor:pointer}.rb-wa-card .done{display:block;margin:.6rem auto 0;border:0;background:none;color:var(--rb-muted,#78716c);font-size:.72rem;font-weight:700;text-decoration:underline;cursor:pointer}' +
+        '@keyframes rbWaIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}@media(max-width:600px){.rb-wa-card{right:.75rem;left:.75rem;width:auto;bottom:.75rem}}</style>' +
+        '<button type="button" class="x" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>' +
+        '<div class="t"><span class="i"><i class="fa-brands fa-whatsapp"></i></span><div><b>Rejoins la chaîne WhatsApp 📲</b><p>Astuces de révision, nouveautés et rappels avant les examens. Gratuit, sans spam.</p></div></div>' +
+        '<div class="a"><a class="go" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Rejoindre</a><button type="button" class="later">Plus tard</button></div>' +
+        '<button type="button" class="done">J\'y suis déjà</button>';
+      el.querySelector('.go').href = C.CHAINE_WHATSAPP;
+      function close(snooze) {
+        if (snooze) waSet('rb-wa-snooze', Date.now() + (C.RAPPEL_WHATSAPP_JOURS || 3) * 864e5);
+        el.style.transition = 'opacity .25s, transform .25s'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+        setTimeout(function () { el.remove(); }, 260);
+      }
+      el.querySelector('.go').addEventListener('click', function () { waSet('rb-wa-done', 1); close(false); });
+      el.querySelector('.done').addEventListener('click', function () { waSet('rb-wa-done', 1); close(false); });
+      el.querySelector('.later').addEventListener('click', function () { close(true); });
+      el.querySelector('.x').addEventListener('click', function () { close(true); });
+      document.body.appendChild(el);
+    },
+  };
+
   async function bootShell() {
     var isPrivate = document.body && (document.body.hasAttribute('data-rb-private') || document.querySelector('.sidebar, #sidebar'));
     // Service worker : hors-ligne léger + push
@@ -813,6 +865,9 @@
       if (e.target.closest && e.target.closest('[data-rb-avis]')) { e.preventDefault(); RB.review.open(); }
     });
     setTimeout(RB.review.maybeAsk, REVIEW_DELAY_MS);
+    // WhatsApp : jamais à la toute première visite
+    if (waGet('rb-wa-visits') >= 1) setTimeout(RB.whatsapp.maybeShow, WA_DELAY_MS);
+    waSet('rb-wa-visits', waGet('rb-wa-visits') + 1);
 
     RB.data.notifications.subscribe(function (n) {
       if (RB.sound) RB.sound.play('notif');

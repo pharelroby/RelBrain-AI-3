@@ -39,9 +39,14 @@ interface RouteOptions {
 }
 
 export function clientIp(req: VercelRequest): string {
-  const fwd = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim();
-  return fwd || (req.headers['x-real-ip'] as string | undefined) || req.socket?.remoteAddress || 'unknown';
+  // x-real-ip et x-vercel-forwarded-for sont posés par Vercel lui-même : un visiteur ne peut pas les falsifier
+  // (contrairement au début de x-forwarded-for). Indispensable pour que les limites par IP tiennent.
+  const h = (k: string) => (req.headers[k] as string | undefined)?.split(',')[0]?.trim();
+  return h('x-real-ip') || h('x-vercel-forwarded-for') || h('x-forwarded-for') || req.socket?.remoteAddress || 'unknown';
 }
+
+/** Taille maximale d'une requête (les fichiers partent directement vers le stockage, pas par ici). */
+const MAX_BODY_BYTES = 2 * 1024 * 1024;
 
 export function bearer(req: VercelRequest): string | null {
   const h = req.headers.authorization;
@@ -83,6 +88,9 @@ export function route(opts: RouteOptions, fn: (ctx: any) => Promise<unknown>) {
       if (!opts.methods.includes(req.method || '')) {
         res.setHeader('Allow', opts.methods.join(', '));
         throw new HttpError(405, 'method_not_allowed', 'Méthode non autorisée.');
+      }
+      if (Number(req.headers['content-length'] || 0) > MAX_BODY_BYTES) {
+        throw new HttpError(413, 'payload_too_large', 'Requête trop volumineuse.');
       }
       const ctx: Ctx = { req, res, ip: clientIp(req), user: null, jwt: null };
 

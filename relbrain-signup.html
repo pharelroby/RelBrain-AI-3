@@ -89,6 +89,8 @@
       <h1>Crée ton compte</h1>
       <p class="sub">Juste ton nom, ton email et un mot de passe.</p>
 
+      <!-- Piège à robots : invisible pour les humains, ne pas supprimer -->
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"/>
       <div class="grid-2">
         <div class="field">
           <label for="prenom">Prénom</label>
@@ -190,7 +192,7 @@
 </main>
 
 <script>
-var step = 0, selectedLevel = null, selectedLang = 'fr', selectedGoals = new Set();
+var openedAt = Date.now(), step = 0, selectedLevel = null, selectedLang = 'fr', selectedGoals = new Set();
 var LEVELS = [['college', '📚 Collège'], ['lycee', '🏫 Lycée / Bac'], ['bts', '🎓 BTS / DUT'], ['licence', '📖 Licence'], ['master', '🧑‍🎓 Master'], ['prepa', '⚡ Prépa / Concours']];
 var GOALS = [['examen', '🎯 Réussir un examen'], ['revision', '🔁 Réviser régulièrement'], ['lacunes', '🧩 Combler mes lacunes'], ['rapidite', '⚡ Apprendre plus vite']];
 var $ = function (id) { return document.getElementById(id); };
@@ -316,6 +318,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var r = await RB.auth.signUp({
         email: $('email').value.trim().toLowerCase(),
         password: $('password').value,
+        hp: $('website').value,
+        t: Date.now() - openedAt,
         profile: {
           first_name: $('prenom').value.trim(),
           last_name: $('nom').value.trim(),

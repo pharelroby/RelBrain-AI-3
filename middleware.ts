@@ -26,7 +26,9 @@ export const config = {
     '/relbrain-parametres', '/relbrain-parametres.html',
     '/relbrain-admin', '/relbrain-admin.html',
     // Code source et données internes : jamais servis aux visiteurs
-    '/server/:path*', '/lib/:path*', '/scripts/:path*', '/supabase/:path*', '/content/demo/:path*',
+    '/server/:path*', '/lib/:path*', '/scripts/:path*', '/supabase/:path*', '/content/demo/:path*', '/brand/:path*',
+    // Notes internes et fichiers de configuration (guide de lancement, étude de prix…)
+    '/(.*\\.md)', '/tsconfig.json', '/package.json', '/package-lock.json', '/i18n/misses.json', '/i18n/en.manual.json',
   ],
 };
 
@@ -39,7 +41,8 @@ function readCookie(req: Request, name: string): string | null {
 }
 
 export default async function middleware(request: Request) {
-  if (/^\/(server|lib|scripts|supabase|content\/demo)(\/|$)/.test(new URL(request.url).pathname)) {
+  const path = new URL(request.url).pathname;
+  if (/^\/(server|lib|scripts|supabase|content\/demo|brand)(\/|$)/.test(path) || /\.md$/i.test(path) || /^\/(tsconfig|package|package-lock)\.json$/.test(path) || /^\/i18n\/(misses|en\.manual)\.json$/.test(path)) {
     return new Response('Page introuvable', { status: 404 });
   }
   const supabaseUrl = process.env.SUPABASE_URL;

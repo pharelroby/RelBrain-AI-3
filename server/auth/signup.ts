@@ -33,6 +33,9 @@ const Body = z.object({
       goals: z.array(z.string().max(30)).max(10).optional(),
     })
     .default({}),
+  // Pièges à robots : champ invisible (rempli = robot) et temps passé sur le formulaire (en ms)
+  hp: z.string().max(200).optional(),
+  t: z.number().int().nonnegative().optional(),
 });
 
 function signupError(message: string): never {
@@ -48,6 +51,10 @@ export default route(
   async ({ req }) => {
     const body = parse(Body, req.body);
     const email = body.email.toLowerCase();
+    if (body.hp || (body.t !== undefined && body.t < 3000)) {
+      // Robot probable : refus discret, sans dire pourquoi
+      throw new HttpError(400, 'signup_failed', "L'inscription n'a pas pu aboutir. Réessaie dans un instant.");
+    }
 
     // Phase de test : compte confirmé d'office, pas d'email envoyé
     if (process.env.REQUIRE_EMAIL_CONFIRM !== 'true') {
