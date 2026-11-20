@@ -12,6 +12,22 @@ import { assertQuota, assertAiBurst } from '../../lib/quota';
 import { ALLOWED_MIME, MAX_BYTES, sniffMime } from '../../lib/extract';
 import { processDocument } from '../../lib/documents';
 import { aiConfigured } from '../../lib/ai/openai';
+import { waitUntil } from '@vercel/functions';
+
+/* L'analyse (lecture du fichier + IA) peut prendre plus d'une minute. Le serveur répond donc
+   TOUT DE SUITE (« analyse en cours ») et continue le travail en arrière-plan (waitUntil) :
+   le téléphone n'a plus à garder une connexion ouverte, que les réseaux mobiles coupent
+   (« Failed to fetch »). La page suit la progression en temps réel, et une notification
+   « … est prêt ✨ » arrive à la fin. */
+function inBackground(work: Promise<unknown>) {
+  waitUntil(work.catch((e) => console.error('[documents] analyse échouée :', e instanceof Error ? e.message : e)));
+}
+const PUBLIC_COLS = 'id, title, subject, status, status_message, progress, page_count, word_count, summary_short, key_concepts, created_at';
+function pick(d: Record<string, unknown>) {
+  const out: Record<string, unknown> = {};
+  for (const k of PUBLIC_COLS.split(', ')) out[k] = d[k];
+  return out;
+}
 
 const Body = z
   .object({
@@ -43,9 +59,10 @@ async function relaunch(id: string, userId: string) {
     const { data: chunks } = await sb.from('document_chunks').select('content').eq('document_id', id).order('chunk_index');
     text = (chunks || []).map((c) => c.content).join('\n\n');
   }
-  const result = await processDocument({ docId: id, userId, buffer, mime, text, title: doc.title, skipXp: true });
-  const { data: fresh } = await sb.from('documents').select('id, title, subject, status, status_message, progress, page_count, word_count, summary_short, key_concepts, created_at').eq('id', id).single();
-  return { document: fresh, analysis: result.analysis, xp: result.xp, warning: result.warning };
+  await sb.from('documents').update({ status: 'processing', progress: 5, status_message: 'Analyse relancée…' }).eq('id', id);
+  inBackground(processDocument({ docId: id, userId, buffer, mime, text, title: doc.title, skipXp: true }));
+  const { data: fresh } = await sb.from('documents').select(PUBLIC_COLS).eq('id', id).single();
+  return { document: fresh, background: true };
 }
 
 export default route(
@@ -67,6 +84,9 @@ export default route(
       if (!body.path.startsWith(`${user.id}/`) || body.path.includes('..')) {
         throw new HttpError(403, 'forbidden_path', 'Ce fichier ne t\'appartient pas.');
       }
+      // Même fichier envoyé deux fois (le téléphone a réessayé après une coupure) : on renvoie le document existant
+      const { data: existing } = await sb.from('documents').select(PUBLIC_COLS).eq('user_id', user.id).eq('file_path', body.path).maybeSingle();
+      if (existing) return { document: existing, background: existing.status !== 'ready' };
       const { data: blob, error } = await sb.storage.from('documents').download(body.path);
       if (error || !blob) throw new HttpError(404, 'file_not_found', 'Fichier introuvable dans ton espace de stockage.');
       buffer = Buffer.from(await blob.arrayBuffer());
@@ -101,12 +121,7 @@ export default route(
       .single();
     if (insErr || !doc) throw new HttpError(500, 'document_insert_failed', "Impossible d'enregistrer le document.");
 
-    const result = await processDocument({ docId: doc.id, userId: user.id, buffer, mime, text: body.text, title: doc.title });
-    const { data: fresh } = await sb
-      .from('documents')
-      .select('id, title, subject, status, status_message, progress, page_count, word_count, summary_short, key_concepts, created_at')
-      .eq('id', doc.id)
-      .single();
-    return { document: fresh, analysis: result.analysis, xp: result.xp, warning: result.warning };
+    inBackground(processDocument({ docId: doc.id, userId: user.id, buffer, mime, text: body.text, title: doc.title }));
+    return { document: { ...pick(doc), status: 'processing', progress: 5, status_message: 'Lecture du document…' }, background: true };
   },
 );

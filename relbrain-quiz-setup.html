@@ -819,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function uploadThenSelect(file, drop) {
       var stop = RB.motion.thinking(drop, ['Envoi sécurisé', 'Lecture du document', 'Repérage des notions clés']);
       try {
-        var r = await RB.data.documents.upload(file, {});
+        var r = await RB.data.documents.upload(file, { wait: true });
         stop();
         toast('« ' + r.document.title + ' » est prêt ✨', 'success');
         RB.celebrate(r.xp, drop);

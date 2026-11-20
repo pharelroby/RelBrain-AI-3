@@ -568,6 +568,12 @@ document.addEventListener('DOMContentLoaded', function () {
         (res[1].subjects || []).forEach(function (s) { mastery[s.subject] = Number(s.mastery); });
         docs.length = 0;
         res[0].forEach(function (d) { docs.push(map(d)); });
+        // Filet de sécurité : si une analyse est en cours, on revérifie toutes les 8 s
+        // (la mise à jour en direct peut se couper sur mobile)
+        clearTimeout(refresh.poll);
+        if (res[0].some(function (d) { return d.status === 'processing' || d.status === 'pending'; })) {
+          refresh.poll = setTimeout(function () { if (!document.hidden) refresh(); else refresh.poll = setTimeout(refresh, 8000); }, 8000);
+        }
         updateStats(docs);
         render();
         // Lien direct depuis le tableau de bord / le profil : ?doc=<id>
@@ -627,7 +633,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var r = await job;
         RB.celebrate(r.xp, document.getElementById('docs-grid'));
         if (r.fallback) toast('« ' + (r.document ? r.document.title : file.name) + ' » est enregistré ✓ L\'analyse IA démarrera dès que le serveur IA sera en ligne.', 'success');
-        else toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        else if (r.document && r.document.status === 'ready') toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        // Sinon : l'analyse continue sur le serveur, la carte du document se met à jour toute seule
         if (r.warning) setTimeout(function () { toast(r.warning, 'info'); }, 1500);
         refresh();
       } catch (e) {
@@ -643,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         var r = await RB.data.documents.analyze(id);
         document.getElementById('doc-modal').classList.remove('open');
-        toast('« ' + r.document.title + ' » est prêt ✨', 'success');
+        toast('Analyse relancée pour « ' + r.document.title + ' » ⏳', 'success');
         refresh();
       } catch (err) { b.disabled = false; b.textContent = 'Réessayer l\'analyse'; RB.handleError(err); }
     });

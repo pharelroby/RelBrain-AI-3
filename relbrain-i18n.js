@@ -16,7 +16,7 @@
 (function (root) {
   'use strict';
 
-  var VERSION = '74569acd83'; // remplacé par npm run i18n
+  var VERSION = '90bbf2fde2'; // remplacé par npm run i18n
   var INLINE = { A: 1, ABBR: 1, B: 1, BR: 1, CODE: 1, EM: 1, I: 1, KBD: 1, MARK: 1, S: 1, SMALL: 1, SPAN: 1, STRONG: 1, SUB: 1, SUP: 1, U: 1, TIME: 1, SVG: 1, IMG: 1, LABEL: 1 };
   var SKIP = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, PRE: 1, svg: 1, SVG: 1, TEMPLATE: 1, IFRAME: 1, CANVAS: 1 };
   var ATTRS = ['placeholder', 'title', 'aria-label', 'alt', 'data-tip'];

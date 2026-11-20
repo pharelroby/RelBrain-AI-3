@@ -112,7 +112,7 @@
     try {
       res = await fetch(API + path, { method: method, headers: headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
     } catch (e) {
-      throw new ApiError(0, 'network', 'Connexion impossible. Vérifie ton accès à internet.');
+      throw new ApiError(0, 'network', NETWORK_MSG);
     }
     if (res.status === 401 && !opts._retried && RB.sb) {
       var ref = await RB.sb.auth.refreshSession();
@@ -131,6 +131,8 @@
   /** Message d'erreur lisible + incitation à passer Pro si quota atteint. */
   RB.handleError = function (err, fallback) {
     var msg = (err && err.message) || fallback || 'Une erreur est survenue.';
+    // Messages techniques du navigateur (« Failed to fetch », « Load failed »…) → phrase claire
+    if (/failed to fetch|load failed|networkerror|network request failed|fetch failed/i.test(msg)) msg = NETWORK_MSG;
     toast(msg, 'error');
     if (err && (err.code === 'quota_exceeded' || err.code === 'feature_locked')) {
       setTimeout(function () { toast('Découvre RelBrain Pro dans Paramètres → Abonnement', 'info'); }, 900);
@@ -142,12 +144,24 @@
   };
 
   /* ─── Authentification ────────────────────────────────────────────── */
-  async function directOr(apiCall, direct) {
+  async function directOr(apiCall, direct, noNetworkFallback) {
     try { return await apiCall(); }
     catch (e) {
-      // Fonctions /api absentes (hébergement purement statique) → appel direct à Supabase
+      // Fonctions /api absentes (hébergement purement statique) → appel direct à Supabase.
+      // Pour les documents, une coupure réseau ne doit pas déclencher ce 2e chemin (il échouerait aussi,
+      // et pourrait créer un doublon) : on réessaie plutôt le même appel (withRetry).
+      if (e && e.code === 'network' && noNetworkFallback) throw e;
       if (e && (e.status === 404 || e.status === 405 || e.status === 501 || e.code === 'network' || e.code === 'config_missing' || e.code === 'ai_not_configured')) return direct();
       throw e;
+    }
+  }
+  var NETWORK_MSG = 'Connexion interrompue. Vérifie ton réseau (wifi ou données mobiles) puis réessaie.';
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  /** Réessaie un appel jusqu'à 3 fois si le réseau coupe. */
+  async function withRetry(fn) {
+    for (var i = 0; ; i++) {
+      try { return await fn(); }
+      catch (e) { if (!e || e.code !== 'network' || i >= 2) throw e; await sleep(2000 * (i + 1)); }
     }
   }
 
@@ -306,23 +320,57 @@
         var uuid = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
         var path = id + '/' + uuid + '.' + ext;
         if (o.onStage) o.onStage('upload');
-        var up = await RB.sb.storage.from('documents').upload(path, file, { contentType: mime, upsert: false });
-        if (up.error) throw new ApiError(400, 'upload_failed', /mime|type/i.test(up.error.message) ? 'Format refusé par le stockage.' : /size|large/i.test(up.error.message) ? 'Fichier trop volumineux (20 Mo maximum).' : "L'envoi du fichier a échoué. Réessaie.");
+        // 1. Envoi du fichier vers le stockage, avec 3 essais si le réseau coupe (fréquent sur mobile)
+        for (var attempt = 0; ; attempt++) {
+          var up;
+          try { up = await RB.sb.storage.from('documents').upload(path, file, { contentType: mime, upsert: false }); }
+          catch (e) { up = { error: { message: String(e && e.message || e) } }; }
+          if (!up.error || /already exists|duplicate/i.test(up.error.message)) break; // déjà arrivé lors d'un essai précédent
+          if (/mime|type/i.test(up.error.message)) throw new ApiError(400, 'upload_failed', 'Format refusé par le stockage.');
+          if (/size|large/i.test(up.error.message)) throw new ApiError(413, 'file_too_large', 'Fichier trop volumineux (20 Mo maximum).');
+          if (attempt >= 2) throw new ApiError(0, 'network', NETWORK_MSG);
+          await sleep(1500 * (attempt + 1));
+        }
         if (o.onStage) o.onStage('process');
         var title = o.title || file.name.replace(/\.[^.]+$/, '');
-        return directOr(
-          function () { return RB.api('/api/documents/process', { body: { path: path, file_name: file.name, title: o.title || undefined, subject: o.subject || undefined } }); },
-          // Sans fonctions /api (hébergement statique) : le document est enregistré, l'analyse IA attendra
-          function () { return registerDoc({ p_title: title, p_path: path, p_file_name: file.name, p_mime: mime, p_size: file.size, p_subject: o.subject || null }); }
-        );
+        // 2. Le serveur enregistre le document et lance l'analyse en arrière-plan (réponse immédiate).
+        //    Un nouvel essai ne crée pas de doublon : le serveur reconnaît le même fichier.
+        var r = await withRetry(function () {
+          return directOr(
+            function () { return RB.api('/api/documents/process', { body: { path: path, file_name: file.name, title: o.title || undefined, subject: o.subject || undefined } }); },
+            // Sans fonctions /api (hébergement statique) : le document est enregistré, l'analyse IA attendra
+            function () { return registerDoc({ p_title: title, p_path: path, p_file_name: file.name, p_mime: mime, p_size: file.size, p_subject: o.subject || null }); },
+            true
+          );
+        });
+        // 3. Si la page en a besoin (ex. créer un quiz), on attend la fin de l'analyse
+        if (o.wait && r && r.document && r.document.status !== 'ready' && !r.fallback) r.document = await RB.data.documents.waitReady(r.document.id, o.onProgress);
+        return r;
+      },
+      /** Attend qu'un document soit analysé (statut « ready »), au plus 5 minutes. */
+      waitReady: async function (id, onProgress) {
+        var start = Date.now();
+        while (Date.now() - start < 300000) {
+          await sleep(2500);
+          var d;
+          try { d = await RB.data.documents.get(id); } catch (e) { continue; } // coupure passagère : on réessaie
+          if (onProgress) onProgress(d);
+          if (d.status === 'ready') return d;
+          if (d.status === 'failed') throw new ApiError(422, 'analysis_failed', d.status_message || "L'analyse a échoué. Réessaie dans quelques minutes.");
+        }
+        throw new ApiError(408, 'analysis_slow', "L'analyse prend plus de temps que prévu. Ton cours apparaîtra dans « Mes documents » dès qu'il sera prêt.");
       },
       /** Relance l'analyse d'un document resté en attente ou en échec. */
       analyze: function (id) { return RB.api('/api/documents/process', { body: { document_id: id } }); },
-      saveNote: function (title, text) {
-        return directOr(
+      saveNote: async function (title, text, o) {
+        o = o || {};
+        var r = await directOr(
           function () { return RB.api('/api/documents/process', { body: { title: title, text: text, source: 'note' } }); },
-          function () { return registerDoc({ p_title: title, p_text: text }); }
+          function () { return registerDoc({ p_title: title, p_text: text }); },
+          true
         );
+        if (o.wait && r && r.document && r.document.status !== 'ready' && !r.fallback) r.document = await RB.data.documents.waitReady(r.document.id, o.onProgress);
+        return r;
       },
       remove: function (id) { return RB.api('/api/documents/delete', { body: { id: id } }); },
       toggleFavorite: async function (id, value) { await RB.ready; return unwrap(await RB.sb.from('documents').update({ is_favorite: value }).eq('id', id)); },
@@ -427,7 +475,7 @@
         await RB.ready;
         var a = unwrap(await RB.sb.from('concours_annales').select('content_text').eq('id', annaleId).single());
         if (!a.content_text) throw new ApiError(404, 'no_text', 'Cette épreuve n\'est pas encore prête pour l\'entraînement.');
-        return RB.data.documents.saveNote(title, a.content_text);
+        return RB.data.documents.saveNote(title, a.content_text, { wait: true });
       },
     },
 

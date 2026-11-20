@@ -18,7 +18,7 @@
   html.setAttribute('lang', lang);
   var gate = new Promise(function (r) { window.__rbI18nDone = r; });
   var i18n = document.createElement('script');
-  i18n.src = '/relbrain-i18n.js?v=74569acd83';
+  i18n.src = '/relbrain-i18n.js?v=90bbf2fde2';
   (document.head || html).appendChild(i18n);
 
   var TIPS = lang === 'en' ? [
